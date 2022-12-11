@@ -2,8 +2,10 @@
   "name": "factory-game-planner",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "import": "ts-node scripts/importer.ts",
+	"peggify": "peggy --format es -o src/math/ExpressionParser.mjs src/math/expression.peggy",
     "test": "node --experimental-loader ts-node/esm --test src/math/BigRat.test.ts src/math/Expression.test.ts",
 	"prettier": "prettier --write src/**/*.ts"
   },

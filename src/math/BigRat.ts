@@ -93,6 +93,9 @@ export class BigRat {
 	neg() {
 		return new BigRat(-this.p, this.q);
 	}
+	debug() {
+		return `${this.p}:${this.q}`
+	}
 	static tryParse(s: string) {
 		const match = s.match(BIGRAT_REGEX);
 		if (!match) {
@@ -112,8 +115,7 @@ export class BigRat {
 		}
 		return res;
 	}
+	static ZERO = new BigRat(0n, 1n);
+	static ONE = new BigRat(1n, 1n);
+	static MINUS_ONE = new BigRat(-1n, 1n);
 }
-
-export const ZERO = new BigRat(0n, 1n);
-export const ONE = new BigRat(1n, 1n);
-export const MINUS_ONE = new BigRat(-1n, 1n);
