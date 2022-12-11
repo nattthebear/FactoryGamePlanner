@@ -1,0 +1,17 @@
+import { Item } from "../types";
+
+{{#.}}
+import {{{ClassName}}} from "url:./images/{{{ClassName}}}.png";
+{{/.}}
+
+export const Items: Item[] = [
+	{{#.}}
+	{
+		ClassName: {{ClassName}},
+		DisplayName: {{mDisplayName}},
+		Description: {{mDescription}},
+		IsResource: {{isResource}},
+		Icon: {{{ClassName}}},
+	},
+	{{/.}}
+];

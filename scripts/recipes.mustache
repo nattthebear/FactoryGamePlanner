@@ -1,0 +1,16 @@
+import { Recipe } from "../types";
+import { Items } from "./items";
+import { Buildings } from "./buildings";
+
+export const Recipes: Recipe[] = [
+	{{#.}}
+	{
+		ClassName: {{ClassName}},
+		DisplayName: {{mDisplayName}},
+		Inputs: [{{#Inputs}}{ Item: Items[{{Item}}], Quantity: {{Quantity}} }, {{/Inputs}}],
+		Outputs: [{{#Outputs}}{ Item: Items[{{Item}}], Quantity: {{Quantity}} }, {{/Outputs}}],
+		Duration: {{mManufactoringDuration}},
+		Building: Buildings[{{Building}}],
+	},
+	{{/.}}
+];

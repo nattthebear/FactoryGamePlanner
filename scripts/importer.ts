@@ -4,10 +4,13 @@ import * as fs from "fs/promises";
 import { existsSync } from "fs";
 import { spawnSync } from "child_process";
 import { chain } from "fp-ts/Either";
+import mustache from "mustache";
 
 import { parseObject } from "./objectParser";
 
-import { Item, Resource } from "../data/types";
+import { Item } from "../data/types";
+
+mustache.escape = s => JSON.stringify(s, null, "\t");
 
 async function mapAsync<I, O>(source: I[], project: (item: I, index: number) => Promise<O>) {
 	const ret: O[] = [];
@@ -129,6 +132,41 @@ const multiLineString = new t.Type<string>(
 	t.identity,
 );
 
+const recipeIngredient = new t.Type<string>(
+	"recipeIngredient",
+	t.string.is,
+	(input, context) => {
+		if (typeof input !== "string") {
+			return t.failure(input, context, "Value must be a string");
+		}
+		const match = input.match(/^BlueprintGeneratedClass.*\.([A-Za-z0-9_]+)$/);
+		if (!match) {
+			return t.failure(input, context, `Regex was not matched for ${input}`);
+		}
+		const [, clazz] = match;
+		return t.success(clazz);
+	},
+	t.identity,
+);
+
+const buildingClass = new t.Type<string>(
+	"buildingClass",
+	t.string.is,
+	(input, context) => {
+		if (typeof input !== "string") {
+			return t.failure(input, context, "Value must be a string");
+		}
+		const match = input.match(/^[^.]*\.([^.]*)$/);
+		if (!match) {
+			return t.failure(input, context, `Regex was not matched for ${input}`);
+		}
+		const [, clazz] = match;
+		return t.success(clazz);
+	},
+	t.identity,
+);
+
+
 const Texture2D = new t.Type<Texture>(
 	"Texture2D",
 	(input: unknown): input is Texture => input instanceof Texture,
@@ -147,9 +185,16 @@ const Texture2D = new t.Type<Texture>(
 );
 
 const Color = miniobj(t.type({ R: stringNumber, G: stringNumber, B: stringNumber, A: stringNumber }));
-const IngredientList = miniobj(t.array(t.type({ ItemClass: t.string, Amount: stringNumber })));
+const IngredientList = miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringNumber })));
 
 const $ItemDescriptor = "Class'/Script/FactoryGame.FGItemDescriptor'";
+const $ItemDescriptorBiomass = "Class'/Script/FactoryGame.FGItemDescriptorBiomass'";
+const $AmmoTypeProjectile = "Class'/Script/FactoryGame.FGAmmoTypeProjectile'";
+const $AmmoTypeInstantHit = "Class'/Script/FactoryGame.FGAmmoTypeInstantHit'";
+const $AmmoTypeSpreadshot = "Class'/Script/FactoryGame.FGAmmoTypeSpreadshot'";
+const $ItemDescriptorNuclearFuel = "Class'/Script/FactoryGame.FGItemDescriptorNuclearFuel'";
+const $ConsumableDescriptor = "Class'/Script/FactoryGame.FGConsumableDescriptor'";
+const $EquipmentDescriptor = "Class'/Script/FactoryGame.FGEquipmentDescriptor'";
 const ItemDescriptor = t.type({
 	"ClassName": t.string,
 	"mDisplayName": t.string,
@@ -200,8 +245,8 @@ const ResourceDescriptor = t.type({
 	// "mDescriptorStatBars": "",
 	// "mSubCategories": "",
 	// "mMenuPriority": "0.000000",
-	// "mFluidColor": "(B=0,G=0,R=0,A=0)",
-	// "mGasColor": "(B=0,G=0,R=0,A=0)",
+	"mFluidColor": Color,
+	"mGasColor": Color,
 	// "mCompatibleItemDescriptors": "",
 	// "mClassToScanFor": "None",
 	// "mScannableType": "RTWOT_Default",
@@ -221,19 +266,92 @@ const Recipe = t.type({
 	// "mManufacturingMenuPriority": "11.000000",
 	"mManufactoringDuration": stringNumber,
 	// "mManualManufacturingMultiplier": "1.000000",
-	// "mProducedIn": "(/Game/FactoryGame/Buildable/Factory/ManufacturerMk1/Build_ManufacturerMk1.Build_ManufacturerMk1_C)",
+	"mProducedIn": miniobj(t.union([t.array(buildingClass), t.literal("")])),
 	// "mRelevantEvents": "",
 	// "mVariablePowerConsumptionConstant": "0.000000",
 	// "mVariablePowerConsumptionFactor": "1.000000"
+});
+
+const $BuildableManufacturer = "Class'/Script/FactoryGame.FGBuildableManufacturer'";
+const BuildableManufacturer = t.type({
+	"ClassName": t.string,
+	// "IsPowered": "False",
+	// "mCurrentRecipeCheck": "",
+	// "mPreviousRecipeCheck": "",
+	// "CurrentPotentialConvert": "((1, 1.000000),(2, 1.200000),(0, 0.650000))",
+	// "mCurrentRecipeChanged": "()",
+	// "mManufacturingSpeed": "1.000000",
+	// "mFactoryInputConnections": "",
+	// "mPipeInputConnections": "",
+	// "mFactoryOutputConnections": "",
+	// "mPipeOutputConnections": "",
+	// "mPowerConsumption": "4.000000",
+	// "mPowerConsumptionExponent": "1.600000",
+	// "mDoesHaveShutdownAnimation": "False",
+	// "mOnHasPowerChanged": "()",
+	// "mOnHasProductionChanged": "()",
+	// "mOnHasStandbyChanged": "()",
+	// "mMinimumProducingTime": "0.000000",
+	// "mMinimumStoppedTime": "0.000000",
+	// "mNumCyclesForProductivity": "20",
+	// "mCanChangePotential": "True",
+	// "mMinPotential": "0.010000",
+	// "mMaxPotential": "1.000000",
+	// "mMaxPotentialIncreasePerCrystal": "0.500000",
+	// "mFluidStackSizeDefault": "SS_FLUID",
+	// "mFluidStackSizeMultiplier": "1",
+	// "OnReplicationDetailActorCreatedEvent": "()",
+	// "mEffectUpdateInterval": "0.000000",
+	// "mCachedSkeletalMeshes": "",
+	// "mAddToSignificanceManager": "True",
+	// "mSignificanceRange": "8000.000000",
+	"mDisplayName": t.string,
+	"mDescription": multiLineString,
+	// "MaxRenderDistance": "-1.000000",
+	// "mHighlightVector": "(X=0.000000,Y=0.000000,Z=0.000000)",
+	// "mAlternativeMaterialRecipes": "",
+	// "mAllowColoring": "True",
+	// "mAllowPatterning": "True",
+	// "mSkipBuildEffect": "False",
+	// "mBuildEffectSpeed": "0.000000",
+	// "mForceNetUpdateOnRegisterPlayer": "False",
+	// "mToggleDormancyOnInteraction": "False",
+	// "mShouldShowHighlight": "False",
+	// "mShouldShowAttachmentPointVisuals": "False",
+	// "mCreateClearanceMeshRepresentation": "True",
+	// "mAffectsOcclusion": "False",
+	// "mOcclusionShape": "ROCS_Box",
+	// "mScaleCustomOffset": "1.000000",
+	// "mCustomScaleType": "ROCSS_Center",
+	// "mOcclusionBoxInfo": "",
+	// "mAttachmentPoints": "",
+	// "mInteractingPlayers": "",
+	// "mIsUseable": "True",
+	// "mHideOnBuildEffectStart": "False",
+	// "mShouldModifyWorldGrid": "True",
 });
 
 const RawData = t.array(t.type({ NativeClass: t.string, Classes: t.array(t.unknown) }));
 
 const Data = t.type({
 	[$ItemDescriptor]: t.array(ItemDescriptor),
+	[$ItemDescriptorBiomass]: t.array(ItemDescriptor),
+	[$AmmoTypeProjectile]: t.array(ItemDescriptor),
+	[$AmmoTypeInstantHit]: t.array(ItemDescriptor),
+	[$ItemDescriptorNuclearFuel]: t.array(ItemDescriptor),
+	[$AmmoTypeSpreadshot]: t.array(ItemDescriptor),
+	[$ConsumableDescriptor]: t.array(ItemDescriptor),
+	[$EquipmentDescriptor]: t.array(ItemDescriptor),
 	[$ResourceDescriptor]: t.array(ResourceDescriptor),
 	[$Recipe]: t.array(Recipe),
+	[$BuildableManufacturer]: t.array(BuildableManufacturer),
 });
+
+async function doMustache(name: string, data: any) {
+	const mustacheTemplate = await fs.readFile(`${__dirname}/${name}.mustache`, { encoding: "utf-8" });
+	const generatedTS = mustache.render(mustacheTemplate, data);
+	await fs.writeFile(`${__dirname}/../data/generated/${name}.ts`, generatedTS);
+}
 
 (async () => {
 	config = await loadJson(`${__dirname}/../.importerconfig`, Config);
@@ -246,16 +364,60 @@ const Data = t.type({
 	}
 	const data = dataRes.right;
 
-	saveData<Item>("Item",  await mapAsync(data[$ItemDescriptor], async x => ({
-		ClassName: x.ClassName,
-		DisplayName: x.mDisplayName,
-		Description: x.mDescription,
-		Icon: (await x.mSmallIcon.exportImage(x.ClassName), x.ClassName),
-	})));
-	saveData<Resource>("Resource", await mapAsync(data[$ResourceDescriptor], async x => ({
-		ClassName: x.ClassName,
-		DisplayName: x.mDisplayName,
-		Description: x.mDescription,
-		Icon: (await x.mSmallIcon.exportImage(x.ClassName), x.ClassName),
-	})));
+	const rawRegularItems = [
+		...data[$ItemDescriptor],
+		...data[$ItemDescriptorBiomass],
+		...data[$AmmoTypeProjectile],
+		...data[$AmmoTypeInstantHit],
+		...data[$ItemDescriptorNuclearFuel],
+		...data[$AmmoTypeSpreadshot],
+		...data[$ConsumableDescriptor],
+		...data[$EquipmentDescriptor],
+	];
+
+	const items = [
+		...data[$ResourceDescriptor].map(x => ({ ...x, isResource: true })),
+		...rawRegularItems.map(x => ({ ...x, isResource: false }))
+	];
+
+	// for (const x of items) {
+	// 	await x.mSmallIcon.exportImage(x.ClassName);
+	// }
+
+	await doMustache("items", items);
+
+	const buildings = data[$BuildableManufacturer];
+	const buildingClazzes = new Map(buildings.map((x, i) => [x.ClassName, i]));
+
+	const allRecipes = data[$Recipe];
+	const recipes = allRecipes.filter(x => Array.isArray(x.mProducedIn) && x.mProducedIn.some(p => buildingClazzes.has(p))); // Filter out build gun only recipes
+	const itemsLookup = new Map(items.map((x, i) => [x.ClassName, i]));
+
+	const mapIngredients = (input: t.TypeOf<typeof IngredientList>) => input.map(x => {
+		const index = itemsLookup.get(x.ItemClass);
+		if (index == null) {
+			console.log("MISSING Recipe item", x.ItemClass);
+		}
+		return ({ Item: itemsLookup.get(x.ItemClass), Quantity: x.Amount })
+	});
+
+	const recipeView = recipes.map(x => ({
+		...x,
+		Inputs: mapIngredients(x.mIngredients),
+		Outputs: mapIngredients(x.mProduct),
+		Building: (() => {
+			const results = (x.mProducedIn as string[]).map(clazz => buildingClazzes.get(clazz)).filter(n => n != null);
+			if (results.length !== 1) {
+				console.log("MORE THAN ONE BUILDING?");
+				throw new Error();
+			}
+			return results[0];
+		})(),
+	}));
+
+	await doMustache("recipes", recipeView);
+
+	await doMustache("buildings", buildings);
+
+
 })();
