@@ -14,7 +14,7 @@ describe("evaluate", () => {
 		if (res.ok) {
 			assert.fail(`Was OK! ${res.value.debug()}`);
 		}
-		assert.equal(res.offset, expectedLocation)
+		assert.equal(res.offset, expectedLocation);
 	}
 	it("constant only", () => {
 		assertSuccess(evaluate("1234"), new BigRat(1234n, 1n));
@@ -47,8 +47,8 @@ describe("evaluate", () => {
 		assertSuccess(evaluate("            4*6 "), BigRat.parse("24"));
 		assertSuccess(evaluate("312/5"), BigRat.parse("62.4"));
 		assertSuccess(evaluate("1243/213*547/876"), new BigRat(679921n, 186588n));
-		assertFailure(evaluate("3 * *1"),4);
-		assertFailure(evaluate("3 **1"),3);
+		assertFailure(evaluate("3 * *1"), 4);
+		assertFailure(evaluate("3 **1"), 3);
 		assertFailure(evaluate("4  * 1 /"), 8);
 		assertFailure(evaluate("/"), 0);
 		assertFailure(evaluate("5 / 0"), 2);
@@ -63,14 +63,14 @@ describe("evaluate", () => {
 	});
 
 	it("parens", () => {
-		assertSuccess(evaluate("(1+1)"), new BigRat(2n, 1n))
-		assertSuccess(evaluate("    (   1  +1     )   "), new BigRat(2n, 1n))
-		assertSuccess(evaluate("4 + (5 * 3)"), new BigRat(19n, 1n))
-		assertSuccess(evaluate("(4 + 5) * 3"), new BigRat(27n, 1n))
-		assertSuccess(evaluate("121 * -(3 + 5)"), new BigRat(968n, -1n))
+		assertSuccess(evaluate("(1+1)"), new BigRat(2n, 1n));
+		assertSuccess(evaluate("    (   1  +1     )   "), new BigRat(2n, 1n));
+		assertSuccess(evaluate("4 + (5 * 3)"), new BigRat(19n, 1n));
+		assertSuccess(evaluate("(4 + 5) * 3"), new BigRat(27n, 1n));
+		assertSuccess(evaluate("121 * -(3 + 5)"), new BigRat(968n, -1n));
 
 		assertFailure(evaluate(")"), 0);
 		assertFailure(evaluate("(  "), 3);
 		assertFailure(evaluate("( )"), 2);
-	})
+	});
 });

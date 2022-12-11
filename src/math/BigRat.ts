@@ -94,7 +94,7 @@ export class BigRat {
 		return new BigRat(-this.p, this.q);
 	}
 	debug() {
-		return `${this.p}:${this.q}`
+		return `${this.p}:${this.q}`;
 	}
 	static tryParse(s: string) {
 		const match = s.match(BIGRAT_REGEX);

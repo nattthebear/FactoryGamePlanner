@@ -2,32 +2,32 @@ import { BigRat } from "./BigRat";
 import { parse, SyntaxError } from "./ExpressionParser";
 
 interface ExpressionNode {
-	type: string
-	offset: number
+	type: string;
+	offset: number;
 }
 interface ConstNode extends ExpressionNode {
 	type: "const";
-	value: string
+	value: string;
 }
 interface SciNotationNode extends ExpressionNode {
 	type: "exp";
-	value: string
-	child: ConstNode
+	value: string;
+	child: ConstNode;
 }
 interface UnaryOpNode extends ExpressionNode {
-	type: "uop"
-	child: ConstNode |SciNotationNode 
-	op: "+" | "-"
+	type: "uop";
+	child: ConstNode | SciNotationNode;
+	op: "+" | "-";
 }
 interface BinaryOpOp extends ExpressionNode {
-	type: "+" | "-" | "*" | "/"
+	type: "+" | "-" | "*" | "/";
 }
 interface BinaryOpNode extends ExpressionNode {
-	type: "binop"
-	children: ExpressionRoot[]
-	ops: BinaryOpOp[]
+	type: "binop";
+	children: ExpressionRoot[];
+	ops: BinaryOpOp[];
 }
-export type ExpressionRoot = ConstNode|SciNotationNode|UnaryOpNode|BinaryOpNode
+export type ExpressionRoot = ConstNode | SciNotationNode | UnaryOpNode | BinaryOpNode;
 
 class EvalError extends Error {
 	constructor(public location: number) {
@@ -70,21 +70,21 @@ function evaluateNode(node: ExpressionRoot): BigRat {
 				const op = node.ops[i].type;
 				const operand = evaluateNode(node.children[i + 1]);
 				switch (op) {
-					case "*": 
-					value = value.mul(operand); 
-					break;
+					case "*":
+						value = value.mul(operand);
+						break;
 					case "/":
 						if (operand.eq(BigRat.ZERO)) {
 							throw new EvalError(node.ops[i].offset);
 						}
-							 value = value.div(operand);
-						  break;
+						value = value.div(operand);
+						break;
 					case "+":
-						 value = value.add(operand);
-						  break;
-					case "-": 
-					value = value.sub(operand);
-					 break;
+						value = value.add(operand);
+						break;
+					case "-":
+						value = value.sub(operand);
+						break;
 				}
 			}
 			return value;
@@ -92,20 +92,24 @@ function evaluateNode(node: ExpressionRoot): BigRat {
 	}
 }
 
-export type EvalResult = { ok: true, value: BigRat}| { ok: false, message: string, offset: number}
+export type EvalResult = { ok: true; value: BigRat } | { ok: false; message: string; offset: number };
 
-export function evaluate(s: string):EvalResult {
+export function evaluate(s: string): EvalResult {
 	try {
 		const ast: ExpressionRoot = parse(s);
 		const value = evaluateNode(ast);
-		return { ok: true, value }
+		return { ok: true, value };
 	} catch (e) {
 		if (e instanceof SyntaxError) {
-		return { ok: false, message: "Parse error", offset: (e as import("peggy").parser.SyntaxError).location.start.offset };
+			return {
+				ok: false,
+				message: "Parse error",
+				offset: (e as import("peggy").parser.SyntaxError).location.start.offset,
+			};
 		}
 		if (e instanceof EvalError) {
-			return {ok : false, message: "Eval error", offset: e.location}
+			return { ok: false, message: "Eval error", offset: e.location };
 		}
-		throw e
+		throw e;
 	}
 }
