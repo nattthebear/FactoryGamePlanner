@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "import": "ts-node scripts/importer.ts",
-    "test": "node --experimental-loader ts-node/esm --test src/math/BigRat.test.ts",
+    "test": "node --experimental-loader ts-node/esm --test src/math/BigRat.test.ts src/math/Expression.test.ts",
 	"prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {

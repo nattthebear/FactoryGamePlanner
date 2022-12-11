@@ -57,8 +57,41 @@ export class BigRat {
 	static div(x: BigRat, y: BigRat) {
 		return new BigRat(x.p * y.q, x.q * y.p);
 	}
+	eq(y: BigRat) {
+		return this.p * y.q === this.q * y.p;
+	}
+	gt(y: BigRat) {
+		return this.p * y.q > this.q * y.p;
+	}
+	lt(y: BigRat) {
+		return this.p * y.q < this.q * y.p;
+	}
+	gte(y: BigRat) {
+		return this.p * y.q >= this.q * y.p;
+	}
+	lte(y: BigRat) {
+		return this.p * y.q <= this.q * y.p;
+	}
+	neq(y: BigRat) {
+		return this.p * y.q !== this.q * y.p;
+	}
+	add(y: BigRat) {
+		return new BigRat(this.p * y.q + this.q * y.p, this.q * y.q);
+	}
+	sub(y: BigRat) {
+		return new BigRat(this.p * y.q - this.q * y.p, this.q * y.q);
+	}
+	mul(y: BigRat) {
+		return new BigRat(this.p * y.p, this.q * y.q);
+	}
+	div(y: BigRat) {
+		return new BigRat(this.p * y.q, this.q * y.p);
+	}
 	abs() {
 		return new BigRat(abs(this.p), abs(this.q));
+	}
+	neg() {
+		return new BigRat(-this.p, this.q);
 	}
 	static tryParse(s: string) {
 		const match = s.match(BIGRAT_REGEX);

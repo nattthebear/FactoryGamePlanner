@@ -47,7 +47,8 @@ describe("BigRat", () => {
 		assert.equal(BigRat.eq(BigRat.sub(new BigRat(1n, 3n), new BigRat(1n, 2n)), new BigRat(-1n, 6n)), true);
 		assert.equal(BigRat.eq(BigRat.mul(new BigRat(20n, 3n), new BigRat(1n, 2n)), new BigRat(10n, 3n)), true);
 		assert.equal(BigRat.eq(BigRat.mul(new BigRat(20n, 3n), new BigRat(0n, 2n)), new BigRat(0n, 1n)), true);
-		assert.equal(BigRat.eq(BigRat.div(new BigRat(100n, 1n), new BigRat(0n, 4n)), new BigRat(20n, 1n)), true);
+		assert.equal(BigRat.eq(BigRat.div(new BigRat(100n, 1n), new BigRat(4n, 1n)), new BigRat(25n, 1n)), true);
+		assert.throws(() => BigRat.div(new BigRat(100n, 1n), new BigRat(0n, 4n)));
 	});
 	it("parsing", () => {
 		assert.equal(BigRat.tryParse("+123"), null);
