@@ -1,14 +1,14 @@
 import * as t from "io-ts";
-import { PathReporter } from 'io-ts/PathReporter'
+import { PathReporter } from "io-ts/lib/PathReporter";
 import * as fs from "fs/promises";
 import { existsSync } from "fs";
 import { spawnSync } from "child_process";
-import { chain } from "fp-ts/Either";
+import { chain } from "fp-ts/lib/Either.js";
 import mustache from "mustache";
-
+import { fileURLToPath } from "node:url";
 import { parseObject } from "./objectParser";
 
-import { Item } from "../data/types";
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 mustache.escape = s => JSON.stringify(s, null, "\t");
 

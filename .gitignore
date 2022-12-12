@@ -1,4 +1,4 @@
 node_modules
 .importerconfig
 data/generated
-src/math/ExpressionParser.mjs
+src/math/ExpressionParser.js
