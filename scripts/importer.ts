@@ -375,24 +375,23 @@ async function doMustache(name: string, data: any) {
 		...data[$ConsumableDescriptor],
 		...data[$EquipmentDescriptor],
 	];
-
-	const items = [
+	const allItems = [
 		...data[$ResourceDescriptor].map(x => ({ ...x, isResource: true, isPiped: x.mForm !== "RF_SOLID" })),
 		...rawRegularItems.map(x => ({ ...x, isResource: false, isPiped: x.mForm !== "RF_SOLID" })),
 	];
-
-	// for (const x of items) {
-	// 	await x.mSmallIcon.exportImage(x.ClassName);
-	// }
-
-	await doMustache("items", items);
-
-	const buildings = data[$BuildableManufacturer];
-	const buildingClazzes = new Map(buildings.map((x, i) => [x.ClassName, i]));
-
 	const allRecipes = data[$Recipe];
-	const recipes = allRecipes.filter(x => Array.isArray(x.mProducedIn) && x.mProducedIn.some(p => buildingClazzes.has(p))); // Filter out build gun only recipes
+	const buildings = data[$BuildableManufacturer];
+
+	const buildingClazzes = new Map(buildings.map((x, i) => [x.ClassName, i]));
+	const recipesMaybeBuildable = allRecipes.filter(x => Array.isArray(x.mProducedIn) && x.mProducedIn.some(p => buildingClazzes.has(p))); // Filter out build gun only recipes
+	const producableItemClasses = new Set(recipesMaybeBuildable.flatMap(x => x.mProduct.map(y => y.ItemClass)));
+	const items = allItems.filter(x => x.isResource || producableItemClasses.has(x.ClassName)); // Filter out any item that we'd never be able to get in automatable amounts
 	const itemsLookup = new Map(items.map((x, i) => [x.ClassName, i]));
+	const recipes = recipesMaybeBuildable.filter(x => {
+		// Filter again on recipes for a few that can go in constructors but you can't ever fully automate
+		// (Wood, etc)
+		return x.mIngredients.every(y => itemsLookup.has(y.ItemClass)) && x.mProduct.every(y => itemsLookup.has(y.ItemClass));
+	});
 
 	const mapIngredients = (input: t.TypeOf<typeof IngredientList>) => input.map(x => {
 		const index = itemsLookup.get(x.ItemClass);
@@ -416,9 +415,11 @@ async function doMustache(name: string, data: any) {
 		})(),
 	}));
 
+	// for (const x of items) {
+	// 	await x.mSmallIcon.exportImage(x.ClassName);
+	// }
+
+	await doMustache("items", items);
 	await doMustache("recipes", recipeView);
-
 	await doMustache("buildings", buildings);
-
-
 })();
