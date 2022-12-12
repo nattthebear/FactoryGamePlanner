@@ -186,6 +186,7 @@ const Texture2D = new t.Type<Texture>(
 
 const Color = miniobj(t.type({ R: stringNumber, G: stringNumber, B: stringNumber, A: stringNumber }));
 const IngredientList = miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringNumber })));
+const Form = t.keyof({ RF_SOLID: null, RF_LIQUID: null, RF_GAS: null });
 
 const $ItemDescriptor = "Class'/Script/FactoryGame.FGItemDescriptor'";
 const $ItemDescriptorBiomass = "Class'/Script/FactoryGame.FGItemDescriptorBiomass'";
@@ -205,7 +206,7 @@ const ItemDescriptor = t.type({
 	// "mRememberPickUp": "False",
 	// "mEnergyValue": "0.000000",
 	// "mRadioactiveDecay": "10.000000",
-	// "mForm": "RF_SOLID",
+	"mForm": Form,
 	"mSmallIcon": Texture2D,
 	// "mPersistentBigIcon": "Texture2D /Game/FactoryGame/Resource/Parts/NuclearWaste/UI/IconDesc_NuclearWaste_256.IconDesc_NuclearWaste_256",
 	// "mCrosshairMaterial": "None",
@@ -238,7 +239,7 @@ const ResourceDescriptor = t.type({
 	// "mRememberPickUp": "True",
 	// "mEnergyValue": "0.000000",
 	// "mRadioactiveDecay": "0.000000",
-	// "mForm": "RF_SOLID",
+	"mForm": Form,
 	"mSmallIcon": Texture2D,
 	// "mPersistentBigIcon": "Texture2D /Game/FactoryGame/Resource/RawResources/Sulfur/UI/Sulfur_256.Sulfur_256",
 	// "mCrosshairMaterial": "None",
@@ -376,8 +377,8 @@ async function doMustache(name: string, data: any) {
 	];
 
 	const items = [
-		...data[$ResourceDescriptor].map(x => ({ ...x, isResource: true })),
-		...rawRegularItems.map(x => ({ ...x, isResource: false }))
+		...data[$ResourceDescriptor].map(x => ({ ...x, isResource: true, isPiped: x.mForm !== "RF_SOLID" })),
+		...rawRegularItems.map(x => ({ ...x, isResource: false, isPiped: x.mForm !== "RF_SOLID" })),
 	];
 
 	// for (const x of items) {

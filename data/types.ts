@@ -4,6 +4,7 @@ export interface Item {
 	Description: string;
 	Icon: string;
 	IsResource: boolean;
+	IsPiped: boolean;
 }
 
 export interface Recipe {
