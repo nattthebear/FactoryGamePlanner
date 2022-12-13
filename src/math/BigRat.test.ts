@@ -58,4 +58,10 @@ describe("BigRat", () => {
 		assert.equal(BigRat.eq(BigRat.parse("12.00"), new BigRat(12n, 1n)), true);
 		assert.equal(BigRat.eq(BigRat.parse("1462.35"), new BigRat(29247n, 20n)), true);
 	});
+	it("accessors", () => {
+		const { p, q } = new BigRat(561n, 6457n).terms();
+		assert.equal(p, 51n);
+		assert.equal(q, 587n);
+		assert.equal(new BigRat(25n, 2n).toNumberApprox(), 12.5);
+	});
 });

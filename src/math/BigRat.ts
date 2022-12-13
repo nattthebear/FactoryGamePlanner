@@ -13,18 +13,21 @@ const BIGRAT_REGEX = /^-?\d+(\.\d+)?$/;
 // Privates are public so that Draft<BigRat> and BigRat are compatible.
 // At runtime, BigRats will not be drafted as they're not immerable, so it only matters in types.
 export class BigRat {
-	/**
-	 * @param p EXTERNAL: DO NOT TOUCH THIS
-	 * @param q EXTERNAL: DO NOT TOUCH THIS
-	 */
-	constructor(public p: bigint, public q: bigint) {
+	/** INTERNAL USE ONLY, DO NOT TOUCH */
+	p: bigint;
+	/** INTERNAL USE ONLY, DO NOT TOUCH */
+	q: bigint;
+	/** Create a BigRat from numerator and denominator */
+	constructor(p: bigint, q: bigint) {
 		if (q === 0n) {
 			throw new RangeError("BigRat divide by zero");
 		}
+		this.p = p;
+		this.q = q;
 		this.reduce();
 	}
-	/** EXTERNAL: DO NOT CALL THIS */
-	public reduce() {
+	/** INTERNAL USE ONLY, DO NOT TOUCH */
+	reduce() {
 		const d = gcd(this.p, this.q);
 		if (d !== 1n) {
 			this.p /= d;
@@ -33,6 +36,9 @@ export class BigRat {
 	}
 	terms() {
 		return { p: this.p, q: this.q };
+	}
+	toNumberApprox() {
+		return Number(this.p) / Number(this.q);
 	}
 	static eq(x: BigRat, y: BigRat) {
 		return x.p * y.q === x.q * y.p;
