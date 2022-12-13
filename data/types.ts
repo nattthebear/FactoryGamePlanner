@@ -7,11 +7,16 @@ export interface Item {
 	IsPiped: boolean;
 }
 
+export interface RecipeFlow {
+	Item: Item;
+	Quantity: number;
+}
+
 export interface Recipe {
 	ClassName: string;
 	DisplayName: string;
-	Inputs: { Item: Item, Quantity: number }[];
-	Outputs: { Item: Item, Quantity: number }[];
+	Inputs: RecipeFlow[];
+	Outputs: RecipeFlow[];
 	/** Crafting time in seconds */
 	Duration: number;
 	Building: Building;

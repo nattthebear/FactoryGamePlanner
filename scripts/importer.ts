@@ -110,17 +110,17 @@ function not(type: t.Type<any>) {
 	);
 }
 
-const stringNumber = new t.Type<number>(
-	"stringNumber",
+const stringInteger = new t.Type<number>(
+	"stringInteger",
 	t.number.is,
 	(input, context) => {
 		if (typeof input !== "string") {
 			return t.failure(input, context, "Value must be a string");
 		}
-		if (!input.match(/^[0-9]+(\.[0-9]+)?$/)) {
-			return t.failure(input, context, "String doesn't look like a number");
+		if (!input.match(/^[0-9]+(\.0+)?$/)) {
+			return t.failure(input, context, `String ${input} doesn't look like an integer`);
 		}
-		return t.success(parseFloat(input));
+		return t.success(Number(input));
 	},
 	t.identity,
 );
@@ -184,8 +184,8 @@ const Texture2D = new t.Type<Texture>(
 	t.identity,
 );
 
-const Color = miniobj(t.type({ R: stringNumber, G: stringNumber, B: stringNumber, A: stringNumber }));
-const IngredientList = miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringNumber })));
+const Color = miniobj(t.type({ R: stringInteger, G: stringInteger, B: stringInteger, A: stringInteger }));
+const IngredientList = miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringInteger })));
 const Form = t.keyof({ RF_SOLID: null, RF_LIQUID: null, RF_GAS: null });
 
 const $ItemDescriptor = "Class'/Script/FactoryGame.FGItemDescriptor'";
@@ -265,7 +265,7 @@ const Recipe = t.type({
 	"mIngredients": IngredientList,
 	"mProduct": IngredientList,
 	// "mManufacturingMenuPriority": "11.000000",
-	"mManufactoringDuration": stringNumber,
+	"mManufactoringDuration": stringInteger,
 	// "mManualManufacturingMultiplier": "1.000000",
 	"mProducedIn": miniobj(t.union([t.array(buildingClass), t.literal("")])),
 	// "mRelevantEvents": "",
@@ -281,7 +281,7 @@ const BuildableManufacturer = t.type({
 	// "mPreviousRecipeCheck": "",
 	// "CurrentPotentialConvert": "((1, 1.000000),(2, 1.200000),(0, 0.650000))",
 	// "mCurrentRecipeChanged": "()",
-	// "mManufacturingSpeed": "1.000000",
+	"mManufacturingSpeed": t.literal("1.000000"), // If this asserts, then we need to add manufacturing speed support;
 	// "mFactoryInputConnections": "",
 	// "mPipeInputConnections": "",
 	// "mFactoryOutputConnections": "",

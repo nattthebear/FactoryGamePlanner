@@ -10,14 +10,21 @@ export const abs = (value: bigint) => (value < 0n ? -value : value);
 
 const BIGRAT_REGEX = /^-?\d+(\.\d+)?$/;
 
+// Privates are public so that Draft<BigRat> and BigRat are compatible.
+// At runtime, BigRats will not be drafted as they're not immerable, so it only matters in types.
 export class BigRat {
-	constructor(private p: bigint, private q: bigint) {
+	/**
+	 * @param p EXTERNAL: DO NOT TOUCH THIS
+	 * @param q EXTERNAL: DO NOT TOUCH THIS
+	 */
+	constructor(public p: bigint, public q: bigint) {
 		if (q === 0n) {
 			throw new RangeError("BigRat divide by zero");
 		}
 		this.reduce();
 	}
-	private reduce() {
+	/** EXTERNAL: DO NOT CALL THIS */
+	public reduce() {
 		const d = gcd(this.p, this.q);
 		if (d !== 1n) {
 			this.p /= d;
@@ -114,6 +121,12 @@ export class BigRat {
 			throw new TypeError("BigRat parse error");
 		}
 		return res;
+	}
+	static fromInteger(n: number) {
+		if ((n | 0) !== n) {
+			throw new TypeError("Number is not an integer");
+		}
+		return new BigRat(BigInt(n), 1n);
 	}
 	static ZERO = new BigRat(0n, 1n);
 	static ONE = new BigRat(1n, 1n);
