@@ -2,3 +2,5 @@ node_modules
 .importerconfig
 data/generated
 src/math/ExpressionParser.js
+.parcel-cache
+.parcel-dev

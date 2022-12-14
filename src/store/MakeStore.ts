@@ -25,7 +25,7 @@ export function makeStore<S>(initialValue: S) {
 					subs.delete(updateSignal);
 				};
 			}, []);
-			return state;
+			return selected;
 		},
 		update(action: (draft: Draft<S>) => void) {
 			state = produce(state, action);

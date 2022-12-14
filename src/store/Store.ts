@@ -1,21 +1,30 @@
 import { Draft } from "immer";
 import { BigRat } from "../math/BigRat";
-import { NodeId } from "./Common";
+import { NodeId, Point } from "./Common";
 import { Connector } from "./Connectors";
 import { makeStore } from "./MakeStore";
 import { Producer, Sink, Source } from "./Producers";
 
 export interface State {
+	viewport: {
+		center: Point;
+		zoom: number;
+	};
 	producers: Map<NodeId, Producer>;
 	connectors: Map<NodeId, Connector>;
 }
 
 const initialState: State = {
+	viewport: {
+		center: { x: 0, y: 0 },
+		zoom: 1,
+	},
 	producers: new Map(),
 	connectors: new Map(),
 };
 
-export const store = makeStore(initialState);
+const { useSelector, update } = makeStore(initialState);
+export { useSelector, update };
 
 function maybeSpliceValue<T>(array: T[], value: T) {
 	const index = array.indexOf(value);

@@ -1,0 +1,20 @@
+.viewport {
+	position: fixed;
+	inset: 0 0 0 0;
+	background-color: #aaa;
+	overflow: hidden;
+
+	& svg {
+		width: 4000px; /* FACTORY_SIZE */
+		height: 4000px; /* FACTORY_SIZE */
+		display: block;
+		position: relative;
+		inset: 50%;
+		transform-origin: 50% 50%;
+		cursor: grab;
+
+		& .backgrid {
+			stroke: #666;
+		}
+	}
+}
