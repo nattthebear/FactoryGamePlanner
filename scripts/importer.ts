@@ -274,6 +274,7 @@ const Recipe = t.type({
 });
 
 const $BuildableManufacturer = "Class'/Script/FactoryGame.FGBuildableManufacturer'";
+const $BuildableManufacturerVariablePower = "Class'/Script/FactoryGame.FGBuildableManufacturerVariablePower'";
 const BuildableManufacturer = t.type({
 	"ClassName": t.string,
 	// "IsPowered": "False",
@@ -346,6 +347,7 @@ const Data = t.type({
 	[$ResourceDescriptor]: t.array(ResourceDescriptor),
 	[$Recipe]: t.array(Recipe),
 	[$BuildableManufacturer]: t.array(BuildableManufacturer),
+	[$BuildableManufacturerVariablePower]: t.array(BuildableManufacturer),
 });
 
 async function doMustache(name: string, data: any) {
@@ -380,7 +382,10 @@ async function doMustache(name: string, data: any) {
 		...rawRegularItems.map(x => ({ ...x, isResource: false, isPiped: x.mForm !== "RF_SOLID" })),
 	];
 	const allRecipes = data[$Recipe];
-	const buildings = data[$BuildableManufacturer];
+	const buildings = [
+		...data[$BuildableManufacturer],
+		...data[$BuildableManufacturerVariablePower],
+	];
 
 	const buildingClazzes = new Map(buildings.map((x, i) => [x.ClassName, i]));
 	const recipesMaybeBuildable = allRecipes.filter(x => Array.isArray(x.mProducedIn) && x.mProducedIn.some(p => buildingClazzes.has(p))); // Filter out build gun only recipes
