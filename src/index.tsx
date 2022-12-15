@@ -3,4 +3,9 @@ enableMapSet();
 
 import "modern-normalize/modern-normalize.css";
 
-import "./App";
+(async () => {
+	if (process.env.NODE_ENV === "development") {
+		await import("preact/debug" as any);
+	}
+	await import("./App");
+})();

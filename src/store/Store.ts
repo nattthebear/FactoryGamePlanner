@@ -2,7 +2,7 @@ import { Draft } from "immer";
 import { BigRat } from "../math/BigRat";
 import { NodeId, Point } from "./Common";
 import { Connector } from "./Connectors";
-import { makeStore } from "./MakeStore";
+import { makeStore, Selector } from "./MakeStore";
 import { Producer, Sink, Source } from "./Producers";
 
 export interface State {
@@ -25,6 +25,23 @@ const initialState: State = {
 
 const { useSelector, update } = makeStore(initialState);
 export { useSelector, update };
+
+function arrayEqual<T>(x: T[], y: T[]) {
+	if (x.length !== y.length) {
+		return false;
+	}
+	for (let i = 0; i < x.length; i++) {
+		if (x[i] !== y[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+export const selectProducerIds: Selector<State, NodeId[]> = {
+	select: (state) => [...state.producers.keys()],
+	equal: arrayEqual,
+};
 
 function maybeSpliceValue<T>(array: T[], value: T) {
 	const index = array.indexOf(value);

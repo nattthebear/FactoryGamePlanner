@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Point } from "../store/Common";
-import { update, useSelector } from "../store/Store";
+import { selectProducerIds, update, useSelector } from "../store/Store";
 
 import "./FactoryEditor.css";
+import { Producer } from "./Producer";
 
 const ZOOM_MAX = 5;
 const ZOOM_MIN = 1 / ZOOM_MAX;
@@ -42,6 +43,7 @@ function clamp(n: number, min: number, max: number) {
 }
 
 export function FactoryEditor() {
+	const producers = useSelector(selectProducerIds);
 	const viewport = useSelector((s) => s.viewport);
 	const viewportRef = useRef<HTMLDivElement | null>(null);
 	const panningState = useRef<{ last: Point | null; panning: boolean }>({ last: null, panning: false });
@@ -108,6 +110,9 @@ export function FactoryEditor() {
 		<div class="viewport" tabIndex={-1} ref={viewportRef} onWheelCapture={onWheel}>
 			<svg viewBox={viewBox} style={transform} onMouseDown={panStart}>
 				{backGrid}
+				{producers.map((id) => (
+					<Producer key={id} id={id} />
+				))}
 			</svg>
 		</div>
 	);

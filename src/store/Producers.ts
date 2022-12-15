@@ -1,7 +1,9 @@
+import { ComponentChild } from "preact";
 import { immerable } from "immer";
 import { Item, Recipe, RecipeFlow } from "../../data/types";
 import { BigRat } from "../math/BigRat";
 import { Flow, generateId, NodeId, Point } from "./Common";
+import { BuildingMap, Sink as SinkGfx, Source as SourceGfx } from "../art/Producers";
 
 const EMPTY_ARRAY: never[] = [];
 const SIXTY = new BigRat(60n, 1n);
@@ -28,6 +30,8 @@ export abstract class Producer implements Point {
 	abstract outputFlows(): Flow[];
 
 	abstract clone(): this;
+
+	abstract draw(): preact.ComponentChild;
 }
 
 export class ProductionBuilding extends Producer {
@@ -58,6 +62,10 @@ export class ProductionBuilding extends Producer {
 	clone(): this {
 		return new ProductionBuilding(this.x, this.y, this.rate, this.recipe) as this;
 	}
+
+	draw(): ComponentChild {
+		return BuildingMap[this.recipe.Building.ClassName];
+	}
 }
 
 export class Sink extends Producer {
@@ -81,6 +89,10 @@ export class Sink extends Producer {
 	clone(): this {
 		return new Sink(this.x, this.y, this.rate, this.item) as this;
 	}
+
+	draw(): ComponentChild {
+		return SinkGfx;
+	}
 }
 
 export class Source extends Producer {
@@ -103,5 +115,9 @@ export class Source extends Producer {
 
 	clone(): this {
 		return new Source(this.x, this.y, this.rate, this.item) as this;
+	}
+
+	draw(): ComponentChild {
+		return SourceGfx;
 	}
 }
