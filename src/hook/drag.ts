@@ -5,6 +5,7 @@ export function useDrag(onDrag: (diff: Point) => boolean) {
 	const dragState = useRef<{ last: Point | null; dragging: boolean }>({ last: null, dragging: false });
 
 	function dragStart(ev: MouseEvent) {
+		ev.preventDefault();
 		dragState.current.last = { x: ev.screenX, y: ev.screenY };
 		dragState.current.dragging = true;
 	}

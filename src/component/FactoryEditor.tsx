@@ -45,7 +45,13 @@ export function FactoryEditor() {
 	const producers = useSelector(selectProducerIds);
 	const viewport = useSelector((s) => s.viewport);
 	const viewportRef = useRef<HTMLDivElement | null>(null);
+	const svgRef = useRef<SVGSVGElement | null>(null);
 	const panStart = useDrag(onDrag);
+	const onMouseDown = (ev: MouseEvent) => {
+		if (ev.target === svgRef.current) {
+			panStart(ev);
+		}
+	};
 
 	function onWheel(ev: WheelEvent) {
 		ev.preventDefault();
@@ -69,7 +75,7 @@ export function FactoryEditor() {
 
 	return (
 		<div class="viewport" tabIndex={-1} ref={viewportRef} onWheelCapture={onWheel}>
-			<svg viewBox={viewBox} style={transform} onMouseDown={panStart}>
+			<svg viewBox={viewBox} style={transform} onMouseDown={onMouseDown} ref={svgRef}>
 				{backGrid}
 				{producers.map((id) => (
 					<Producer key={id} id={id} />
