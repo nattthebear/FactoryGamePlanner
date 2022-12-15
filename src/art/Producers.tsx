@@ -36,7 +36,7 @@ function turn() {
 }
 function p(x: number, y: number) {
 	const rx = rotations[rotationIndex];
-	const ry = rotations[(rotationIndex + 1) % 4];
+	const ry = rotations[(rotationIndex + 3) % 4];
 	return {
 		x: x * rx[0] + y * rx[1],
 		y: x * ry[0] + y * ry[1],
@@ -73,7 +73,7 @@ const lines = {
 		const BUMPER_SIZE = 40;
 		draw("l", 0, -BUMPER_SIZE);
 		draw("q", 0, -r, r, -r);
-		draw("l", 0, BUMPER_SIZE * 2 - l);
+		draw("l", 0, (BUMPER_SIZE + r) * 2 - l);
 		draw("q", -r, 0, -r, -r);
 		draw("l", 0, -BUMPER_SIZE);
 	},
@@ -102,7 +102,7 @@ function drawShape(cb: () => void) {
 }
 
 export const Smelter = drawShape(() => {
-	draw("M", -WIDTH_S / 2, 0);
+	draw("M", -WIDTH_S / 2 - CORNER_SIZE, CONNECTION_SIZE / 2);
 
 	connection(spots[0].solid, 0);
 	corners.square(CORNER_SIZE);
@@ -120,7 +120,7 @@ export const Smelter = drawShape(() => {
 });
 
 export const Foundry = drawShape(() => {
-	draw("M", -WIDTH_S / 2, 0);
+	draw("M", -WIDTH_S / 2 - CORNER_SIZE, CONNECTION_SIZE);
 
 	connection(spots[0].solid, 0);
 	connection(spots[0].solid, 1);
@@ -140,7 +140,7 @@ export const Foundry = drawShape(() => {
 });
 
 export const Packager = drawShape(() => {
-	draw("M", -WIDTH_S / 2, 0);
+	draw("M", -WIDTH_S / 2 - CORNER_SIZE, CONNECTION_SIZE);
 
 	connection(spots[0].solid, 0);
 	connection(spots[0].liquid, 0);
@@ -160,7 +160,7 @@ export const Packager = drawShape(() => {
 });
 
 export const Constructor = drawShape(() => {
-	draw("M", -WIDTH_M / 2, 0);
+	draw("M", -WIDTH_M / 2 - CORNER_SIZE, (CONNECTION_SIZE + CONSTRUCTOR_EXTRA_HEIGHT) / 2);
 
 	lines.straight(CONSTRUCTOR_EXTRA_HEIGHT / 2);
 	connection(spots[0].solid, 0);
@@ -182,7 +182,7 @@ export const Constructor = drawShape(() => {
 });
 
 export const Assembler = drawShape(() => {
-	draw("M", -WIDTH_M / 2, 0);
+	draw("M", -WIDTH_M / 2 - CORNER_SIZE, CONNECTION_SIZE);
 
 	connection(spots[0].solid, 0);
 	connection(spots[0].solid, 1);
@@ -203,7 +203,7 @@ export const Assembler = drawShape(() => {
 });
 
 export const Manufacturer = drawShape(() => {
-	draw("M", -WIDTH_L / 2, 0);
+	draw("M", -WIDTH_L / 2 - CORNER_SIZE, CONNECTION_SIZE * 2);
 
 	connection(spots[0].solid, 0);
 	connection(spots[0].solid, 1);
@@ -226,7 +226,7 @@ export const Manufacturer = drawShape(() => {
 });
 
 export const Refinery = drawShape(() => {
-	draw("M", -WIDTH_L / 2, 0);
+	draw("M", -WIDTH_L / 2 - CORNER_SIZE, CONNECTION_SIZE);
 
 	connection(spots[0].solid, 0);
 	connection(spots[0].liquid, 0);
@@ -246,7 +246,7 @@ export const Refinery = drawShape(() => {
 });
 
 export const Blender = drawShape(() => {
-	draw("M", -WIDTH_L / 2, 0);
+	draw("M", -WIDTH_L / 2 - CORNER_SIZE, CONNECTION_SIZE * 2);
 
 	connection(spots[0].liquid, 0);
 	connection(spots[0].liquid, 1);
@@ -269,7 +269,7 @@ export const Blender = drawShape(() => {
 });
 
 export const Accelerator = drawShape(() => {
-	draw("M", -WIDTH_XL / 2, 0);
+	draw("M", -WIDTH_XL / 2 - CORNER_SIZE, (CONNECTION_SIZE * 3 + HADRON_EXTRA_HEIGHT) / 2);
 
 	lines.straight(HADRON_EXTRA_HEIGHT);
 	connection(spots[0].liquid, 0);
@@ -305,7 +305,7 @@ export const BuildingMap: Record<string, string> = {
 };
 
 export const Source = drawShape(() => {
-	draw("M", -WIDTH_XS / 2, 0);
+	draw("M", -WIDTH_XS / 2 - CORNER_SIZE, CONNECTION_SIZE / 2);
 
 	connection(spots[0].either, 0);
 	corners.square(CORNER_SIZE);
@@ -323,7 +323,7 @@ export const Source = drawShape(() => {
 });
 
 export const Sink = drawShape(() => {
-	draw("M", -WIDTH_XS / 2, 0);
+	draw("M", -WIDTH_XS / 2 - CORNER_SIZE, CONNECTION_SIZE / 2);
 
 	lines.straight(CONNECTION_SIZE);
 	corners.square(CORNER_SIZE);
