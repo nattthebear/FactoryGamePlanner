@@ -9,11 +9,11 @@ export interface SelectorEq<S, V> {
 
 export type Selector<S, V> = BasicSelector<S, V> | SelectorEq<S, V>;
 
-export function makeStore<S>(initialValue: S) {
+export function makeStore<S>(initialValue: S, debugName?: string) {
 	let state = initialValue;
 	const subs = new Set<() => void>();
 
-	return {
+	const ret = {
 		useSelector<V>(selector: Selector<S, V>) {
 			const updateSignal = useReducer<number, void>((i) => i + 1, 0)[1];
 			const select = typeof selector === "function" ? selector : selector.select;
@@ -45,4 +45,12 @@ export function makeStore<S>(initialValue: S) {
 			}
 		},
 	};
+
+	if (debugName) {
+		subs.add(() => {
+			window[debugName as any] = state as any;
+		});
+	}
+
+	return ret;
 }

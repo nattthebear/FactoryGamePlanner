@@ -6,6 +6,8 @@ export interface Point {
 	y: number;
 }
 
+export const toTranslation = (p: Point) => `translate(${p.x}px, ${p.y}px)`;
+
 export interface Flow {
 	/** nominal rate per minute */
 	rate: BigRat;

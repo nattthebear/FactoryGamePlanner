@@ -1,0 +1,13 @@
+.connection-terminal {
+	& > .outline {
+		stroke: #000;
+		stroke-width: 3px;
+	}
+
+	& > image {
+		width: 56px;
+		height: 56px;
+		transform: translate(-28px, -28px);
+		pointer-events: none;
+	}
+}

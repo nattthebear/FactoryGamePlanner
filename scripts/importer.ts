@@ -220,7 +220,7 @@ const ItemDescriptor = t.type({
 	// "mScannableType": "RTWOT_Default",
 	// "mShouldOverrideScannerDisplayText": "False",
 	// "mScannerDisplayText": "",
-	// "mScannerLightColor": "(B=0,G=0,R=0,A=0)",
+	"mScannerLightColor": Color,
 	// "mResourceSinkPoints": "0",
 });
 
@@ -356,6 +356,10 @@ async function doMustache(name: string, data: any) {
 	await fs.writeFile(`${__dirname}/../data/generated/${name}.ts`, generatedTS);
 }
 
+const formatComponent = (n: number) => n.toString(16).padStart(2, "0");
+
+const formatColor = (c: t.TypeOf<typeof Color>) => `#${formatComponent(c.R)}${formatComponent(c.G)}${formatComponent(c.B)}`;
+
 (async () => {
 	config = await loadJson(`${__dirname}/../.importerconfig`, Config);
 
@@ -420,11 +424,20 @@ async function doMustache(name: string, data: any) {
 		})(),
 	}));
 
+	const itemsView = items.map(x => ({
+		...x,
+		Color: {
+			RF_SOLID: "#fff",
+			RF_LIQUID: formatColor(x.mFluidColor),
+			RF_GAS: formatColor(x.mGasColor),			
+		}[x.mForm]
+	}))
+
 	// for (const x of items) {
 	// 	await x.mSmallIcon.exportImage(x.ClassName);
 	// }
 
-	await doMustache("items", items);
+	await doMustache("items", itemsView);
 	await doMustache("recipes", recipeView);
 	await doMustache("buildings", buildings);
 })();

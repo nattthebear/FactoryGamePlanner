@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { useDrag } from "../hook/drag";
-import { Point } from "../store/Common";
+import { Point, toTranslation } from "../store/Common";
 import { selectProducerIds, update, useSelector } from "../store/Store";
 import { clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
 
@@ -65,7 +65,7 @@ export function FactoryEditor() {
 		});
 	}
 
-	const transform = `transform: translate(-50%, -50%) scale(${viewport.zoom}) translate(${viewport.center.x}px, ${viewport.center.y}px)`;
+	const transform = `transform: translate(-50%, -50%) scale(${viewport.zoom}) ${toTranslation(viewport.center)}`;
 
 	return (
 		<div class="viewport" tabIndex={-1} ref={viewportRef} onWheelCapture={onWheel}>

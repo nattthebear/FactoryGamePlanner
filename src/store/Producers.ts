@@ -2,7 +2,7 @@ import { immerable } from "immer";
 import { Item, Recipe, RecipeFlow } from "../../data/types";
 import { BigRat } from "../math/BigRat";
 import { Flow, generateId, NodeId, Point } from "./Common";
-import { BuildingMap, Sink as SinkGfx, Source as SourceGfx } from "../art/Producers";
+import { BuildingMap, ProducerDrawing, Sink as SinkGfx, Source as SourceGfx } from "../art/Producers";
 
 const EMPTY_ARRAY: never[] = [];
 const SIXTY = new BigRat(60n, 1n);
@@ -30,7 +30,15 @@ export abstract class Producer implements Point {
 
 	abstract clone(): this;
 
-	abstract draw(): string;
+	abstract getDrawing(): ProducerDrawing;
+
+	getInputAttachIndexes(): number[] {
+		return EMPTY_ARRAY;
+	}
+
+	getOutputAttachIndexes(): number[] {
+		return EMPTY_ARRAY;
+	}
 }
 
 export class ProductionBuilding extends Producer {
@@ -62,8 +70,28 @@ export class ProductionBuilding extends Producer {
 		return new ProductionBuilding(this.x, this.y, this.rate, this.recipe) as this;
 	}
 
-	draw(): string {
+	getDrawing(): ProducerDrawing {
 		return BuildingMap[this.recipe.Building.ClassName];
+	}
+
+	getInputAttachIndexes(): number[] {
+		let s = 0;
+		let l = 0;
+		const ret: number[] = [];
+		for (const input of this.recipe.Inputs) {
+			ret.push(input.Item.IsPiped ? l++ : s++);
+		}
+		return ret;
+	}
+
+	getOutputAttachIndexes(): number[] {
+		let s = 0;
+		let l = 0;
+		const ret: number[] = [];
+		for (const output of this.recipe.Outputs) {
+			ret.push(output.Item.IsPiped ? l++ : s++);
+		}
+		return ret;
 	}
 }
 
@@ -89,8 +117,12 @@ export class Sink extends Producer {
 		return new Sink(this.x, this.y, this.rate, this.item) as this;
 	}
 
-	draw(): string {
+	getDrawing(): ProducerDrawing {
 		return SinkGfx;
+	}
+
+	getInputAttachIndexes(): number[] {
+		return [0];
 	}
 }
 
@@ -116,7 +148,11 @@ export class Source extends Producer {
 		return new Source(this.x, this.y, this.rate, this.item) as this;
 	}
 
-	draw(): string {
+	getDrawing(): ProducerDrawing {
 		return SourceGfx;
+	}
+
+	getOutputAttachIndexes(): number[] {
+		return [0];
 	}
 }

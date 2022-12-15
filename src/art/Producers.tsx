@@ -1,3 +1,23 @@
+import { Point } from "../store/Common";
+
+export interface ProducerDrawing {
+	/** `d` value for the main path.  Starts at the center of the building */
+	d: string;
+	/** Where inputs and outputs should be rendered */
+	attach: {
+		input: {
+			solid: Point[];
+			liquid: Point[];
+			either: Point[];
+		};
+		output: {
+			solid: Point[];
+			liquid: Point[];
+			either: Point[];
+		};
+	};
+}
+
 /** Total space for a connection, including spacing around */
 const CONNECTION_SIZE = 72;
 /** Rounded corner radius */
@@ -18,12 +38,11 @@ const CONSTRUCTOR_EXTRA_HEIGHT = 20;
 3corner 3wall 2corner
 */
 
+let cx = 0;
+let cy = 0;
 let activePath = "";
 let rotationIndex = 0;
-const spots = [
-	{ solid: [], liquid: [], either: [] },
-	{ solid: [], liquid: [], either: [] },
-];
+let spots: ProducerDrawing["attach"]["input" | "output"][] = [];
 
 const rotations = [
 	[1, 0],
@@ -47,6 +66,10 @@ function draw(s: string, ...xys: number[]) {
 	for (let i = 0; i < xys.length; i += 2) {
 		const { x, y } = p(xys[i], xys[i + 1]);
 		activePath += `${x} ${y} `;
+		if (s !== "q" || i >= 2) {
+			cx += x;
+			cy += y;
+		}
 	}
 }
 
@@ -88,17 +111,29 @@ const lines = {
 	},
 } satisfies Record<string, (length: number, detailDepth: number) => void>;
 
-function connection(spots: never[], index: number) {
+function connection(spot: Point[], index: number) {
 	lines.straight(CONNECTION_SIZE / 2);
-	// spots[index]
+	spot[index] = { x: cx, y: cy };
 	lines.straight(CONNECTION_SIZE / 2);
 }
 
-function drawShape(cb: () => void) {
+function drawShape(cb: () => void): ProducerDrawing {
+	cx = 0;
+	cy = 0;
 	activePath = "";
 	rotationIndex = 0;
+	spots = [
+		{ solid: [], liquid: [], either: [] },
+		{ solid: [], liquid: [], either: [] },
+	];
 	cb();
-	return activePath;
+	return {
+		d: activePath,
+		attach: {
+			input: spots[0],
+			output: spots[1],
+		},
+	};
 }
 
 export const Smelter = drawShape(() => {
@@ -292,7 +327,7 @@ export const Accelerator = drawShape(() => {
 	draw("z");
 });
 
-export const BuildingMap: Record<string, string> = {
+export const BuildingMap: Record<string, ProducerDrawing> = {
 	Build_ConstructorMk1_C: Constructor,
 	Build_SmelterMk1_C: Smelter,
 	Build_FoundryMk1_C: Foundry,
@@ -304,7 +339,7 @@ export const BuildingMap: Record<string, string> = {
 	Build_HadronCollider_C: Accelerator,
 };
 
-export const Source = drawShape(() => {
+export const Sink = drawShape(() => {
 	draw("M", -WIDTH_XS / 2 - CORNER_SIZE, CONNECTION_SIZE / 2);
 
 	connection(spots[0].either, 0);
@@ -322,7 +357,7 @@ export const Source = drawShape(() => {
 	draw("z");
 });
 
-export const Sink = drawShape(() => {
+export const Source = drawShape(() => {
 	draw("M", -WIDTH_XS / 2 - CORNER_SIZE, CONNECTION_SIZE / 2);
 
 	lines.straight(CONNECTION_SIZE);
@@ -339,3 +374,37 @@ export const Sink = drawShape(() => {
 
 	draw("z");
 });
+
+const ATTACH_SIZE = 64;
+
+export const SolidAttach = drawShape(() => {
+	draw("M", -ATTACH_SIZE / 2, ATTACH_SIZE / 2 - CORNER_SIZE);
+
+	lines.straight(ATTACH_SIZE - CORNER_SIZE * 2);
+	corners.round(CORNER_SIZE);
+
+	lines.straight(ATTACH_SIZE - CORNER_SIZE * 2);
+	corners.round(CORNER_SIZE);
+
+	lines.straight(ATTACH_SIZE - CORNER_SIZE * 2);
+	corners.round(CORNER_SIZE);
+
+	lines.straight(ATTACH_SIZE - CORNER_SIZE * 2);
+	corners.round(CORNER_SIZE);
+
+	draw("z");
+}).d;
+
+export const LiquidAttach = drawShape(() => {
+	draw("M", -ATTACH_SIZE / 2, 0);
+
+	corners.round(ATTACH_SIZE / 2);
+
+	corners.round(ATTACH_SIZE / 2);
+
+	corners.round(ATTACH_SIZE / 2);
+
+	corners.round(ATTACH_SIZE / 2);
+
+	draw("z");
+}).d;

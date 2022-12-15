@@ -1,7 +1,7 @@
 g.producer {
-	& .outline {
+	& > .outline {
 		stroke: #666;
 		stroke-width: 3px;
-		fill: #fff;
+		fill: #eee;
 	}
 }

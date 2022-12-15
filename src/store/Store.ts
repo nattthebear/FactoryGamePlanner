@@ -23,7 +23,7 @@ const initialState: State = {
 	connectors: new Map(),
 };
 
-const { useSelector, update } = makeStore(initialState);
+const { useSelector, update } = makeStore(initialState, "_MainStore");
 export { useSelector, update };
 
 function arrayEqual<T>(x: T[], y: T[]) {

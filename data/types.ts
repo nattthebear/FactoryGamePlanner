@@ -5,6 +5,7 @@ export interface Item {
 	Icon: string;
 	IsResource: boolean;
 	IsPiped: boolean;
+	Color: string;
 }
 
 export interface RecipeFlow {

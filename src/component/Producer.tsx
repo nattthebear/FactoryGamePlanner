@@ -1,7 +1,8 @@
 import { useDrag } from "../hook/drag";
-import { NodeId } from "../store/Common";
+import { NodeId, toTranslation } from "../store/Common";
 import { update, useSelector } from "../store/Store";
 import { clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
+import { ConnectionTerminal } from "./ConnectionTerminal";
 
 import "./Producer.css";
 
@@ -24,16 +25,24 @@ export function Producer({ id }: { id: NodeId }) {
 		return true;
 	});
 
+	const drawing = producer.getDrawing();
+
 	return (
-		<g class="producer" style={`transform: translate(${producer.x}px, ${producer.y}px)`}>
+		<g class="producer" style={`transform: ${toTranslation(producer)}`}>
 			<path
 				class="outline"
-				d={producer.draw()}
+				d={drawing.d}
 				onMouseDown={(ev) => {
 					ev.stopPropagation();
 					dragStart(ev);
 				}}
 			/>
+			{producer.inputs.map((_, i) => (
+				<ConnectionTerminal key={i} producerId={id} isOutput={false} index={i} />
+			))}
+			{producer.outputs.map((_, i) => (
+				<ConnectionTerminal key={i} producerId={id} isOutput={true} index={i} />
+			))}
 		</g>
 	);
 }
