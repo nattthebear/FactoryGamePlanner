@@ -2,8 +2,9 @@ import { Buildings } from "../data/generated/buildings";
 import { Items } from "../data/generated/items";
 import { Recipes } from "../data/generated/recipes";
 import { BigRat } from "./math/BigRat";
+import { addProducer } from "./store/Actions";
 import { ProductionBuilding, Sink, Source } from "./store/Producers";
-import { addProducer, update } from "./store/Store";
+import { update } from "./store/Store";
 
 function b(index: number) {
 	const ret = Recipes.find((r) => r.Building === Buildings[index]);
