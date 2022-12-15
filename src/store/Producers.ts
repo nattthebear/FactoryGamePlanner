@@ -1,4 +1,3 @@
-import { ComponentChild } from "preact";
 import { immerable } from "immer";
 import { Item, Recipe, RecipeFlow } from "../../data/types";
 import { BigRat } from "../math/BigRat";
@@ -31,7 +30,7 @@ export abstract class Producer implements Point {
 
 	abstract clone(): this;
 
-	abstract draw(): preact.ComponentChild;
+	abstract draw(): string;
 }
 
 export class ProductionBuilding extends Producer {
@@ -63,7 +62,7 @@ export class ProductionBuilding extends Producer {
 		return new ProductionBuilding(this.x, this.y, this.rate, this.recipe) as this;
 	}
 
-	draw(): ComponentChild {
+	draw(): string {
 		return BuildingMap[this.recipe.Building.ClassName];
 	}
 }
@@ -90,7 +89,7 @@ export class Sink extends Producer {
 		return new Sink(this.x, this.y, this.rate, this.item) as this;
 	}
 
-	draw(): ComponentChild {
+	draw(): string {
 		return SinkGfx;
 	}
 }
@@ -117,7 +116,7 @@ export class Source extends Producer {
 		return new Source(this.x, this.y, this.rate, this.item) as this;
 	}
 
-	draw(): ComponentChild {
+	draw(): string {
 		return SourceGfx;
 	}
 }

@@ -1,5 +1,3 @@
-import "./Producers.css";
-
 /** Total space for a connection, including spacing around */
 const CONNECTION_SIZE = 72;
 /** Rounded corner radius */
@@ -100,11 +98,7 @@ function drawShape(cb: () => void) {
 	activePath = "";
 	rotationIndex = 0;
 	cb();
-	return (
-		<g class="producer">
-			<path class="outline" d={activePath} />
-		</g>
-	);
+	return activePath;
 }
 
 export const Smelter = drawShape(() => {
@@ -298,7 +292,7 @@ export const Accelerator = drawShape(() => {
 	draw("z");
 });
 
-export const BuildingMap: Record<string, preact.ComponentChild> = {
+export const BuildingMap: Record<string, string> = {
 	Build_ConstructorMk1_C: Constructor,
 	Build_SmelterMk1_C: Smelter,
 	Build_FoundryMk1_C: Foundry,

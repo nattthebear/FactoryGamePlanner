@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { useDrag } from "../hook/drag";
 import { Point } from "../store/Common";
 import { selectProducerIds, update, useSelector } from "../store/Store";
+import { clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
 
 import "./FactoryEditor.css";
 import { Producer } from "./Producer";
@@ -9,20 +11,16 @@ const ZOOM_MAX = 5;
 const ZOOM_MIN = 1 / ZOOM_MAX;
 const ZOOM_SPEED = 1.0011;
 
-const FACTORY_SIZE = 4000;
-const MIN: Point = { x: -FACTORY_SIZE / 2, y: -FACTORY_SIZE / 2 };
-const MAX: Point = { x: FACTORY_SIZE / 2, y: FACTORY_SIZE / 2 };
-
-const viewBox = `${MIN.x} ${MIN.y} ${MAX.x - MIN.x} ${MAX.y - MIN.y}`;
+const viewBox = `${FACTORY_MIN.x} ${FACTORY_MIN.y} ${FACTORY_MAX.x - FACTORY_MIN.x} ${FACTORY_MAX.y - FACTORY_MIN.y}`;
 const backGrid = (() => {
 	const GRID_INC = 100;
 	const path: string[] = [];
 	const raz = (value: number) =>
 		value < 0 ? Math.floor(value / GRID_INC) * GRID_INC : Math.ceil(value / GRID_INC) * GRID_INC;
-	const xmin = raz(MIN.x);
-	const xmax = raz(MAX.x);
-	const ymin = raz(MIN.y);
-	const ymax = raz(MAX.y);
+	const xmin = raz(FACTORY_MIN.x);
+	const xmax = raz(FACTORY_MAX.x);
+	const ymin = raz(FACTORY_MIN.y);
+	const ymax = raz(FACTORY_MAX.y);
 	for (let x = xmin; x <= xmax; x += GRID_INC) {
 		path.push(`M ${x} ${ymin} l 0 ${ymax - ymin}`);
 	}
@@ -32,21 +30,22 @@ const backGrid = (() => {
 	return <path class="backgrid" d={path.join(" ")} />;
 })();
 
-function clamp(n: number, min: number, max: number) {
-	if (n < min) {
-		return min;
-	}
-	if (n > max) {
-		return max;
-	}
-	return n;
+function onDrag({ x, y }: Point) {
+	update((draft) => {
+		const { center, zoom } = draft.viewport;
+		const nx = clamp(center.x + x / zoom, FACTORY_MIN.x, FACTORY_MAX.x);
+		const ny = clamp(center.y + y / zoom, FACTORY_MIN.y, FACTORY_MAX.y);
+		center.x = nx;
+		center.y = ny;
+	});
+	return true;
 }
 
 export function FactoryEditor() {
 	const producers = useSelector(selectProducerIds);
 	const viewport = useSelector((s) => s.viewport);
 	const viewportRef = useRef<HTMLDivElement | null>(null);
-	const panningState = useRef<{ last: Point | null; panning: boolean }>({ last: null, panning: false });
+	const panStart = useDrag(onDrag);
 
 	function onWheel(ev: WheelEvent) {
 		ev.preventDefault();
@@ -65,44 +64,6 @@ export function FactoryEditor() {
 			draft.viewport.zoom = zoom;
 		});
 	}
-
-	function panStart(ev: MouseEvent) {
-		panningState.current.last = { x: ev.screenX, y: ev.screenY };
-		panningState.current.panning = true;
-	}
-
-	useEffect(() => {
-		function mouseMove(ev: MouseEvent) {
-			const p = { x: ev.screenX, y: ev.screenY };
-			if (panningState.current.panning && panningState.current.last) {
-				const dx = p.x - panningState.current.last.x;
-				const dy = p.y - panningState.current.last.y;
-				update((draft) => {
-					const { center, zoom } = draft.viewport;
-					const x = clamp(center.x + dx / zoom, MIN.x, MAX.x);
-					const y = clamp(center.y + dy / zoom, MIN.y, MAX.y);
-					center.x = x;
-					center.y = y;
-				});
-			}
-			panningState.current.last = p;
-		}
-		function blur() {
-			panningState.current.last = null;
-			panningState.current.panning = false;
-		}
-		function mouseUp() {
-			panningState.current.panning = false;
-		}
-		window.addEventListener("blur", blur, { capture: true, passive: true });
-		document.addEventListener("mouseup", mouseUp, { capture: true, passive: true });
-		document.addEventListener("mousemove", mouseMove, { capture: true, passive: true });
-		return () => {
-			window.removeEventListener("blur", blur, { capture: true });
-			document.removeEventListener("mouseup", mouseUp, { capture: true });
-			document.removeEventListener("mousemove", mouseMove, { capture: true });
-		};
-	}, []);
 
 	const transform = `transform: translate(-50%, -50%) scale(${viewport.zoom}) translate(${viewport.center.x}px, ${viewport.center.y}px)`;
 
