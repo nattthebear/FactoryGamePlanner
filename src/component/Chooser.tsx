@@ -54,13 +54,16 @@ export function Chooser({ items, index, changeIndex }: Props) {
 	const relevantItems = items
 		.map((item, index) => ({ item, index }))
 		.filter((o) => !regex || regex.test(o.item.name));
+	const exactMatch = relevantItems.find((o) => o.item.name.length === search.length);
 
 	return (
 		<div class="chooser">
 			<form
 				onSubmit={(ev) => {
 					ev.preventDefault();
-					if (relevantItems.length === 1) {
+					if (exactMatch) {
+						changeIndex(exactMatch.index);
+					} else if (relevantItems.length === 1) {
 						changeIndex(relevantItems[0].index);
 					}
 				}}
