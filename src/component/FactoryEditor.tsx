@@ -147,9 +147,9 @@ export function FactoryEditor() {
 				<KeyButton
 					keyName="u"
 					onAct={async (wasClick) => {
+						const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
 						const item = await chooseItem("Choose item for source");
 						if (item) {
-							const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
 							update(addProducer(new Source(p.x, p.y, SIXTY, item)));
 						}
 					}}
@@ -159,9 +159,9 @@ export function FactoryEditor() {
 				<KeyButton
 					keyName="k"
 					onAct={async (wasClick) => {
+						const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
 						const item = await chooseItem("Choose item for sink");
 						if (item) {
-							const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
 							update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
 						}
 					}}
