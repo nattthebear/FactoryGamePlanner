@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { Recipes } from "../../data/generated/recipes";
 import { useDrag } from "../hook/drag";
+import { useLatestValue } from "../hook/useLatestValue";
+import { BigRat } from "../math/BigRat";
+import { addProducer } from "../store/Actions";
 import { Point, toTranslation } from "../store/Common";
+import { ProductionBuilding } from "../store/Producers";
 import { selectProducerIds, update, useSelector } from "../store/Store";
 import { clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
 
 import "./FactoryEditor.css";
+import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
 
 const ZOOM_MAX = 5;
@@ -41,12 +47,58 @@ function onDrag({ x, y }: Point) {
 	return true;
 }
 
+function addRandomProduer(p: Point) {
+	const index = Math.floor(Math.random() * Recipes.length);
+	const recipe = Recipes[index];
+	const producer = new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe);
+	update(addProducer(producer));
+}
+
 export function FactoryEditor() {
 	const producers = useSelector(selectProducerIds);
 	const viewport = useSelector((s) => s.viewport);
-	const viewportRef = useRef<HTMLDivElement | null>(null);
+	const viewportElementRef = useRef<HTMLDivElement | null>(null);
 	const svgRef = useRef<SVGSVGElement | null>(null);
 	const panStart = useDrag(onDrag);
+	const currentScreenCoords = useRef<Point | null>(null);
+	const viewportLatest = useLatestValue(viewport);
+	useEffect(() => {
+		function mouseMove(ev: MouseEvent) {
+			currentScreenCoords.current = {
+				x: ev.clientX,
+				y: ev.clientY,
+			};
+		}
+		function blur() {
+			currentScreenCoords.current = null;
+		}
+		window.addEventListener("blur", blur, { capture: true, passive: true });
+		document.addEventListener("mousemove", mouseMove, { capture: true, passive: true });
+		return () => {
+			window.removeEventListener("blur", blur, { capture: true });
+			document.removeEventListener("mousemove", mouseMove, { capture: true });
+		};
+	}, []);
+
+	function calculateCurrentViewportMousePosition() {
+		const screen = currentScreenCoords.current;
+		if (!screen) {
+			return null;
+		}
+		const { zoom, center } = viewportLatest.current;
+
+		const screenCenterX = window.innerWidth / 2;
+		const screenCenterY = window.innerHeight / 2;
+
+		const sdx = screen.x - screenCenterX;
+		const sdy = screen.y - screenCenterY;
+
+		return {
+			x: sdx / zoom + center.x,
+			y: sdy / zoom + center.y,
+		};
+	}
+
 	const onMouseDown = (ev: MouseEvent) => {
 		if (ev.target === svgRef.current) {
 			panStart(ev);
@@ -74,13 +126,24 @@ export function FactoryEditor() {
 	const transform = `transform: translate(-50%, -50%) scale(${viewport.zoom}) ${toTranslation(viewport.center)}`;
 
 	return (
-		<div class="viewport" tabIndex={-1} ref={viewportRef} onWheelCapture={onWheel}>
+		<div class="viewport" tabIndex={-1} ref={viewportElementRef} onWheelCapture={onWheel}>
 			<svg viewBox={viewBox} style={transform} onMouseDown={onMouseDown} ref={svgRef}>
 				{backGrid}
 				{producers.map((id) => (
 					<Producer key={id} id={id} />
 				))}
 			</svg>
+			<div class="actions">
+				<KeyButton
+					keyName="b"
+					onAct={(wasClick) => {
+						const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
+						addRandomProduer(p);
+					}}
+				>
+					Add builder
+				</KeyButton>
+			</div>
 		</div>
 	);
 }
