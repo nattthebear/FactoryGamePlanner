@@ -44,6 +44,9 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 				sub();
 			}
 		},
+		getStateRaw() {
+			return state;
+		},
 	};
 
 	if (debugName) {

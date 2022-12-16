@@ -1,12 +1,10 @@
 import { Draft } from "immer";
 import { Recipe } from "../../data/types";
 import { BigRat } from "../math/BigRat";
-import { NodeId } from "./Common";
+import { NodeId, SIXTY } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State } from "./Store";
-
-const SIXTY = new BigRat(60n, 1n);
 
 function maybeSpliceValue<T>(array: T[], value: T) {
 	const index = array.indexOf(value);

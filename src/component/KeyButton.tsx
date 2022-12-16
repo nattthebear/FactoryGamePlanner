@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "preact/hooks";
 import { useLatestValue } from "../hook/useLatestValue";
+import { isAnyPromptActive } from "./Prompt";
 
 interface Props {
 	keyName: string;
@@ -12,7 +13,7 @@ export function KeyButton(props: Props) {
 
 	useEffect(() => {
 		const listener = (ev: KeyboardEvent) => {
-			if (ev.key === propsLatest.current.keyName) {
+			if (!isAnyPromptActive() && ev.key === propsLatest.current.keyName) {
 				propsLatest.current.onAct(false);
 			}
 		};

@@ -1,11 +1,10 @@
 import { immerable } from "immer";
 import { Item, Recipe, RecipeFlow } from "../../data/types";
 import { BigRat } from "../math/BigRat";
-import { Flow, generateId, NodeId, Point } from "./Common";
+import { Flow, generateId, NodeId, Point, SIXTY } from "./Common";
 import { BuildingMap, ProducerDrawing, Sink as SinkGfx, Source as SourceGfx } from "../art/Producers";
 
 const EMPTY_ARRAY: never[] = [];
-const SIXTY = new BigRat(60n, 1n);
 
 export abstract class Producer implements Point {
 	[immerable] = true;

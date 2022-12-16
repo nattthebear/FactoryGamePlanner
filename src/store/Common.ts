@@ -21,3 +21,5 @@ export const generateId = (() => {
 	let nextId = 1;
 	return () => nextId++ as any as NodeId;
 })();
+
+export const SIXTY = new BigRat(60n, 1n);

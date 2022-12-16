@@ -4,12 +4,13 @@ import { useDrag } from "../hook/drag";
 import { useLatestValue } from "../hook/useLatestValue";
 import { BigRat } from "../math/BigRat";
 import { addProducer } from "../store/Actions";
-import { Point, toTranslation } from "../store/Common";
-import { ProductionBuilding } from "../store/Producers";
+import { Point, SIXTY, toTranslation } from "../store/Common";
+import { ProductionBuilding, Sink, Source } from "../store/Producers";
 import { selectProducerIds, update, useSelector } from "../store/Store";
 import { clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
 
 import "./FactoryEditor.css";
+import { chooseItem } from "./ItemChooser";
 import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
 
@@ -142,6 +143,30 @@ export function FactoryEditor() {
 					}}
 				>
 					Add builder
+				</KeyButton>
+				<KeyButton
+					keyName="u"
+					onAct={async (wasClick) => {
+						const item = await chooseItem("Choose item for source");
+						if (item) {
+							const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
+							update(addProducer(new Source(p.x, p.y, SIXTY, item)));
+						}
+					}}
+				>
+					Add source
+				</KeyButton>
+				<KeyButton
+					keyName="k"
+					onAct={async (wasClick) => {
+						const item = await chooseItem("Choose item for sink");
+						if (item) {
+							const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
+							update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
+						}
+					}}
+				>
+					Add Sink
 				</KeyButton>
 			</div>
 		</div>

@@ -1,0 +1,17 @@
+.chooser {
+	& .scroll {
+		max-height: 120px;
+		overflow-y: auto;
+
+		& .item {
+			display: flex;
+			height: 24px;
+			overflow: hidden;
+			gap: 10px;
+
+			& .text {
+				line-height: 24px;
+			}
+		}
+	}
+}
