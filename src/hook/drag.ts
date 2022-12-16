@@ -6,13 +6,13 @@ export function useDrag(onDrag: (diff: Point) => boolean) {
 
 	function dragStart(ev: MouseEvent) {
 		ev.preventDefault();
-		dragState.current.last = { x: ev.screenX, y: ev.screenY };
+		dragState.current.last = { x: ev.clientX, y: ev.clientY };
 		dragState.current.dragging = true;
 	}
 
 	useEffect(() => {
 		function mouseMove(ev: MouseEvent) {
-			const p = { x: ev.screenX, y: ev.screenY };
+			const p = { x: ev.clientX, y: ev.clientY };
 			if (dragState.current.dragging && dragState.current.last) {
 				const dx = p.x - dragState.current.last.x;
 				const dy = p.y - dragState.current.last.y;
