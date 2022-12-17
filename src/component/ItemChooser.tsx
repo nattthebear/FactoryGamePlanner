@@ -55,13 +55,18 @@ function RecipeChooser({ type, onConfirm }: { type: "input" | "output"; onConfir
 
 	const recipes = displayItem?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
 
+	function onChangeItemValue(newValue: DisplayItem | null) {
+		const newRecipes = newValue?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
+		if (newRecipes?.length === 1) {
+			onConfirm(newRecipes[0].recipe);
+		} else {
+			changeDisplayItem(newValue);
+		}
+	}
+
 	return (
 		<>
-			<Chooser
-				items={displayItems}
-				value={displayItem}
-				changeValue={changeDisplayItem as (newValue: DisplayItem) => void}
-			/>
+			<Chooser items={displayItems} value={displayItem} changeValue={onChangeItemValue} />
 			{recipes && <Chooser items={recipes} value={null} changeValue={(dr) => onConfirm(dr?.recipe ?? null)} />}
 		</>
 	);
@@ -77,12 +82,12 @@ export const chooseItem = (title: string) =>
 
 export const chooseRecipeByOutput = () =>
 	prompt<Recipe | null>({
-		title: "Choose item and recipe",
+		title: "Choose item and recipe:",
 		render: (onConfirm) => <RecipeChooser type="output" onConfirm={onConfirm} />,
 	});
 
 export const chooseRecipeByInput = () =>
 	prompt<Recipe | null>({
-		title: "Choose item and recipe",
+		title: "Choose item and recipe:",
 		render: (onConfirm) => <RecipeChooser type="input" onConfirm={onConfirm} />,
 	});

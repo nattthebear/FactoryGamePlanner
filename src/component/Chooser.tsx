@@ -110,7 +110,12 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue }: Pr
 							ev.preventDefault();
 							if (relevantItems.length > 0) {
 								let index = (relevantItems as (T | null)[]).indexOf(tentative);
-								index += ev.key === "ArrowDown" ? 1 : index < 0 ? 0 : relevantItems.length - 1;
+								index +=
+									ev.key === "ArrowDown"
+										? 1
+										: index < 0
+										? relevantItems.length
+										: relevantItems.length - 1;
 								index %= relevantItems.length;
 								changeTentative(relevantItems[index]);
 							}

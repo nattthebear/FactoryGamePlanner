@@ -152,7 +152,7 @@ export function FactoryEditor() {
 							BUILDING_MIN,
 							BUILDING_MAX
 						);
-						const item = await chooseItem("Choose item for source");
+						const item = await chooseItem("Choose item for source:");
 						if (item) {
 							update(addProducer(new Source(p.x, p.y, SIXTY, item)));
 						}
@@ -168,7 +168,7 @@ export function FactoryEditor() {
 							BUILDING_MIN,
 							BUILDING_MAX
 						);
-						const item = await chooseItem("Choose item for sink");
+						const item = await chooseItem("Choose item for sink:");
 						if (item) {
 							update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
 						}
