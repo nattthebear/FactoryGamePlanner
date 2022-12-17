@@ -1,7 +1,7 @@
 .viewport {
 	position: fixed;
 	inset: 0;
-	background-color: #aaa;
+	background-color: #444;
 	overflow: hidden;
 
 	& svg {
@@ -14,13 +14,12 @@
 		cursor: grab;
 
 		& .backgrid {
-			stroke: #666;
+			& rect {
+				fill: #aaa;
+			}
+			& path {
+				stroke: #666;
+			}
 		}
-	}
-
-	& .actions {
-		position: absolute;
-		bottom: 0;
-		right: 0;
 	}
 }

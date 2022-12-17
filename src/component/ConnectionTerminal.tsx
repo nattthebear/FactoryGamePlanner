@@ -1,6 +1,6 @@
 import { LiquidAttach, ProducerDrawing, SolidAttach } from "../art/Producers";
 import { NodeId, toTranslation } from "../store/Common";
-import { useSelector } from "../store/Store";
+import { update, useSelector } from "../store/Store";
 
 import "./ConnectionTerminal.css";
 
@@ -29,7 +29,19 @@ export function ConnectionTerminal({
 	const d = item.IsPiped ? LiquidAttach : SolidAttach;
 
 	return (
-		<g class="connection-terminal" style={`transform: ${toTranslation(p)}`}>
+		<g
+			class="connection-terminal"
+			style={`transform: ${toTranslation(p)}`}
+			onMouseEnter={() =>
+				update((draft) => {
+					draft.mouseOver = {
+						type: isOutput ? "producer:connection:output" : "producer:connection:input",
+						producerId,
+						index,
+					};
+				})
+			}
+		>
 			<path class="outline" fill={item.Color} d={d} />
 			<image href={item.Icon} />
 		</g>

@@ -7,9 +7,10 @@ import { addProducer } from "../store/Actions";
 import { Point, SIXTY, toTranslation } from "../store/Common";
 import { ProductionBuilding, Sink, Source } from "../store/Producers";
 import { selectProducerIds, update, useSelector } from "../store/Store";
-import { BUILDING_MAX, BUILDING_MIN, clamp, clampp, FACTORY_MAX, FACTORY_MIN } from "../util";
+import { BUILDING_MAX, BUILDING_MIN, clamp, clampp, FACTORY_MAX, FACTORY_MIN, FACTORY_SIZE } from "../util";
 
 import "./FactoryEditor.css";
+import { HotKeyActions } from "./HotKeyActions";
 import { chooseItem, chooseRecipeByOutput } from "./ItemChooser";
 import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
@@ -34,7 +35,12 @@ const backGrid = (() => {
 	for (let y = xmin; y <= ymax; y += GRID_INC) {
 		path.push(`M ${xmin} ${y} l ${xmax - xmin} 0`);
 	}
-	return <path class="backgrid" d={path.join(" ")} />;
+	return (
+		<>
+			<rect x={FACTORY_MIN.x} y={FACTORY_MIN.y} width={FACTORY_SIZE} height={FACTORY_SIZE} />
+			<path d={path.join(" ")} />
+		</>
+	);
 })();
 
 function onDrag({ x, y }: Point) {
@@ -54,50 +60,6 @@ export function FactoryEditor() {
 	const viewportElementRef = useRef<HTMLDivElement | null>(null);
 	const svgRef = useRef<SVGSVGElement | null>(null);
 	const panStart = useDrag(onDrag);
-	const currentScreenCoords = useRef<Point | null>(null);
-	const viewportLatest = useLatestValue(viewport);
-	useEffect(() => {
-		function mouseMove(ev: MouseEvent) {
-			currentScreenCoords.current = {
-				x: ev.clientX,
-				y: ev.clientY,
-			};
-		}
-		function blur() {
-			currentScreenCoords.current = null;
-		}
-		window.addEventListener("blur", blur, { capture: true, passive: true });
-		document.addEventListener("mousemove", mouseMove, { capture: true, passive: true });
-		return () => {
-			window.removeEventListener("blur", blur, { capture: true });
-			document.removeEventListener("mousemove", mouseMove, { capture: true });
-		};
-	}, []);
-
-	function calculateCurrentViewportMousePosition() {
-		const screen = currentScreenCoords.current;
-		if (!screen) {
-			return null;
-		}
-		const { zoom, center } = viewportLatest.current;
-
-		const screenCenterX = window.innerWidth / 2;
-		const screenCenterY = window.innerHeight / 2;
-
-		const sdx = screen.x - screenCenterX;
-		const sdy = screen.y - screenCenterY;
-
-		return {
-			x: sdx / zoom - center.x,
-			y: sdy / zoom - center.y,
-		};
-	}
-
-	const onMouseDown = (ev: MouseEvent) => {
-		if (ev.target === svgRef.current) {
-			panStart(ev);
-		}
-	};
 
 	function onWheel(ev: WheelEvent) {
 		ev.preventDefault();
@@ -121,62 +83,23 @@ export function FactoryEditor() {
 
 	return (
 		<div class="viewport" tabIndex={-1} ref={viewportElementRef} onWheelCapture={onWheel}>
-			<svg viewBox={viewBox} style={transform} onMouseDown={onMouseDown} ref={svgRef}>
-				{backGrid}
+			<svg viewBox={viewBox} style={transform} ref={svgRef}>
+				<g
+					class="backgrid"
+					onMouseDown={panStart}
+					onMouseEnter={() =>
+						update((draft) => {
+							draft.mouseOver = { type: "viewport" };
+						})
+					}
+				>
+					{backGrid}
+				</g>
 				{producers.map((id) => (
 					<Producer key={id} id={id} />
 				))}
 			</svg>
-			<div class="actions">
-				<KeyButton
-					keyName="b"
-					onAct={async (wasClick) => {
-						const p = clampp(
-							(!wasClick && calculateCurrentViewportMousePosition()) || viewport.center,
-							BUILDING_MIN,
-							BUILDING_MAX
-						);
-						const recipe = await chooseRecipeByOutput();
-						if (recipe) {
-							update(addProducer(new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe)));
-						}
-					}}
-				>
-					Add builder
-				</KeyButton>
-				<KeyButton
-					keyName="u"
-					onAct={async (wasClick) => {
-						const p = clampp(
-							(!wasClick && calculateCurrentViewportMousePosition()) || viewport.center,
-							BUILDING_MIN,
-							BUILDING_MAX
-						);
-						const item = await chooseItem("Choose item for source:");
-						if (item) {
-							update(addProducer(new Source(p.x, p.y, SIXTY, item)));
-						}
-					}}
-				>
-					Add source
-				</KeyButton>
-				<KeyButton
-					keyName="k"
-					onAct={async (wasClick) => {
-						const p = clampp(
-							(!wasClick && calculateCurrentViewportMousePosition()) || viewport.center,
-							BUILDING_MIN,
-							BUILDING_MAX
-						);
-						const item = await chooseItem("Choose item for sink:");
-						if (item) {
-							update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
-						}
-					}}
-				>
-					Add Sink
-				</KeyButton>
-			</div>
+			<HotKeyActions />
 		</div>
 	);
 }

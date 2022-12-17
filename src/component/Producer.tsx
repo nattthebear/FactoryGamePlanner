@@ -32,6 +32,11 @@ export function Producer({ id }: { id: NodeId }) {
 					ev.stopPropagation();
 					dragStart(ev);
 				}}
+				onMouseEnter={() =>
+					update((draft) => {
+						draft.mouseOver = { type: "producer", producerId: id };
+					})
+				}
 			/>
 			{producer.inputs.map((_, i) => (
 				<ConnectionTerminal key={i} producerId={id} isOutput={false} index={i} />

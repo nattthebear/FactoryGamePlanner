@@ -22,18 +22,18 @@ export function useDrag(onDrag: (diff: Point) => boolean) {
 			}
 			dragState.current.last = p;
 		}
-		function blur() {
+		function mouseLeave() {
 			dragState.current.last = null;
 			dragState.current.dragging = false;
 		}
 		function mouseUp() {
 			dragState.current.dragging = false;
 		}
-		window.addEventListener("blur", blur, { capture: true, passive: true });
+		document.documentElement.addEventListener("mouseleave", mouseLeave, { passive: true });
 		document.addEventListener("mouseup", mouseUp, { capture: true, passive: true });
 		document.addEventListener("mousemove", mouseMove, { capture: true, passive: true });
 		return () => {
-			window.removeEventListener("blur", blur, { capture: true });
+			document.documentElement.removeEventListener("mouseleave", mouseLeave);
 			document.removeEventListener("mouseup", mouseUp, { capture: true });
 			document.removeEventListener("mousemove", mouseMove, { capture: true });
 		};
