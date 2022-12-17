@@ -97,7 +97,7 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 				flow: producer.inputFlows()[mouseOver.index],
 			};
 		}
-		case "producer:connection:input": {
+		case "producer:connection:output": {
 			const producer = state.producers.get(mouseOver.producerId)!;
 			return {
 				type,
@@ -106,7 +106,5 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 				flow: producer.outputFlows()[mouseOver.index],
 			};
 		}
-		default:
-			throw new Error("Internal error (mouseover)");
 	}
 }
