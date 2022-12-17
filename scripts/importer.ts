@@ -10,7 +10,7 @@ import { parseObject } from "./objectParser";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-mustache.escape = s => JSON.stringify(s, null, "\t");
+mustache.escape = (s) => JSON.stringify(s, null, "\t");
 
 async function mapAsync<I, O>(source: I[], project: (item: I, index: number) => Promise<O>) {
 	const ret: O[] = [];
@@ -41,26 +41,25 @@ async function loadJson<T>(fn: string, validator: t.Type<T>, encoding?: BufferEn
 	return result.right;
 }
 
-async function saveData<T>(name: string, data: T[]) {
-	const filename = name[0].toLowerCase() + name.slice(1) + "s.ts";
-	const fileText = `import { ${name} } from "../types";\n\nexport const ${name}s: ${name}[] = ${JSON.stringify(data, null, "\t")};\n`;
-	await fs.writeFile(`${__dirname}/../data/generated/${filename}`, fileText);
-}
-
 class Texture {
 	constructor(public resource: string) {}
 	async exportImage(outname: string) {
 		const { resource } = this;
 		console.log(`Exporting asset ${resource}...`);
-		const res = spawnSync(`${config.umodelDir}/umodel_64.exe`, [
-			`-path="${config.GameDir}/FactoryGame/Content/Paks"`,
-			`-out="${__dirname}/../umodel-temp"`,
-			`-png`,
-			`-export`, `${resource}.uasset`,
-			`-game=ue4.23`,
-		], {
-			encoding: "utf-8"
-		});
+		const res = spawnSync(
+			`${config.umodelDir}/umodel_64.exe`,
+			[
+				`-path="${config.GameDir}/FactoryGame/Content/Paks"`,
+				`-out="${__dirname}/../umodel-temp"`,
+				`-png`,
+				`-export`,
+				`${resource}.uasset`,
+				`-game=ue4.23`,
+			],
+			{
+				encoding: "utf-8",
+			}
+		);
 		if (res.status) {
 			console.log(res.output);
 			console.log(res.status);
@@ -91,7 +90,7 @@ function miniobj<A>(type: t.Type<A>) {
 			}
 			return type.validate(parsed, context);
 		},
-		type.encode,
+		type.encode
 	);
 }
 
@@ -106,7 +105,7 @@ function not(type: t.Type<any>) {
 			}
 			return t.failure(input, context, "Subtype was valid");
 		},
-		t.identity,
+		t.identity
 	);
 }
 
@@ -122,14 +121,14 @@ const stringInteger = new t.Type<number>(
 		}
 		return t.success(Number(input));
 	},
-	t.identity,
+	t.identity
 );
 
 const multiLineString = new t.Type<string>(
 	"multiLineString",
 	t.string.is,
 	(a, b) => chain((s: string) => t.success(s.replace(/\r\n/g, "\n")))(t.string.validate(a, b)),
-	t.identity,
+	t.identity
 );
 
 const recipeIngredient = new t.Type<string>(
@@ -146,7 +145,7 @@ const recipeIngredient = new t.Type<string>(
 		const [, clazz] = match;
 		return t.success(clazz);
 	},
-	t.identity,
+	t.identity
 );
 
 const buildingClass = new t.Type<string>(
@@ -163,9 +162,8 @@ const buildingClass = new t.Type<string>(
 		const [, clazz] = match;
 		return t.success(clazz);
 	},
-	t.identity,
+	t.identity
 );
-
 
 const Texture2D = new t.Type<Texture>(
 	"Texture2D",
@@ -181,7 +179,7 @@ const Texture2D = new t.Type<Texture>(
 		const [, resource] = match;
 		return t.success(new Texture(resource));
 	},
-	t.identity,
+	t.identity
 );
 
 const Color = miniobj(t.type({ R: stringInteger, G: stringInteger, B: stringInteger, A: stringInteger }));
@@ -197,57 +195,57 @@ const $ItemDescriptorNuclearFuel = "Class'/Script/FactoryGame.FGItemDescriptorNu
 const $ConsumableDescriptor = "Class'/Script/FactoryGame.FGConsumableDescriptor'";
 const $EquipmentDescriptor = "Class'/Script/FactoryGame.FGEquipmentDescriptor'";
 const ItemDescriptor = t.type({
-	"ClassName": t.string,
-	"mDisplayName": t.string,
-	"mDescription": multiLineString,
+	ClassName: t.string,
+	mDisplayName: t.string,
+	mDescription: multiLineString,
 	// "mAbbreviatedDisplayName": "",
 	// "mStackSize": "SS_HUGE",
 	// "mCanBeDiscarded": "False",
 	// "mRememberPickUp": "False",
 	// "mEnergyValue": "0.000000",
 	// "mRadioactiveDecay": "10.000000",
-	"mForm": Form,
-	"mSmallIcon": Texture2D,
+	mForm: Form,
+	mSmallIcon: Texture2D,
 	// "mPersistentBigIcon": "Texture2D /Game/FactoryGame/Resource/Parts/NuclearWaste/UI/IconDesc_NuclearWaste_256.IconDesc_NuclearWaste_256",
 	// "mCrosshairMaterial": "None",
 	// "mDescriptorStatBars": "",
 	// "mSubCategories": "",
 	// "mMenuPriority": "0.000000",
-	"mFluidColor": Color,
-	"mGasColor": Color,
+	mFluidColor: Color,
+	mGasColor: Color,
 	// "mCompatibleItemDescriptors": "",
 	// "mClassToScanFor": "None",
 	// "mScannableType": "RTWOT_Default",
 	// "mShouldOverrideScannerDisplayText": "False",
 	// "mScannerDisplayText": "",
-	"mScannerLightColor": Color,
+	mScannerLightColor: Color,
 	// "mResourceSinkPoints": "0",
 });
 
 const $ResourceDescriptor = "Class'/Script/FactoryGame.FGResourceDescriptor'";
 const ResourceDescriptor = t.type({
-	"ClassName": t.string,
+	ClassName: t.string,
 	// "mDecalSize": "200.000000",
 	// "mPingColor": "(R=1.000000,G=0.956156,B=0.260000,A=1.000000)",
 	// "mCollectSpeedMultiplier": "1.000000",
 	// "mManualMiningAudioName": "Metal",
-	"mDisplayName": t.string,
-	"mDescription": multiLineString,
+	mDisplayName: t.string,
+	mDescription: multiLineString,
 	// "mAbbreviatedDisplayName": "S",
 	// "mStackSize": "SS_MEDIUM",
 	// "mCanBeDiscarded": "True",
 	// "mRememberPickUp": "True",
 	// "mEnergyValue": "0.000000",
 	// "mRadioactiveDecay": "0.000000",
-	"mForm": Form,
-	"mSmallIcon": Texture2D,
+	mForm: Form,
+	mSmallIcon: Texture2D,
 	// "mPersistentBigIcon": "Texture2D /Game/FactoryGame/Resource/RawResources/Sulfur/UI/Sulfur_256.Sulfur_256",
 	// "mCrosshairMaterial": "None",
 	// "mDescriptorStatBars": "",
 	// "mSubCategories": "",
 	// "mMenuPriority": "0.000000",
-	"mFluidColor": Color,
-	"mGasColor": Color,
+	mFluidColor: Color,
+	mGasColor: Color,
 	// "mCompatibleItemDescriptors": "",
 	// "mClassToScanFor": "None",
 	// "mScannableType": "RTWOT_Default",
@@ -259,15 +257,15 @@ const ResourceDescriptor = t.type({
 
 const $Recipe = "Class'/Script/FactoryGame.FGRecipe'";
 const Recipe = t.type({
-	"ClassName": t.string,
+	ClassName: t.string,
 	// "FullName": "BlueprintGeneratedClass /Game/FactoryGame/Recipes/AlternateRecipes/New_Update4/Recipe_Alternate_ClassicBattery.Recipe_Alternate_ClassicBattery_C",
-	"mDisplayName": t.string,
-	"mIngredients": IngredientList,
-	"mProduct": IngredientList,
+	mDisplayName: t.string,
+	mIngredients: IngredientList,
+	mProduct: IngredientList,
 	// "mManufacturingMenuPriority": "11.000000",
-	"mManufactoringDuration": stringInteger,
+	mManufactoringDuration: stringInteger,
 	// "mManualManufacturingMultiplier": "1.000000",
-	"mProducedIn": miniobj(t.union([t.array(buildingClass), t.literal("")])),
+	mProducedIn: miniobj(t.union([t.array(buildingClass), t.literal("")])),
 	// "mRelevantEvents": "",
 	// "mVariablePowerConsumptionConstant": "0.000000",
 	// "mVariablePowerConsumptionFactor": "1.000000"
@@ -276,13 +274,13 @@ const Recipe = t.type({
 const $BuildableManufacturer = "Class'/Script/FactoryGame.FGBuildableManufacturer'";
 const $BuildableManufacturerVariablePower = "Class'/Script/FactoryGame.FGBuildableManufacturerVariablePower'";
 const BuildableManufacturer = t.type({
-	"ClassName": t.string,
+	ClassName: t.string,
 	// "IsPowered": "False",
 	// "mCurrentRecipeCheck": "",
 	// "mPreviousRecipeCheck": "",
 	// "CurrentPotentialConvert": "((1, 1.000000),(2, 1.200000),(0, 0.650000))",
 	// "mCurrentRecipeChanged": "()",
-	"mManufacturingSpeed": t.literal("1.000000"), // If this asserts, then we need to add manufacturing speed support;
+	mManufacturingSpeed: t.literal("1.000000"), // If this asserts, then we need to add manufacturing speed support;
 	// "mFactoryInputConnections": "",
 	// "mPipeInputConnections": "",
 	// "mFactoryOutputConnections": "",
@@ -307,8 +305,8 @@ const BuildableManufacturer = t.type({
 	// "mCachedSkeletalMeshes": "",
 	// "mAddToSignificanceManager": "True",
 	// "mSignificanceRange": "8000.000000",
-	"mDisplayName": t.string,
-	"mDescription": multiLineString,
+	mDisplayName: t.string,
+	mDescription: multiLineString,
 	// "MaxRenderDistance": "-1.000000",
 	// "mHighlightVector": "(X=0.000000,Y=0.000000,Z=0.000000)",
 	// "mAlternativeMaterialRecipes": "",
@@ -358,13 +356,14 @@ async function doMustache(name: string, data: any) {
 
 const formatComponent = (n: number) => n.toString(16).padStart(2, "0");
 
-const formatColor = (c: t.TypeOf<typeof Color>) => `#${formatComponent(c.R)}${formatComponent(c.G)}${formatComponent(c.B)}`;
+const formatColor = (c: t.TypeOf<typeof Color>) =>
+	`#${formatComponent(c.R)}${formatComponent(c.G)}${formatComponent(c.B)}`;
 
 (async () => {
 	config = await loadJson(`${__dirname}/../.importerconfig`, Config);
 
 	const rawData = await loadJson(`${config.GameDir}/CommunityResources/Docs/Docs.json`, RawData, "utf16le");
-	const rawDataToObjects = Object.fromEntries(rawData.map(r => [r.NativeClass, r.Classes]));
+	const rawDataToObjects = Object.fromEntries(rawData.map((r) => [r.NativeClass, r.Classes]));
 	const dataRes = Data.decode(rawDataToObjects);
 	if (dataRes._tag === "Left") {
 		throw new Error(PathReporter.report(dataRes).join(","));
@@ -382,40 +381,65 @@ const formatColor = (c: t.TypeOf<typeof Color>) => `#${formatComponent(c.R)}${fo
 		...data[$EquipmentDescriptor],
 	];
 	const allItems = [
-		...data[$ResourceDescriptor].map(x => ({ ...x, isResource: true, isPiped: x.mForm !== "RF_SOLID" })),
-		...rawRegularItems.map(x => ({ ...x, isResource: false, isPiped: x.mForm !== "RF_SOLID" })),
+		...data[$ResourceDescriptor].map((x) => ({ ...x, isResource: true, isPiped: x.mForm !== "RF_SOLID" })),
+		...rawRegularItems.map((x) => ({ ...x, isResource: false, isPiped: x.mForm !== "RF_SOLID" })),
 	];
 	const allRecipes = data[$Recipe];
-	const buildings = [
-		...data[$BuildableManufacturer],
-		...data[$BuildableManufacturerVariablePower],
-	];
+	const buildings = [...data[$BuildableManufacturer], ...data[$BuildableManufacturerVariablePower]];
 
 	const buildingClazzes = new Map(buildings.map((x, i) => [x.ClassName, i]));
-	const recipesMaybeBuildable = allRecipes.filter(x => Array.isArray(x.mProducedIn) && x.mProducedIn.some(p => buildingClazzes.has(p))); // Filter out build gun only recipes
-	const producableItemClasses = new Set(recipesMaybeBuildable.flatMap(x => x.mProduct.map(y => y.ItemClass)));
-	const items = allItems.filter(x => x.isResource || producableItemClasses.has(x.ClassName)); // Filter out any item that we'd never be able to get in automatable amounts
-	const itemsLookup = new Map(items.map((x, i) => [x.ClassName, i]));
-	const recipes = recipesMaybeBuildable.filter(x => {
-		// Filter again on recipes for a few that can go in constructors but you can't ever fully automate
-		// (Wood, etc)
-		return x.mIngredients.every(y => itemsLookup.has(y.ItemClass)) && x.mProduct.every(y => itemsLookup.has(y.ItemClass));
-	});
+	const recipesMaybeBuildable = allRecipes.filter(
+		(x) => Array.isArray(x.mProducedIn) && x.mProducedIn.some((p) => buildingClazzes.has(p))
+	); // Filter out build gun only recipes
 
-	const mapIngredients = (input: t.TypeOf<typeof IngredientList>) => input.map(x => {
-		const index = itemsLookup.get(x.ItemClass);
-		if (index == null) {
-			console.log("MISSING Recipe item", x.ItemClass);
+	let items = allItems;
+	let recipes = recipesMaybeBuildable;
+
+	// Repeatedly prune to get unproducible chains like protien -> biomass
+	while (true) {
+		const producableItemClasses = new Set(recipes.flatMap((x) => x.mProduct.map((y) => y.ItemClass)));
+		// HACK:  We want to support plutonium recipes but we don't understand nuclear reactors.
+		producableItemClasses.add("Desc_NuclearWaste_C");
+		// HACK:  We want to be able to draw up a factory for gas nobelisks, even though they're not fully automatable
+		producableItemClasses.add("Desc_GenericBiomass_C");
+		const nextItems = items.filter((x) => x.isResource || producableItemClasses.has(x.ClassName)); // Filter out any item that we'd never be able to get in automatable amounts
+		const itemsLookup = new Map(nextItems.map((x, i) => [x.ClassName, i]));
+		const nextRecipes = recipes.filter((x) => {
+			// Filter again on recipes for a few that can go in constructors but you can't ever fully automate
+			// (Wood, etc)
+			return (
+				x.mIngredients.every((y) => itemsLookup.has(y.ItemClass)) &&
+				x.mProduct.every((y) => itemsLookup.has(y.ItemClass))
+			);
+		});
+
+		const didSomething = items.length !== nextItems.length || recipes.length !== nextRecipes.length;
+		items = nextItems;
+		recipes = nextRecipes;
+		if (!didSomething) {
+			break;
 		}
-		return ({ Item: itemsLookup.get(x.ItemClass), Quantity: x.Amount })
-	});
+	}
 
-	const recipeView = recipes.map(x => ({
+	const itemsLookup = new Map(items.map((x, i) => [x.ClassName, i]));
+
+	const mapIngredients = (input: t.TypeOf<typeof IngredientList>) =>
+		input.map((x) => {
+			const index = itemsLookup.get(x.ItemClass);
+			if (index == null) {
+				console.log("MISSING Recipe item", x.ItemClass);
+			}
+			return { Item: itemsLookup.get(x.ItemClass), Quantity: x.Amount };
+		});
+
+	const recipeView = recipes.map((x) => ({
 		...x,
 		Inputs: mapIngredients(x.mIngredients),
 		Outputs: mapIngredients(x.mProduct),
 		Building: (() => {
-			const results = (x.mProducedIn as string[]).map(clazz => buildingClazzes.get(clazz)).filter(n => n != null);
+			const results = (x.mProducedIn as string[])
+				.map((clazz) => buildingClazzes.get(clazz))
+				.filter((n) => n != null);
 			if (results.length !== 1) {
 				console.log("MORE THAN ONE BUILDING?");
 				throw new Error();
@@ -424,14 +448,14 @@ const formatColor = (c: t.TypeOf<typeof Color>) => `#${formatComponent(c.R)}${fo
 		})(),
 	}));
 
-	const itemsView = items.map(x => ({
+	const itemsView = items.map((x) => ({
 		...x,
 		Color: {
 			RF_SOLID: "#fff",
 			RF_LIQUID: formatColor(x.mFluidColor),
-			RF_GAS: formatColor(x.mGasColor),			
-		}[x.mForm]
-	}))
+			RF_GAS: formatColor(x.mGasColor),
+		}[x.mForm],
+	}));
 
 	// for (const x of items) {
 	// 	await x.mSmallIcon.exportImage(x.ClassName);
