@@ -10,7 +10,7 @@ import { selectProducerIds, update, useSelector } from "../store/Store";
 import { clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
 
 import "./FactoryEditor.css";
-import { chooseItem } from "./ItemChooser";
+import { chooseItem, chooseRecipeByOutput } from "./ItemChooser";
 import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
 
@@ -46,13 +46,6 @@ function onDrag({ x, y }: Point) {
 		center.y = ny;
 	});
 	return true;
-}
-
-function addRandomProduer(p: Point) {
-	const index = Math.floor(Math.random() * Recipes.length);
-	const recipe = Recipes[index];
-	const producer = new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe);
-	update(addProducer(producer));
 }
 
 export function FactoryEditor() {
@@ -137,9 +130,12 @@ export function FactoryEditor() {
 			<div class="actions">
 				<KeyButton
 					keyName="b"
-					onAct={(wasClick) => {
+					onAct={async (wasClick) => {
 						const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
-						addRandomProduer(p);
+						const recipe = await chooseRecipeByOutput();
+						if (recipe) {
+							update(addProducer(new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe)));
+						}
 					}}
 				>
 					Add builder

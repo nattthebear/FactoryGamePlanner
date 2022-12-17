@@ -7,7 +7,7 @@
 	align-items: center;
 
 	& .prompt {
-		flex: 0 0 200px;
+		width: 300px;
 		background-color: #fff;
 	}
 }
