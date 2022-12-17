@@ -7,7 +7,7 @@ import { addProducer } from "../store/Actions";
 import { Point, SIXTY, toTranslation } from "../store/Common";
 import { ProductionBuilding, Sink, Source } from "../store/Producers";
 import { selectProducerIds, update, useSelector } from "../store/Store";
-import { clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
+import { BUILDING_MAX, BUILDING_MIN, clamp, clampp, FACTORY_MAX, FACTORY_MIN } from "../util";
 
 import "./FactoryEditor.css";
 import { chooseItem, chooseRecipeByOutput } from "./ItemChooser";
@@ -88,8 +88,8 @@ export function FactoryEditor() {
 		const sdy = screen.y - screenCenterY;
 
 		return {
-			x: sdx / zoom + center.x,
-			y: sdy / zoom + center.y,
+			x: sdx / zoom - center.x,
+			y: sdy / zoom - center.y,
 		};
 	}
 
@@ -131,7 +131,11 @@ export function FactoryEditor() {
 				<KeyButton
 					keyName="b"
 					onAct={async (wasClick) => {
-						const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
+						const p = clampp(
+							(!wasClick && calculateCurrentViewportMousePosition()) || viewport.center,
+							BUILDING_MIN,
+							BUILDING_MAX
+						);
 						const recipe = await chooseRecipeByOutput();
 						if (recipe) {
 							update(addProducer(new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe)));
@@ -143,7 +147,11 @@ export function FactoryEditor() {
 				<KeyButton
 					keyName="u"
 					onAct={async (wasClick) => {
-						const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
+						const p = clampp(
+							(!wasClick && calculateCurrentViewportMousePosition()) || viewport.center,
+							BUILDING_MIN,
+							BUILDING_MAX
+						);
 						const item = await chooseItem("Choose item for source");
 						if (item) {
 							update(addProducer(new Source(p.x, p.y, SIXTY, item)));
@@ -155,7 +163,11 @@ export function FactoryEditor() {
 				<KeyButton
 					keyName="k"
 					onAct={async (wasClick) => {
-						const p = (!wasClick && calculateCurrentViewportMousePosition()) || viewport.center;
+						const p = clampp(
+							(!wasClick && calculateCurrentViewportMousePosition()) || viewport.center,
+							BUILDING_MIN,
+							BUILDING_MAX
+						);
 						const item = await chooseItem("Choose item for sink");
 						if (item) {
 							update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
