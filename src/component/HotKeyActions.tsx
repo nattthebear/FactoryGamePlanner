@@ -9,6 +9,7 @@ import { chooseItem, chooseRecipeByOutput } from "./ItemChooser";
 import { KeyButton } from "./KeyButton";
 
 import "./HotKeyActions.css";
+import { chooseBuildingRate, chooseSourceSinkRate } from "./RateChoser";
 
 export function HotKeyActions() {
 	const currentScreenCoords = useRef<Point | null>(null);
@@ -97,7 +98,33 @@ export function HotKeyActions() {
 				</KeyButton>
 			</>
 		),
-		producer: (o) => null,
+		producer: (o) => (
+			<>
+				<KeyButton
+					keyName="r"
+					onAct={async () => {
+						const { producer } = o;
+						if (producer instanceof ProductionBuilding) {
+							const newRate = await chooseBuildingRate(producer);
+							if (newRate) {
+								update((draft) => {
+									draft.producers.get(producer.id)!.rate = newRate;
+								});
+							}
+						} else if (producer instanceof Source || producer instanceof Sink) {
+							const newRate = await chooseSourceSinkRate(producer);
+							if (newRate) {
+								update((draft) => {
+									draft.producers.get(producer.id)!.rate = newRate;
+								});
+							}
+						}
+					}}
+				>
+					Change rate
+				</KeyButton>
+			</>
+		),
 		"producer:connection:input": (o) => null,
 		"producer:connection:output": (o) => null,
 	};

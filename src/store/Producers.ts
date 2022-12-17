@@ -52,17 +52,17 @@ export class ProductionBuilding extends Producer {
 		this.outputs = recipe.Outputs.map(() => EMPTY_ARRAY);
 	}
 
-	private toFlow = (flow: RecipeFlow): Flow => {
+	private toFlow(flow: RecipeFlow): Flow {
 		const itemsPerSecond = this.rate.div(BigRat.fromInteger(this.recipe.Duration));
-		const itemsPerMinute = itemsPerSecond.div(SIXTY);
+		const itemsPerMinute = itemsPerSecond.mul(SIXTY);
 		return { rate: itemsPerMinute, item: flow.Item };
-	};
+	}
 
 	inputFlows(): Flow[] {
-		return this.recipe.Inputs.map(this.toFlow);
+		return this.recipe.Inputs.map((f) => this.toFlow(f));
 	}
 	outputFlows(): Flow[] {
-		return this.recipe.Outputs.map(this.toFlow);
+		return this.recipe.Outputs.map((f) => this.toFlow(f));
 	}
 
 	clone(): this {

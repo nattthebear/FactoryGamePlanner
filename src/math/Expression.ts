@@ -108,7 +108,7 @@ export function evaluate(s: string): EvalResult {
 			};
 		}
 		if (e instanceof EvalError) {
-			return { ok: false, message: "Eval error", offset: e.location };
+			return { ok: false, message: "Division by zero", offset: e.location };
 		}
 		throw e;
 	}

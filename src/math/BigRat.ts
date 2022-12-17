@@ -40,6 +40,9 @@ export class BigRat {
 	toNumberApprox() {
 		return Number(this.p) / Number(this.q);
 	}
+	toRatioString() {
+		return `${this.p}:${this.q}`;
+	}
 	static eq(x: BigRat, y: BigRat) {
 		return x.p * y.q === x.q * y.p;
 	}
