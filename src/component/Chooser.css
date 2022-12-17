@@ -8,6 +8,17 @@
 			height: 24px;
 			overflow: hidden;
 			gap: 10px;
+			cursor: pointer;
+
+			&.selected {
+				background-color: #ddf;
+			}
+			&:hover {
+				box-shadow: inset 0 0 8px #8f8;
+			}
+			&.tentative {
+				box-shadow: inset 0 0 8px #99f;
+			}
 
 			& .text {
 				line-height: 24px;

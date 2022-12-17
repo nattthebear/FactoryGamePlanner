@@ -27,7 +27,8 @@
 	"dependencies": {
 		"immer": "^9.0.16",
 		"modern-normalize": "^1.1.0",
-		"preact": "^10.11.3"
+		"preact": "^10.11.3",
+		"scroll-into-view-if-needed": "^3.0.3"
 	},
 	"browserslist": {
 		"production": [

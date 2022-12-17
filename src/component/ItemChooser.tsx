@@ -28,14 +28,6 @@ for (const recipe of Recipes) {
 
 const itemImage = (item: Item) => <img class="item-chooser-image" src={item.Icon} />;
 
-const DisplayItems = Items.map((item) => ({
-	adornment: itemImage(item),
-	name: item.DisplayName,
-	item,
-	consumingRecipes: recipeToInputs.get(item),
-	producingRecipes: recipeToOutputs.get(item),
-}));
-
 const formatRecipe = (recipe: Recipe) => ({
 	adornment: (
 		<div class="recipe-chooser-image">
@@ -48,22 +40,29 @@ const formatRecipe = (recipe: Recipe) => ({
 	recipe,
 });
 
-function RecipeChooser({ type, onConfirm }: { type: "input" | "output"; onConfirm: (value: Recipe | null) => void }) {
-	const [itemIndex, changeItemIndex] = useState(-1);
-	const items = DisplayItems.filter((i) => (type === "input" ? i.consumingRecipes : i.producingRecipes));
+const DisplayItems = Items.map((item) => ({
+	adornment: itemImage(item),
+	name: item.DisplayName,
+	item,
+	consumingRecipes: recipeToInputs.get(item)?.map(formatRecipe),
+	producingRecipes: recipeToOutputs.get(item)?.map(formatRecipe),
+}));
+type DisplayItem = typeof DisplayItems[number];
 
-	const recipes = items[itemIndex]?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
+function RecipeChooser({ type, onConfirm }: { type: "input" | "output"; onConfirm: (value: Recipe | null) => void }) {
+	const [displayItem, changeDisplayItem] = useState<DisplayItem | null>(null);
+	const displayItems = DisplayItems.filter((di) => (type === "input" ? di.consumingRecipes : di.producingRecipes));
+
+	const recipes = displayItem?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
 
 	return (
 		<>
-			<Chooser items={items} index={itemIndex} changeIndex={changeItemIndex} />
-			{recipes && (
-				<Chooser
-					items={recipes.map(formatRecipe)}
-					index={-1}
-					changeIndex={(recipeIndex) => onConfirm(recipes[recipeIndex] ?? null)}
-				/>
-			)}
+			<Chooser
+				items={displayItems}
+				value={displayItem}
+				changeValue={changeDisplayItem as (newValue: DisplayItem) => void}
+			/>
+			{recipes && <Chooser items={recipes} value={null} changeValue={(dr) => onConfirm(dr?.recipe ?? null)} />}
 		</>
 	);
 }
@@ -72,11 +71,7 @@ export const chooseItem = (title: string) =>
 	prompt<Item | null>({
 		title,
 		render: (onConfirm) => (
-			<Chooser
-				items={DisplayItems}
-				index={-1}
-				changeIndex={(index) => onConfirm(DisplayItems[index]?.item ?? null)}
-			/>
+			<Chooser items={DisplayItems} value={null} changeValue={(di) => onConfirm(di?.item ?? null)} />
 		),
 	});
 
