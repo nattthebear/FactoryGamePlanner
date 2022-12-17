@@ -35,7 +35,6 @@ const DisplayItems = Items.map((item) => ({
 	consumingRecipes: recipeToInputs.get(item),
 	producingRecipes: recipeToOutputs.get(item),
 }));
-console.log(DisplayItems);
 
 const formatRecipe = (recipe: Recipe) => ({
 	adornment: (
