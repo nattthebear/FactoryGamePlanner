@@ -4,6 +4,7 @@ import { Flow, NodeId, Point, pointEqual } from "./Common";
 import { Connector } from "./Connectors";
 import { makeStore, Selector } from "./MakeStore";
 import { Producer, Sink, Source } from "./Producers";
+import { deserialize } from "./Serializer";
 
 export type MouseOverInfo =
 	| { type: "none" }
@@ -25,7 +26,7 @@ export interface State {
 	connectors: Map<NodeId, Connector>;
 }
 
-const initialState: State = {
+export const makeEmptyState = (): State => ({
 	viewport: {
 		center: { x: 0, y: 0 },
 		zoom: 1,
@@ -33,20 +34,36 @@ const initialState: State = {
 	mouseOver: { type: "none" },
 	producers: new Map(),
 	connectors: new Map(),
-};
+});
+const initialState = (() => {
+	const search = window.location.search.slice(1);
+	if (search) {
+		try {
+			const reconstructed = deserialize(search);
+			if (reconstructed) {
+				return reconstructed;
+			}
+		} catch (e) {
+			console.error(e);
+		}
+	}
+	return makeEmptyState();
+})();
 
 const { useSelector, update, getStateRaw } = makeStore(initialState, "_MainStore");
 export { useSelector, update, getStateRaw };
 
-document.documentElement.addEventListener(
-	"mouseleave",
-	() => {
-		update((draft) => {
-			draft.mouseOver = initialState.mouseOver;
-		});
-	},
-	{ passive: true }
-);
+if (typeof document !== "undefined") {
+	document.documentElement.addEventListener(
+		"mouseleave",
+		() => {
+			update((draft) => {
+				draft.mouseOver = initialState.mouseOver;
+			});
+		},
+		{ passive: true }
+	);
+}
 
 function arrayEqual<T>(x: T[], y: T[]) {
 	if (x.length !== y.length) {

@@ -4,8 +4,6 @@ import { BigRat } from "../math/BigRat";
 import { Flow, generateId, NodeId, Point, SIXTY } from "./Common";
 import { BuildingMap, ProducerDrawing, Sink as SinkGfx, Source as SourceGfx } from "../art/Producers";
 
-const EMPTY_ARRAY: never[] = [];
-
 export abstract class Producer implements Point {
 	[immerable] = true;
 	id = generateId();
@@ -15,11 +13,11 @@ export abstract class Producer implements Point {
 
 	rate: BigRat;
 
-	inputs: NodeId[][] = EMPTY_ARRAY;
-	outputs: NodeId[][] = EMPTY_ARRAY;
+	inputs: NodeId[][] = [];
+	outputs: NodeId[][] = [];
 
-	inputAttachPoints: Point[] = EMPTY_ARRAY;
-	outputAttachPoints: Point[] = EMPTY_ARRAY;
+	inputAttachPoints: Point[] = [];
+	outputAttachPoints: Point[] = [];
 
 	constructor(x: number, y: number, rate: BigRat) {
 		this.x = x;
@@ -43,8 +41,8 @@ export class ProductionBuilding extends Producer {
 	constructor(x: number, y: number, rate: BigRat, recipe: Recipe) {
 		super(x, y, rate);
 		this.recipe = recipe;
-		this.inputs = recipe.Inputs.map(() => EMPTY_ARRAY);
-		this.outputs = recipe.Outputs.map(() => EMPTY_ARRAY);
+		this.inputs = recipe.Inputs.map(() => []);
+		this.outputs = recipe.Outputs.map(() => []);
 
 		const drawing = this.getDrawing();
 		this.inputAttachPoints = [];
@@ -99,7 +97,7 @@ export class Sink extends Producer {
 	constructor(x: number, y: number, rate: BigRat, item: Item) {
 		super(x, y, rate);
 		this.item = item;
-		this.inputs = [EMPTY_ARRAY];
+		this.inputs = [[]];
 
 		this.inputAttachPoints = this.getDrawing().attach.input.either;
 	}
@@ -108,7 +106,7 @@ export class Sink extends Producer {
 		return [{ rate: this.rate, item: this.item }];
 	}
 	outputFlows(): Flow[] {
-		return EMPTY_ARRAY;
+		return [];
 	}
 
 	clone(): this {
@@ -128,13 +126,13 @@ export class Source extends Producer {
 	constructor(x: number, y: number, rate: BigRat, item: Item) {
 		super(x, y, rate);
 		this.item = item;
-		this.outputs = [EMPTY_ARRAY];
+		this.outputs = [[]];
 
 		this.outputAttachPoints = this.getDrawing().attach.output.either;
 	}
 
 	inputFlows(): Flow[] {
-		return EMPTY_ARRAY;
+		return [];
 	}
 	outputFlows(): Flow[] {
 		return [{ rate: this.rate, item: this.item }];
