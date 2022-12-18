@@ -6,8 +6,9 @@ import { BigRat } from "../math/BigRat";
 import { addProducer } from "../store/Actions";
 import { Point, SIXTY, toTranslation } from "../store/Common";
 import { ProductionBuilding, Sink, Source } from "../store/Producers";
-import { selectProducerIds, update, useSelector } from "../store/Store";
+import { selectConnectorIds, selectProducerIds, update, useSelector } from "../store/Store";
 import { BUILDING_MAX, BUILDING_MIN, clamp, clampp, FACTORY_MAX, FACTORY_MIN, FACTORY_SIZE } from "../util";
+import { Connector } from "./Connector";
 
 import "./FactoryEditor.css";
 import { HotKeyActions } from "./HotKeyActions";
@@ -56,6 +57,7 @@ function onDrag({ x, y }: Point) {
 
 export function FactoryEditor() {
 	const producers = useSelector(selectProducerIds);
+	const connectors = useSelector(selectConnectorIds);
 	const viewport = useSelector((s) => s.viewport);
 	const viewportElementRef = useRef<HTMLDivElement | null>(null);
 	const svgRef = useRef<SVGSVGElement | null>(null);
@@ -95,6 +97,9 @@ export function FactoryEditor() {
 				>
 					{backGrid}
 				</g>
+				{connectors.map((id) => (
+					<Connector key={id} id={id} />
+				))}
 				{producers.map((id) => (
 					<Producer key={id} id={id} />
 				))}

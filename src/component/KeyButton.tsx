@@ -5,6 +5,7 @@ import { isAnyPromptActive } from "./Prompt";
 interface Props {
 	keyName: string;
 	onAct: (wasClick: boolean) => void;
+	disabled?: boolean;
 	children: string;
 }
 
@@ -13,7 +14,7 @@ export function KeyButton(props: Props) {
 
 	useEffect(() => {
 		const listener = (ev: KeyboardEvent) => {
-			if (!isAnyPromptActive() && ev.key === propsLatest.current.keyName) {
+			if (!propsLatest.current.disabled && !isAnyPromptActive() && ev.key === propsLatest.current.keyName) {
 				propsLatest.current.onAct(false);
 			}
 		};
@@ -22,7 +23,7 @@ export function KeyButton(props: Props) {
 	}, []);
 
 	return (
-		<button onClick={() => props.onAct(true)}>
+		<button disabled={props.disabled} onClick={() => props.onAct(true)}>
 			{props.keyName}: {props.children}
 		</button>
 	);

@@ -1,6 +1,6 @@
 import { Draft } from "immer";
 import { BigRat } from "../math/BigRat";
-import { Flow, NodeId, Point } from "./Common";
+import { Flow, NodeId, Point, pointEqual } from "./Common";
 import { Connector } from "./Connectors";
 import { makeStore, Selector } from "./MakeStore";
 import { Producer, Sink, Source } from "./Producers";
@@ -63,6 +63,18 @@ export const selectProducerIds: Selector<State, NodeId[]> = {
 	select: (state) => [...state.producers.keys()],
 	equal: arrayEqual,
 };
+export const selectConnectorIds: Selector<State, NodeId[]> = {
+	select: (state) => [...state.connectors.keys()],
+	equal: arrayEqual,
+};
+
+export const selectProducerLocation = (id: NodeId): Selector<State, Point> => ({
+	select: (state) => {
+		const p = state.producers.get(id)!;
+		return { x: p.x, y: p.y };
+	},
+	equal: pointEqual,
+});
 
 export type MouseOverObject =
 	| { type: "none" }
@@ -74,6 +86,7 @@ export type MouseOverObject =
 	| {
 			type: "producer:connection:input" | "producer:connection:output";
 			producer: Producer;
+			index: number;
 			connectors: Connector[];
 			flow: Flow;
 	  };
@@ -93,6 +106,7 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 			return {
 				type,
 				producer,
+				index: mouseOver.index,
 				connectors: producer.inputs[mouseOver.index].map((id) => state.connectors.get(id)!),
 				flow: producer.inputFlows()[mouseOver.index],
 			};
@@ -102,6 +116,7 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 			return {
 				type,
 				producer,
+				index: mouseOver.index,
 				connectors: producer.outputs[mouseOver.index].map((id) => state.connectors.get(id)!),
 				flow: producer.outputFlows()[mouseOver.index],
 			};

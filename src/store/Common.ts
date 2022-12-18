@@ -8,6 +8,14 @@ export interface Point {
 
 export const toTranslation = (p: Point) => `translate(${p.x}px, ${p.y}px)`;
 
+export function pointEqual(a: Point, b: Point) {
+	return a.x === b.x && b.x === b.y;
+}
+
+export function pointAdd(a: Point, b: Point) {
+	return { x: a.x + b.x, y: a.y + b.y };
+}
+
 export interface Flow {
 	/** nominal rate per minute */
 	rate: BigRat;

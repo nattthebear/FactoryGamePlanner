@@ -14,11 +14,16 @@ export class Connector {
 	input: NodeId;
 	output: NodeId;
 
-	constructor(rate: BigRat, item: Item, input: NodeId, output: NodeId) {
+	inputIndex: number;
+	outputIndex: number;
+
+	constructor(rate: BigRat, item: Item, input: NodeId, output: NodeId, inputIndex: number, outputIndex: number) {
 		this.rate = rate;
 		this.item = item;
 		this.input = input;
 		this.output = output;
+		this.inputIndex = inputIndex;
+		this.outputIndex = outputIndex;
 	}
 
 	flow(): Flow {

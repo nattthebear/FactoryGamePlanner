@@ -14,18 +14,10 @@ export function ConnectionTerminal({
 	index: number;
 }) {
 	const producer = useSelector((s) => s.producers.get(producerId)!);
-	let attachPoints: ProducerDrawing["attach"]["input" | "output"];
-	{
-		const a = producer.getDrawing().attach;
-		attachPoints = isOutput ? a.output : a.input;
-	}
-
 	const { rate, item } = (isOutput ? producer.outputFlows() : producer.inputFlows())[index];
 	const connectionIds = (isOutput ? producer.outputs : producer.inputs)[index];
 
-	const pIndex = (isOutput ? producer.getOutputAttachIndexes() : producer.getInputAttachIndexes())[index];
-
-	const p = attachPoints.either[pIndex] ?? (item.IsPiped ? attachPoints.liquid : attachPoints.solid)[pIndex];
+	const p = (isOutput ? producer.outputAttachPoints : producer.inputAttachPoints)[index];
 	const d = item.IsPiped ? LiquidAttach : SolidAttach;
 
 	return (

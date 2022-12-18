@@ -53,7 +53,9 @@ export const addConnector =
 			BigRat.ZERO,
 			fromProducer.outputFlows()[from.outputIndex].item,
 			fromProducer.id,
-			toProducer.id
+			toProducer.id,
+			from.outputIndex,
+			to.inputIndex
 		);
 		draft.connectors.set(connector.id, connector);
 		fromProducer.outputs[from.outputIndex].push(connector.id);
@@ -88,7 +90,7 @@ export const emptyToSink = (producerId: NodeId, outputIndex: number) => (draft: 
 
 	const sink = new Sink(producer.x, producer.y, excess, flow.item);
 	draft.producers.set(sink.id, sink);
-	const connector = new Connector(excess, flow.item, producerId, sink.id);
+	const connector = new Connector(excess, flow.item, producerId, sink.id, outputIndex, 0);
 	draft.connectors.set(connector.id, connector);
 	producer.outputs[outputIndex].push(connector.id);
 	sink.inputs[0] = [connector.id];
@@ -113,7 +115,7 @@ export const EmptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: R
 
 	const sink = new ProductionBuilding(producer.x, producer.y, desiredRate, recipe);
 	draft.producers.set(sink.id, sink);
-	const connector = new Connector(excess, flow.item, producerId, sink.id);
+	const connector = new Connector(excess, flow.item, producerId, sink.id, outputIndex, inputIndex);
 	draft.connectors.set(connector.id, connector);
 	producer.outputs[outputIndex].push(connector.id);
 	sink.inputs[inputIndex] = [connector.id];
@@ -131,7 +133,7 @@ export const fillFromSource = (producerId: NodeId, inputIndex: number) => (draft
 
 	const source = new Source(producer.x, producer.y, shortfall, flow.item);
 	draft.producers.set(source.id, source);
-	const connector = new Connector(shortfall, flow.item, source.id, producerId);
+	const connector = new Connector(shortfall, flow.item, source.id, producerId, 0, inputIndex);
 	draft.connectors.set(connector.id, connector);
 	source.outputs[0] = [connector.id];
 	producer.inputs[inputIndex].push(connector.id);
@@ -156,7 +158,7 @@ export const fillFromRecipe = (producerId: NodeId, inputIndex: number, recipe: R
 
 	const source = new ProductionBuilding(producer.x, producer.y, desiredRate, recipe);
 	draft.producers.set(source.id, source);
-	const connector = new Connector(shortfall, flow.item, source.id, producerId);
+	const connector = new Connector(shortfall, flow.item, source.id, producerId, outputIndex, inputIndex);
 	draft.connectors.set(connector.id, connector);
 	source.outputs[outputIndex] = [connector.id];
 	producer.inputs[inputIndex].push(connector.id);

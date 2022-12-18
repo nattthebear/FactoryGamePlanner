@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
-import { addProducer } from "../store/Actions";
+import { addProducer, fillFromSource } from "../store/Actions";
 import { Point, SIXTY } from "../store/Common";
 import { ProductionBuilding, Sink, Source } from "../store/Producers";
 import { getStateRaw, MouseOverObject, selectMouseOverObject, update, useSelector } from "../store/Store";
@@ -125,7 +125,48 @@ export function HotKeyActions() {
 				</KeyButton>
 			</>
 		),
-		"producer:connection:input": (o) => null,
+		"producer:connection:input": (o) => {
+			const totalIn = o.connectors.reduce((acc, val) => acc.add(val.rate), BigRat.ZERO);
+			const hasShortfall = totalIn.lt(o.flow.rate);
+			return (
+				<>
+					<KeyButton
+						keyName="b"
+						disabled={!hasShortfall}
+						onAct={async (wasClick) => {
+							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const recipe = await chooseRecipeByOutput();
+							if (recipe) {
+								update(addProducer(new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe)));
+							}
+						}}
+					>
+						Balance rates with new building
+					</KeyButton>
+					<KeyButton
+						keyName="u"
+						disabled={!hasShortfall}
+						onAct={() => {
+							update(fillFromSource(o.producer.id, o.index));
+						}}
+					>
+						Balance rates with new source
+					</KeyButton>
+					{/* <KeyButton
+			keyName="k"
+			onAct={async (wasClick) => {
+				const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+				const item = await chooseItem("Choose item for sink:");
+				if (item) {
+					update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
+				}
+			}}
+		>
+			Add Sink
+		</KeyButton> */}
+				</>
+			);
+		},
 		"producer:connection:output": (o) => null,
 	};
 
