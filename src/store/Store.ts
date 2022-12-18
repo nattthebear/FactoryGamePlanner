@@ -12,7 +12,8 @@ export type MouseOverInfo =
 			type: "producer";
 			producerId: NodeId;
 	  }
-	| { type: "producer:connection:input" | "producer:connection:output"; producerId: NodeId; index: number };
+	| { type: "producer:connection:input" | "producer:connection:output"; producerId: NodeId; index: number }
+	| { type: "connector"; connectorId: NodeId };
 
 export interface State {
 	viewport: {
@@ -89,7 +90,8 @@ export type MouseOverObject =
 			index: number;
 			connectors: Connector[];
 			flow: Flow;
-	  };
+	  }
+	| { type: "connector"; connector: Connector };
 
 export function selectMouseOverObject(state: State): MouseOverObject {
 	const { mouseOver } = state;
@@ -119,6 +121,13 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 				index: mouseOver.index,
 				connectors: producer.outputs[mouseOver.index].map((id) => state.connectors.get(id)!),
 				flow: producer.outputFlows()[mouseOver.index],
+			};
+		}
+		case "connector": {
+			const connector = state.connectors.get(mouseOver.connectorId)!;
+			return {
+				type,
+				connector,
 			};
 		}
 	}

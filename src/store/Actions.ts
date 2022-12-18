@@ -1,7 +1,7 @@
 import { Draft } from "immer";
 import { Recipe } from "../../data/types";
 import { BigRat } from "../math/BigRat";
-import { NodeId, SIXTY } from "./Common";
+import { NodeId, SIXTY, pointAdd } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State } from "./Store";
@@ -78,6 +78,9 @@ export const removeConnector = (connectorId: NodeId) => (draft: Draft<State>) =>
 	}
 };
 
+const FIXUP_BUILDING_X_OFFSET = 300;
+const FIXUP_SOURCE_X_OFFSET = 200;
+
 /** Fix up by adding a new sink */
 export const emptyToSink = (producerId: NodeId, outputIndex: number) => (draft: Draft<State>) => {
 	const producer = draft.producers.get(producerId)!;
@@ -88,7 +91,9 @@ export const emptyToSink = (producerId: NodeId, outputIndex: number) => (draft: 
 		return;
 	}
 
-	const sink = new Sink(producer.x, producer.y, excess, flow.item);
+	const referencePoint = pointAdd(producer, producer.outputAttachPoints[outputIndex]);
+
+	const sink = new Sink(referencePoint.x + FIXUP_SOURCE_X_OFFSET, referencePoint.y, excess, flow.item);
 	draft.producers.set(sink.id, sink);
 	const connector = new Connector(excess, flow.item, producerId, sink.id, outputIndex, 0);
 	draft.connectors.set(connector.id, connector);
@@ -111,7 +116,14 @@ export const emptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: R
 	const baseItemsPerMinute = baseItemsPerSecond.mul(SIXTY);
 	const desiredRate = excess.div(baseItemsPerMinute);
 
-	const sink = new ProductionBuilding(producer.x, producer.y, desiredRate, recipe);
+	const referencePoint = pointAdd(producer, producer.outputAttachPoints[outputIndex]);
+
+	const sink = new ProductionBuilding(
+		referencePoint.x + FIXUP_BUILDING_X_OFFSET,
+		referencePoint.y,
+		desiredRate,
+		recipe
+	);
 	draft.producers.set(sink.id, sink);
 	const connector = new Connector(excess, flow.item, producerId, sink.id, outputIndex, inputIndex);
 	draft.connectors.set(connector.id, connector);
@@ -129,7 +141,9 @@ export const fillFromSource = (producerId: NodeId, inputIndex: number) => (draft
 		return;
 	}
 
-	const source = new Source(producer.x, producer.y, shortfall, flow.item);
+	const referencePoint = pointAdd(producer, producer.inputAttachPoints[inputIndex]);
+
+	const source = new Source(referencePoint.x - FIXUP_SOURCE_X_OFFSET, referencePoint.y, shortfall, flow.item);
 	draft.producers.set(source.id, source);
 	const connector = new Connector(shortfall, flow.item, source.id, producerId, 0, inputIndex);
 	draft.connectors.set(connector.id, connector);
@@ -152,7 +166,14 @@ export const fillFromRecipe = (producerId: NodeId, inputIndex: number, recipe: R
 	const baseItemsPerMinute = baseItemsPerSecond.mul(SIXTY);
 	const desiredRate = shortfall.div(baseItemsPerMinute);
 
-	const source = new ProductionBuilding(producer.x, producer.y, desiredRate, recipe);
+	const referencePoint = pointAdd(producer, producer.inputAttachPoints[inputIndex]);
+
+	const source = new ProductionBuilding(
+		referencePoint.x - FIXUP_BUILDING_X_OFFSET,
+		referencePoint.y,
+		desiredRate,
+		recipe
+	);
 	draft.producers.set(source.id, source);
 	const connector = new Connector(shortfall, flow.item, source.id, producerId, outputIndex, inputIndex);
 	draft.connectors.set(connector.id, connector);

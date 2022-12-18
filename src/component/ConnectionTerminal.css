@@ -1,7 +1,17 @@
 .connection-terminal {
 	& > .outline {
-		stroke: #000;
 		stroke-width: 3px;
+		fill: #fff;
+	}
+
+	&.surplus .outline {
+		stroke: #0cc;
+	}
+	&.exact .outline {
+		stroke: #0b0;
+	}
+	&.shortfall .outline {
+		stroke: #f00;
 	}
 
 	& > image {

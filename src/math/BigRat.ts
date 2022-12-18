@@ -61,6 +61,17 @@ export class BigRat {
 	static neq(x: BigRat, y: BigRat) {
 		return x.p * y.q !== x.q * y.p;
 	}
+	static compare(x: BigRat, y: BigRat) {
+		const xa = x.p * y.q;
+		const ya = x.q * y.p;
+		if (xa < ya) {
+			return -1;
+		}
+		if (xa > ya) {
+			return 1;
+		}
+		return 0;
+	}
 	static add(x: BigRat, y: BigRat) {
 		return new BigRat(x.p * y.q + x.q * y.p, x.q * y.q);
 	}

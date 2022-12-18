@@ -1,6 +1,6 @@
 import { NodeId, pointAdd, pointEqual } from "../store/Common";
 import { Producer } from "../store/Producers";
-import { selectProducerLocation, useSelector } from "../store/Store";
+import { selectProducerLocation, update, useSelector } from "../store/Store";
 
 import "./Connector.css";
 
@@ -24,5 +24,18 @@ export function Connector({ id }: { id: NodeId }) {
 	const dx = op.x - ip.x;
 	const dy = op.y - ip.y;
 
-	return <path class="connector" d={`M ${ip.x} ${ip.y} c ${dx * 0.8} 0 ${dx * 0.2} ${dy} ${dx} ${dy}`} />;
+	return (
+		<path
+			class="connector"
+			d={`M ${ip.x} ${ip.y} c ${dx * 0.8} 0 ${dx * 0.2} ${dy} ${dx} ${dy}`}
+			onMouseEnter={() =>
+				update((draft) => {
+					draft.mouseOver = {
+						type: "connector",
+						connectorId: id,
+					};
+				})
+			}
+		/>
+	);
 }

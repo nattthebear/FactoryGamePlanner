@@ -190,6 +190,15 @@ export function HotKeyActions() {
 				</>
 			);
 		},
+		connector: (o) => {
+			return (
+				<>
+					<KeyButton keyName="x" disabled onAct={() => {}}>
+						DUMMY FAKE
+					</KeyButton>
+				</>
+			);
+		},
 	};
 
 	return <div class="hotkey-actions">{actionRender[currentObject.type](currentObject as any)}</div>;
