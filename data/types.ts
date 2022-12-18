@@ -1,3 +1,5 @@
+import { BigRat } from "../src/math/BigRat";
+
 export interface Item {
 	ClassName: string;
 	DisplayName: string;
@@ -10,7 +12,7 @@ export interface Item {
 
 export interface RecipeFlow {
 	Item: Item;
-	Quantity: number;
+	Quantity: BigRat;
 }
 
 export interface Recipe {
@@ -19,7 +21,7 @@ export interface Recipe {
 	Inputs: RecipeFlow[];
 	Outputs: RecipeFlow[];
 	/** Crafting time in seconds */
-	Duration: number;
+	Duration: BigRat;
 	Building: Building;
 }
 

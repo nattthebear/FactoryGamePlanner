@@ -1,11 +1,18 @@
 import { useEffect, useRef } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
-import { addProducer, fillFromSource } from "../store/Actions";
+import { addProducer, emptyToRecipe, emptyToSink, fillFromRecipe, fillFromSource } from "../store/Actions";
 import { Point, SIXTY } from "../store/Common";
 import { ProductionBuilding, Sink, Source } from "../store/Producers";
 import { getStateRaw, MouseOverObject, selectMouseOverObject, update, useSelector } from "../store/Store";
 import { BUILDING_MAX, BUILDING_MIN, clampp } from "../util";
-import { chooseItem, chooseRecipeByOutput } from "./ItemChooser";
+import {
+	canChooseRecipeForInput,
+	canChooseRecipeForOutput,
+	chooseItem,
+	chooseRecipeByOutput,
+	chooseRecipeForInput,
+	chooseRecipeForOutput,
+} from "./ItemChooser";
 import { KeyButton } from "./KeyButton";
 
 import "./HotKeyActions.css";
@@ -132,12 +139,11 @@ export function HotKeyActions() {
 				<>
 					<KeyButton
 						keyName="b"
-						disabled={!hasShortfall}
-						onAct={async (wasClick) => {
-							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
-							const recipe = await chooseRecipeByOutput();
+						disabled={!hasShortfall || !canChooseRecipeForOutput(o.flow.item)}
+						onAct={async () => {
+							const recipe = await chooseRecipeForOutput(o.flow.item);
 							if (recipe) {
-								update(addProducer(new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe)));
+								update(fillFromRecipe(o.producer.id, o.index, recipe));
 							}
 						}}
 					>
@@ -152,22 +158,38 @@ export function HotKeyActions() {
 					>
 						Balance rates with new source
 					</KeyButton>
-					{/* <KeyButton
-			keyName="k"
-			onAct={async (wasClick) => {
-				const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
-				const item = await chooseItem("Choose item for sink:");
-				if (item) {
-					update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
-				}
-			}}
-		>
-			Add Sink
-		</KeyButton> */}
 				</>
 			);
 		},
-		"producer:connection:output": (o) => null,
+		"producer:connection:output": (o) => {
+			const totalOut = o.connectors.reduce((acc, val) => acc.add(val.rate), BigRat.ZERO);
+			const hasSurplus = totalOut.lt(o.flow.rate);
+			return (
+				<>
+					<KeyButton
+						keyName="b"
+						disabled={!hasSurplus || !canChooseRecipeForInput(o.flow.item)}
+						onAct={async () => {
+							const recipe = await chooseRecipeForInput(o.flow.item);
+							if (recipe) {
+								update(emptyToRecipe(o.producer.id, o.index, recipe));
+							}
+						}}
+					>
+						Balance rates with new building
+					</KeyButton>
+					<KeyButton
+						keyName="k"
+						disabled={!hasSurplus}
+						onAct={() => {
+							update(emptyToSink(o.producer.id, o.index));
+						}}
+					>
+						Balance rates with new sink
+					</KeyButton>
+				</>
+			);
+		},
 	};
 
 	return <div class="hotkey-actions">{actionRender[currentObject.type](currentObject as any)}</div>;

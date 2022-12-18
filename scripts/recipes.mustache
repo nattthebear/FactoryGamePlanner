@@ -1,15 +1,16 @@
 import { Recipe } from "../types";
 import { Items } from "./items";
 import { Buildings } from "./buildings";
+import { BigRat } from "../../src/math/BigRat";
 
 export const Recipes: Recipe[] = [
 	{{#.}}
 	{
 		ClassName: {{ClassName}},
 		DisplayName: {{mDisplayName}},
-		Inputs: [{{#Inputs}}{ Item: Items[{{Item}}], Quantity: {{Quantity}} }, {{/Inputs}}],
-		Outputs: [{{#Outputs}}{ Item: Items[{{Item}}], Quantity: {{Quantity}} }, {{/Outputs}}],
-		Duration: {{mManufactoringDuration}},
+		Inputs: [{{#Inputs}}{ Item: Items[{{Item}}], Quantity: new BigRat({{{QuantityP}}}n, {{{QuantityQ}}}n) }, {{/Inputs}}],
+		Outputs: [{{#Outputs}}{ Item: Items[{{Item}}], Quantity: new BigRat({{{QuantityP}}}n, {{{QuantityQ}}}n) }, {{/Outputs}}],
+		Duration: BigRat.fromInteger({{mManufactoringDuration}}),
 		Building: Buildings[{{Building}}],
 	},
 	{{/.}}

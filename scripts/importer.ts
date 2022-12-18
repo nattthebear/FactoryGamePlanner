@@ -427,9 +427,14 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		input.map((x) => {
 			const index = itemsLookup.get(x.ItemClass);
 			if (index == null) {
-				console.log("MISSING Recipe item", x.ItemClass);
+				throw new Error("MISSING Recipe item: " + x.ItemClass);
 			}
-			return { Item: itemsLookup.get(x.ItemClass), Quantity: x.Amount };
+			const item = items[index];
+			return {
+				Item: itemsLookup.get(x.ItemClass),
+				QuantityP: x.Amount,
+				QuantityQ: item.mForm !== "RF_SOLID" ? 1000 : 1,
+			};
 		});
 
 	const recipeView = recipes.map((x) => ({

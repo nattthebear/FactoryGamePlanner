@@ -91,3 +91,29 @@ export const chooseRecipeByInput = () =>
 		title: "Choose item and recipe:",
 		render: (onConfirm) => <RecipeChooser type="input" onConfirm={onConfirm} />,
 	});
+
+const chooseRecipeHelper = async (recipes: Recipe[] | undefined) => {
+	if (!recipes) {
+		return null;
+	}
+	if (recipes.length === 1) {
+		return recipes[0];
+	}
+	const drs = recipes.map(formatRecipe);
+	return prompt<Recipe | null>({
+		title: "Choose recipe:",
+		render: (onConfirm) => <Chooser items={drs} value={null} changeValue={(dr) => onConfirm(dr?.recipe ?? null)} />,
+	});
+};
+
+export const canChooseRecipeForOutput = (desiredOutput: Item) => !!recipeToOutputs.get(desiredOutput);
+export const chooseRecipeForOutput = async (desiredOutput: Item) => {
+	const recipes = recipeToOutputs.get(desiredOutput);
+	return chooseRecipeHelper(recipes);
+};
+
+export const canChooseRecipeForInput = (desiredInput: Item) => !!recipeToInputs.get(desiredInput);
+export const chooseRecipeForInput = async (desiredInput: Item) => {
+	const recipes = recipeToInputs.get(desiredInput);
+	return chooseRecipeHelper(recipes);
+};

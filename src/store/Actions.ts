@@ -97,7 +97,7 @@ export const emptyToSink = (producerId: NodeId, outputIndex: number) => (draft: 
 };
 
 /** Fix up by adding a new recipe that consumes this */
-export const EmptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: Recipe) => (draft: Draft<State>) => {
+export const emptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: Recipe) => (draft: Draft<State>) => {
 	const producer = draft.producers.get(producerId)!;
 	const flow = producer.outputFlows()[outputIndex];
 
@@ -106,10 +106,8 @@ export const EmptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: R
 		return;
 	}
 
-	const inputIndex = recipe.Inputs.findIndex((i) => i.Item === flow.item);
-	const baseItemsPerSecond = BigRat.fromInteger(recipe.Inputs[inputIndex].Quantity).div(
-		BigRat.fromInteger(recipe.Duration)
-	);
+	const inputIndex = recipe.Inputs.findIndex((i) => i.Item.ClassName === flow.item.ClassName);
+	const baseItemsPerSecond = recipe.Inputs[inputIndex].Quantity.div(recipe.Duration);
 	const baseItemsPerMinute = baseItemsPerSecond.mul(SIXTY);
 	const desiredRate = excess.div(baseItemsPerMinute);
 
@@ -149,10 +147,8 @@ export const fillFromRecipe = (producerId: NodeId, inputIndex: number, recipe: R
 		return;
 	}
 
-	const outputIndex = recipe.Outputs.findIndex((i) => i.Item === flow.item);
-	const baseItemsPerSecond = BigRat.fromInteger(recipe.Outputs[outputIndex].Quantity).div(
-		BigRat.fromInteger(recipe.Duration)
-	);
+	const outputIndex = recipe.Outputs.findIndex((i) => i.Item.ClassName === flow.item.ClassName);
+	const baseItemsPerSecond = recipe.Outputs[outputIndex].Quantity.div(recipe.Duration);
 	const baseItemsPerMinute = baseItemsPerSecond.mul(SIXTY);
 	const desiredRate = shortfall.div(baseItemsPerMinute);
 
