@@ -26,7 +26,15 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 			useEffect(() => {
 				const equal = typeof selector === "function" ? Object.is : selector.equal;
 				function subscription() {
-					const newSelected = ref.current.select(state);
+					let newSelected: V;
+					try {
+						newSelected = ref.current.select(state);
+					} catch {
+						// This can be hit in various scenarios when removing components.
+						// https://react-redux.js.org/api/hooks#stale-props-and-zombie-children
+						updateSignal();
+						return;
+					}
 					if (!equal(newSelected, ref.current.selected)) {
 						updateSignal();
 					}

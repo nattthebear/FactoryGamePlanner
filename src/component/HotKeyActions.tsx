@@ -1,6 +1,14 @@
 import { useEffect, useRef } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
-import { addProducer, emptyToRecipe, emptyToSink, fillFromRecipe, fillFromSource } from "../store/Actions";
+import {
+	addProducer,
+	emptyToRecipe,
+	emptyToSink,
+	fillFromRecipe,
+	fillFromSource,
+	removeConnector,
+	removeProducer,
+} from "../store/Actions";
 import { Point, SIXTY } from "../store/Common";
 import { ProductionBuilding, Sink, Source } from "../store/Producers";
 import { getStateRaw, MouseOverObject, selectMouseOverObject, update, useSelector } from "../store/Store";
@@ -17,6 +25,8 @@ import { KeyButton } from "./KeyButton";
 
 import "./HotKeyActions.css";
 import { chooseBuildingRate, chooseSourceSinkRate } from "./RateChoser";
+import produce from "immer";
+import { deserialize, serialize } from "../store/Serializer";
 
 export function HotKeyActions() {
 	const currentScreenCoords = useRef<Point | null>(null);
@@ -108,6 +118,15 @@ export function HotKeyActions() {
 		producer: (o) => (
 			<>
 				<KeyButton
+					keyName="x"
+					onAct={async () => {
+						const { producer } = o;
+						update(removeProducer(producer.id));
+					}}
+				>
+					Remove Building
+				</KeyButton>
+				<KeyButton
 					keyName="r"
 					onAct={async () => {
 						const { producer } = o;
@@ -193,8 +212,14 @@ export function HotKeyActions() {
 		connector: (o) => {
 			return (
 				<>
-					<KeyButton keyName="x" disabled onAct={() => {}}>
-						DUMMY FAKE
+					<KeyButton
+						keyName="x"
+						onAct={async () => {
+							const { connector } = o;
+							update(removeConnector(connector.id));
+						}}
+					>
+						Remove Connection
 					</KeyButton>
 				</>
 			);

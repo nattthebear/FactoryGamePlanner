@@ -76,6 +76,7 @@ export const removeConnector = (connectorId: NodeId) => (draft: Draft<State>) =>
 	for (const input of draft.producers.get(connector.output)!.inputs) {
 		maybeSpliceValue(input, connectorId);
 	}
+	draft.connectors.delete(connectorId);
 };
 
 const FIXUP_BUILDING_X_OFFSET = 300;
