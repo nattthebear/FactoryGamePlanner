@@ -1,5 +1,6 @@
 import { useDrag } from "../hook/drag";
 import { NodeId, toTranslation } from "../store/Common";
+import { ProductionBuilding } from "../store/Producers";
 import { update, useSelector } from "../store/Store";
 import { BUILDING_MAX, BUILDING_MIN, clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
 import { ConnectionTerminal } from "./ConnectionTerminal";
@@ -23,6 +24,13 @@ export function Producer({ id }: { id: NodeId }) {
 
 	const drawing = producer.getDrawing();
 
+	const rateText =
+		producer instanceof ProductionBuilding ? (
+			<text class="multiplier">{producer.rate.toNumberApprox().toFixed(2)}x</text>
+		) : (
+			<text class="rate">{producer.rate.toNumberApprox().toFixed(2)}/min</text>
+		);
+
 	return (
 		<g class="producer" style={`transform: ${toTranslation(producer)}`}>
 			<path
@@ -38,6 +46,7 @@ export function Producer({ id }: { id: NodeId }) {
 					})
 				}
 			/>
+			{rateText}
 			{producer.inputs.map((_, i) => (
 				<ConnectionTerminal key={i} producerId={id} isOutput={false} index={i} />
 			))}

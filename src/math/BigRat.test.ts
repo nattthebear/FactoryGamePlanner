@@ -66,4 +66,14 @@ describe("BigRat", () => {
 		assert.equal(q, 587n);
 		assert.equal(new BigRat(25n, 2n).toNumberApprox(), 12.5);
 	});
+	it("sign", () => {
+		assert.equal(new BigRat(0n, 1n).sign(), 0);
+		assert.equal(new BigRat(0n, -1n).sign(), 0);
+		assert.equal(new BigRat(1n, 1n).sign(), 1);
+		assert.equal(new BigRat(1n, 100000000000000000000n).sign(), 1);
+		assert.equal(new BigRat(1n, -1n).sign(), -1);
+		assert.equal(new BigRat(-1n, 1n).sign(), -1);
+		assert.equal(new BigRat(-1n, -1n).sign(), 1);
+		assert.equal(new BigRat(-250n, 3n).sign(), -1);
+	});
 });

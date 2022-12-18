@@ -33,6 +33,10 @@ export class BigRat {
 			this.p /= d;
 			this.q /= d;
 		}
+		if (this.q < 0) {
+			this.p = -this.p;
+			this.q = -this.q;
+		}
 	}
 	terms() {
 		return { p: this.p, q: this.q };
@@ -119,6 +123,10 @@ export class BigRat {
 	}
 	neg() {
 		return new BigRat(-this.p, this.q);
+	}
+	sign() {
+		const { p } = this;
+		return p > 0n ? 1 : p < 0n ? -1 : 0;
 	}
 	debug() {
 		return `${this.p}:${this.q}`;

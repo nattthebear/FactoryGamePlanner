@@ -248,7 +248,7 @@ export function HotKeyActions() {
 							update(adjustConnectorClosest(connector.id, p));
 						}}
 					>
-						Match Closest Rate
+						Match rate of closest connection
 					</KeyButton>
 				</>
 			);

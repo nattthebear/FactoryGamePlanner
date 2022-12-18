@@ -20,4 +20,16 @@
 		transform: translate(-28px, -28px);
 		pointer-events: none;
 	}
+
+	& > text {
+		transform: translate(0, 20px);
+		text-anchor: middle;
+		pointer-events: none;
+		paint-order: stroke;
+		font-size: 12px;
+		stroke-width: 3px;
+		fill: #fff;
+		stroke: rgba(0, 0, 0, 0.8);
+		stroke-linejoin: round;
+	}
 }

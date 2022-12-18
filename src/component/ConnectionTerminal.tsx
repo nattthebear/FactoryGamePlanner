@@ -21,10 +21,11 @@ export function ConnectionTerminal({
 		connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO)
 	);
 
-	let cmp = BigRat.compare(rate, connectionSum);
+	let diff = rate.sub(connectionSum);
 	if (!isOutput) {
-		cmp = -cmp;
+		diff = diff.neg();
 	}
+	const cmp = diff.sign();
 	let cmpClass: string;
 	if (cmp > 0) {
 		cmpClass = "surplus";
@@ -53,6 +54,12 @@ export function ConnectionTerminal({
 		>
 			<path class="outline" d={d} />
 			<image href={item.Icon} />
+			{cmp !== 0 && (
+				<text>
+					{cmp > 0 && "+"}
+					{diff.toNumberApprox().toFixed(0)}/min
+				</text>
+			)}
 		</g>
 	);
 }
