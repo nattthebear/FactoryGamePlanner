@@ -53,17 +53,15 @@ const initialState = (() => {
 const { useSelector, update, getStateRaw } = makeStore(initialState, "_MainStore");
 export { useSelector, update, getStateRaw };
 
-if (typeof document !== "undefined") {
-	document.documentElement.addEventListener(
-		"mouseleave",
-		() => {
-			update((draft) => {
-				draft.mouseOver = initialState.mouseOver;
-			});
-		},
-		{ passive: true }
-	);
-}
+document.documentElement.addEventListener(
+	"mouseleave",
+	() => {
+		update((draft) => {
+			draft.mouseOver = initialState.mouseOver;
+		});
+	},
+	{ passive: true }
+);
 
 function arrayEqual<T>(x: T[], y: T[]) {
 	if (x.length !== y.length) {

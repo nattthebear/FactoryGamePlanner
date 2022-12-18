@@ -32,6 +32,8 @@ describe("BigRat", () => {
 		assert.equal(BigRat.gt(new BigRat(1n, 1n), new BigRat(1n, 1n)), false);
 		assert.equal(BigRat.gt(new BigRat(22n, 7n), new BigRat(314n, 100n)), true);
 		assert.equal(BigRat.gt(new BigRat(1n, 1n), new BigRat(1n, 1n)), false);
+		assert.equal(BigRat.gt(new BigRat(4n, 1n), new BigRat(3n, 1n)), true);
+		assert.equal(BigRat.gt(new BigRat(-4n, -1n), new BigRat(-3n, -1n)), true);
 		assert.equal(BigRat.gte(new BigRat(1n, 1n), new BigRat(1n, 1n)), true);
 		assert.equal(BigRat.lt(new BigRat(-1n, 1n), new BigRat(1n, 1n)), true);
 		assert.equal(BigRat.lt(new BigRat(1n, 1n), new BigRat(-1n, 1n)), false);

@@ -1,9 +1,8 @@
-import { Draft, enableMapSet } from "immer";
-enableMapSet();
+import "../../test/test-setup";
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import produce from "immer";
+import produce, { Draft } from "immer";
 
 import { serialize, deserialize } from "./Serializer";
 import { makeEmptyState, State } from "./Store";
@@ -73,11 +72,11 @@ describe("serialize + deserialize", () => {
 		it(name, () => {
 			const s = makeEmptyState();
 			const t = produce(s, callback);
-			// const u = deserialize(serialize(t));
-			// if (!u) {
-			// 	assert.fail("Deserialization failed");
-			// }
-			// assertStateEqual(u, t);
+			const u = deserialize(serialize(t));
+			if (!u) {
+				assert.fail("Deserialization failed");
+			}
+			assertStateEqual(u, t);
 		});
 	dit("basic test", (draft) => {
 		addProducer(new ProductionBuilding(1000, 300, new BigRat(7n, 2n), Recipes[50]))(draft);
