@@ -16,6 +16,12 @@ export function pointAdd(a: Point, b: Point) {
 	return { x: a.x + b.x, y: a.y + b.y };
 }
 
+export function pointDist(a: Point, b: Point) {
+	const dx = a.x - b.x;
+	const dy = a.y - b.y;
+	return Math.sqrt(dx * dx + dy * dy);
+}
+
 export interface Flow {
 	/** nominal rate per minute */
 	rate: BigRat;

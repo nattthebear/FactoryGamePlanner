@@ -1,7 +1,7 @@
 import { Draft } from "immer";
 import { Recipe } from "../../data/types";
 import { BigRat } from "../math/BigRat";
-import { NodeId, SIXTY, pointAdd } from "./Common";
+import { NodeId, SIXTY, pointAdd, Point, pointDist } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State } from "./Store";
@@ -50,7 +50,7 @@ export const addConnector =
 		const toProducer = draft.producers.get(to.producerId)!;
 
 		const connector = new Connector(
-			BigRat.ZERO,
+			BigRat.ONE,
 			fromProducer.outputFlows()[from.outputIndex].item,
 			fromProducer.id,
 			toProducer.id,
@@ -182,6 +182,30 @@ export const fillFromRecipe = (producerId: NodeId, inputIndex: number, recipe: R
 	producer.inputs[inputIndex].push(connector.id);
 };
 
+/** Fix up by adjusting a building rate to match the selected input */
+export const matchBuildingToInput = (producerId: NodeId, inputIndex: number) => (draft: Draft<State>) => {
+	const producer = draft.producers.get(producerId)!;
+	const { rate } = producer.inputFlows()[inputIndex];
+	const desiredRate = sumConnections(draft, producer.inputs[inputIndex]);
+
+	const buildingDesiredRate = producer.rate.div(rate).mul(desiredRate);
+	if (buildingDesiredRate.gt(BigRat.ZERO)) {
+		producer.rate = buildingDesiredRate;
+	}
+};
+
+/** Fix up by adjusting a building rate to match the selected output */
+export const matchBuildingToOutput = (producerId: NodeId, outputIndex: number) => (draft: Draft<State>) => {
+	const producer = draft.producers.get(producerId)!;
+	const { rate } = producer.outputFlows()[outputIndex];
+	const desiredRate = sumConnections(draft, producer.outputs[outputIndex]);
+
+	const buildingDesiredRate = producer.rate.div(rate).mul(desiredRate);
+	if (buildingDesiredRate.gt(BigRat.ZERO)) {
+		producer.rate = buildingDesiredRate;
+	}
+};
+
 /** Fix up by adjusting Connector to match its input side */
 export const adjustConnectorInput = (connectorId: NodeId) => (draft: Draft<State>) => {
 	const connector = draft.connectors.get(connectorId)!;
@@ -209,6 +233,27 @@ export const adjustConnectorOutput = (connectorId: NodeId) => (draft: Draft<Stat
 		removeConnector(connectorId)(draft);
 	} else {
 		connector.rate = targetRate;
+	}
+};
+
+/** Either `adjustConnectorInput` or `adjustConnectorOutput` based on distance */
+export const adjustConnectorClosest = (connectorId: NodeId, point: Point) => (draft: Draft<State>) => {
+	const connector = draft.connectors.get(connectorId)!;
+	const inputProd = draft.producers.get(connector.input)!;
+	const outputProd = draft.producers.get(connector.output)!;
+
+	const inputAttach = inputProd.outputAttachPoints[connector.inputIndex];
+	const outputAttach = outputProd.inputAttachPoints[connector.outputIndex];
+
+	const ip = pointAdd(inputProd, inputAttach);
+	const op = pointAdd(outputProd, outputAttach);
+
+	const dInput = pointDist(point, ip);
+	const dOutput = pointDist(point, op);
+	if (dInput < dOutput) {
+		adjustConnectorInput(connectorId)(draft);
+	} else {
+		adjustConnectorOutput(connectorId)(draft);
 	}
 };
 

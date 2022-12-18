@@ -2,10 +2,13 @@ import { useEffect, useRef } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
 import {
 	addProducer,
+	adjustConnectorClosest,
 	emptyToRecipe,
 	emptyToSink,
 	fillFromRecipe,
 	fillFromSource,
+	matchBuildingToInput,
+	matchBuildingToOutput,
 	removeConnector,
 	removeProducer,
 } from "../store/Actions";
@@ -25,8 +28,6 @@ import { KeyButton } from "./KeyButton";
 
 import "./HotKeyActions.css";
 import { chooseBuildingRate, chooseSourceSinkRate } from "./RateChoser";
-import produce from "immer";
-import { deserialize, serialize } from "../store/Serializer";
 
 export function HotKeyActions() {
 	const currentScreenCoords = useRef<Point | null>(null);
@@ -157,6 +158,15 @@ export function HotKeyActions() {
 			return (
 				<>
 					<KeyButton
+						keyName="f"
+						disabled={totalIn.eq(o.flow.rate) || totalIn.eq(BigRat.ZERO)}
+						onAct={() => {
+							update(matchBuildingToInput(o.producer.id, o.index));
+						}}
+					>
+						Match rate of input connections
+					</KeyButton>
+					<KeyButton
 						keyName="b"
 						disabled={!hasShortfall || !canChooseRecipeForOutput(o.flow.item)}
 						onAct={async () => {
@@ -185,6 +195,15 @@ export function HotKeyActions() {
 			const hasSurplus = totalOut.lt(o.flow.rate);
 			return (
 				<>
+					<KeyButton
+						keyName="f"
+						disabled={totalOut.eq(o.flow.rate) || totalOut.eq(BigRat.ZERO)}
+						onAct={() => {
+							update(matchBuildingToOutput(o.producer.id, o.index));
+						}}
+					>
+						Match rate of output connections
+					</KeyButton>
 					<KeyButton
 						keyName="b"
 						disabled={!hasSurplus || !canChooseRecipeForInput(o.flow.item)}
@@ -220,6 +239,16 @@ export function HotKeyActions() {
 						}}
 					>
 						Remove Connection
+					</KeyButton>
+					<KeyButton
+						keyName="f"
+						onAct={(wasClick) => {
+							const { connector } = o;
+							const p = calculateActionPosition(wasClick);
+							update(adjustConnectorClosest(connector.id, p));
+						}}
+					>
+						Match Closest Rate
 					</KeyButton>
 				</>
 			);
