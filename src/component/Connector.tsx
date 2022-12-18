@@ -25,17 +25,22 @@ export function Connector({ id }: { id: NodeId }) {
 	const dy = op.y - ip.y;
 
 	return (
-		<path
-			class="connector"
-			d={`M ${ip.x} ${ip.y} c ${dx * 0.8} 0 ${dx * 0.2} ${dy} ${dx} ${dy}`}
-			onMouseEnter={() =>
-				update((draft) => {
-					draft.mouseOver = {
-						type: "connector",
-						connectorId: id,
-					};
-				})
-			}
-		/>
+		<>
+			<path
+				class="connector"
+				d={`M ${ip.x} ${ip.y} c ${dx * 0.8} 0 ${dx * 0.2} ${dy} ${dx} ${dy}`}
+				onMouseEnter={() =>
+					update((draft) => {
+						draft.mouseOver = {
+							type: "connector",
+							connectorId: id,
+						};
+					})
+				}
+			/>
+			<text class="connector-text" x={(op.x + ip.x) / 2} y={(op.y + ip.y) / 2}>
+				{connector.rate.toNumberApprox().toFixed(2)}/min
+			</text>
+		</>
 	);
 }
