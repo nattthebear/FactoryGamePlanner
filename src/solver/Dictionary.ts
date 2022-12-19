@@ -184,4 +184,33 @@ export function pivot(dict: Dictionary, special: boolean): Dictionary | null {
 	};
 }
 
+export function makeSpecial(dict: Dictionary) {
+	const pitch = cols(dict);
+	const { basic, nonBasic, coefficients } = dict;
+	const newBasic = basic.slice();
+	const newNonBasic = nonBasic.slice();
+	newNonBasic.push(0);
+	const inStop = basic.length * (nonBasic.length + 1);
+	const newMax = (basic.length + 1) * (nonBasic.length + 2);
+	const newCoefficients = Array(newMax);
+	let aFrom = 0;
+	let aTo = 0;
+	for (let r = 0; aFrom < inStop; aFrom++, aTo++, r++) {
+		newCoefficients[aTo] = coefficients[aFrom];
+		if (r === pitch - 1) {
+			newCoefficients[++aTo] = BigRat.ONE;
+			r = -1;
+		}
+	}
+	for (; aTo < newMax; aTo++) {
+		newCoefficients[aTo] = aTo === newMax - 1 ? BigRat.MINUS_ONE : BigRat.ZERO;
+	}
+
+	return {
+		basic: newBasic,
+		nonBasic: newNonBasic,
+		coefficients: newCoefficients,
+	};
+}
+
 export {};

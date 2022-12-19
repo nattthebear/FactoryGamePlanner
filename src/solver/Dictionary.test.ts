@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { Dictionary, parse, pivot, stringify } from "./Dictionary";
+import { Dictionary, makeSpecial, parse, pivot, stringify } from "./Dictionary";
 
 describe("Dictionary", () => {
 	it("pivot test 1", () => {
@@ -59,6 +59,18 @@ describe("Dictionary", () => {
 		assert.equal(
 			stringify(p3),
 			"3,2,4;1,5,6,0;8:5,-1:5,1:5,3:5,-4:5,11:5,3:5,2:5,1:5,-3:5,3:1,-1:1,0:1,-1:1,2:1,0:1,0:1,0:1,0:1,-1:1"
+		);
+	});
+
+	it("makeSpecial", () => {
+		// https://www.matem.unam.mx/~omar/math340/2-phase.html
+		const d = parse("4,5,6;1,2,3;4,-2,1,-2,-5,-2,3,-1,-1,1,-1,2,0,1,-1,3");
+		assert(d);
+
+		const sp = makeSpecial(d);
+		assert.equal(
+			stringify(sp),
+			"4,5,6;1,2,3,0;4:1,-2:1,1:1,-2:1,1:1,-5:1,-2:1,3:1,-1:1,1:1,-1:1,1:1,-1:1,2:1,1:1,0:1,0:1,0:1,0:1,-1:1"
 		);
 	});
 });
