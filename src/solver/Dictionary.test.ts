@@ -55,7 +55,10 @@ describe("Dictionary", () => {
 
 		const p3 = pivot(p2, false);
 		assert(p3);
-		//
-		// assert.equal(stringify(p3), "3,2,4;1,5,6,0;");
+		// As before, our order is different
+		assert.equal(
+			stringify(p3),
+			"3,2,4;1,5,6,0;8:5,-1:5,1:5,3:5,-4:5,11:5,3:5,2:5,1:5,-3:5,3:1,-1:1,0:1,-1:1,2:1,0:1,0:1,0:1,0:1,-1:1"
+		);
 	});
 });

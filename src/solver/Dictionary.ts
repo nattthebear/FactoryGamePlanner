@@ -98,6 +98,9 @@ export function pivot(dict: Dictionary, special: boolean): Dictionary | null {
 		let exitCoeff: BigRat | undefined;
 		for (let a = coord(enterCol, 0), b = 0, idx = 0; a < max - pitch; a += pitch, b += pitch, idx++) {
 			const coeff = coefficients[b].div(coefficients[a]).neg();
+			if (coeff.sign() <= 0) {
+				continue;
+			}
 			const varName = basic[idx];
 			const cmp = exitCoeff && BigRat.compare(exitCoeff, coeff);
 			if (cmp == null || cmp === 1 || (cmp === 0 && varName < exitName)) {
@@ -179,16 +182,6 @@ export function pivot(dict: Dictionary, special: boolean): Dictionary | null {
 		nonBasic: newNonBasic,
 		coefficients: newCoefficients,
 	};
-}
-
-export function pivotSpecial(dict: Dictionary): Dictionary | null {
-	const pitch = cols(dict);
-	const rowCount = rows(dict);
-	const coord = (i: number, j: number) => i + j * pitch;
-	const max = pitch * rowCount;
-	const { basic, nonBasic, coefficients } = dict;
-
-	return null;
 }
 
 export {};
