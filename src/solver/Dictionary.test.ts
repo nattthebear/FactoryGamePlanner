@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { Dictionary, makeRegular, makeSpecial, parse, pivot, stringify } from "./Dictionary";
+import { Dictionary, makeRegular, makeSpecial, parse, pivot, solveStandardForm, stringify } from "./Dictionary";
 
 describe("Dictionary", () => {
 	it("pivot test 1", () => {
@@ -74,6 +74,17 @@ describe("Dictionary", () => {
 		);
 	});
 
+	it("makeSpecial 2", () => {
+		const d = parse("4,5,6;1,2,3;4,-2,1,2,-5,-2,3,1,-1,1,-1,-1,0,1,-1,1");
+		assert(d);
+
+		const sp = makeSpecial(d);
+		assert.equal(
+			stringify(sp),
+			"4,5,6;1,2,3,0;4:1,-2:1,1:1,2:1,1:1,-5:1,-2:1,3:1,1:1,1:1,-1:1,1:1,-1:1,-1:1,1:1,0:1,0:1,0:1,0:1,-1:1"
+		);
+	});
+
 	it("makeRegular", () => {
 		// https://www.matem.unam.mx/~omar/math340/2-phase.html
 		// Same value from the end of pivot test 2 but in the order in the example
@@ -88,5 +99,40 @@ describe("Dictionary", () => {
 
 		const r = makeRegular(d, o);
 		assert.equal(stringify(r), "2,3,4;1,5,6;11:5,3:5,2:5,1:5,8:5,-1:5,1:5,3:5,3:1,-1:1,0:1,-1:1,-3:5,1:5,-1:5,2:5");
+	});
+
+	it("solveStandardForm 1", () => {
+		// https://www.matem.unam.mx/~omar/math340/simplex-intro.html
+		const d = parse("4,5,6;1,2,3;14,-2,-1,-1,28,-4,-2,-3,30,-2,-5,-5,0,1,2,-1");
+		assert(d);
+
+		const solved = solveStandardForm(d);
+		assert(solved);
+		assert.equal(
+			stringify(solved),
+			"1,2,5;3,6,4;5:1,0:1,1:8,-5:8,4:1,-1:1,-1:4,1:4,0:1,-1:1,0:1,2:1,13:1,-3:1,-3:8,-1:8"
+		);
+	});
+
+	it("solveStandardForm 2", () => {
+		// https://www.matem.unam.mx/~omar/math340/2-phase.html
+		const d = parse("4,5,6;1,2,3;4,-2,1,-2,-5,-2,3,-1,-1,1,-1,2,0,1,-1,1");
+		assert(d);
+
+		const solved = solveStandardForm(d);
+		assert(solved);
+		assert.equal(
+			stringify(solved),
+			"6,3,2;1,5,4;3:1,-1:1,0:1,-1:1,17:5,-4:5,1:5,-3:5,14:5,2:5,2:5,-1:5,3:5,-1:5,-1:5,-2:5"
+		);
+	});
+
+	it("solveStandardForm 3", () => {
+		// https://www.matem.unam.mx/~omar/math340/2-phase.html
+		const d = parse("4,5,6;1,2,3;4,-2,1,2,-5,-2,3,1,-1,1,-1,-1,0,1,-1,1");
+		assert(d);
+
+		const solved = solveStandardForm(d);
+		assert(!solved);
 	});
 });

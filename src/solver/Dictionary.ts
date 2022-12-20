@@ -48,16 +48,16 @@ export function parse(s: string): Dictionary | null {
 	return { basic, nonBasic, coefficients };
 }
 
-function isFeasible(dict: Dictionary) {
+function needsTwoPhase(dict: Dictionary) {
 	const pitch = cols(dict);
 	const max = pitch * rows(dict);
 	const { coefficients } = dict;
 	for (let a = 0; a < max; a += pitch) {
 		if (coefficients[a].sign() < 0) {
-			return false;
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 /** Pivot the dictionary.  If special, a standard special form is assumed. */
@@ -186,7 +186,7 @@ export function pivot(dict: Dictionary, special: boolean): Dictionary | null {
 }
 
 /** Make a special dictionary out of a normal one that needs it (negative constraints). */
-export function makeSpecial(dict: Dictionary) {
+export function makeSpecial(dict: Dictionary): Dictionary {
 	const pitch = cols(dict);
 	const { basic, nonBasic, coefficients } = dict;
 	const newBasic = basic.slice();
@@ -281,6 +281,39 @@ export function makeRegular(dict: Dictionary, original: Dictionary): Dictionary 
 		nonBasic: newNonBasic,
 		coefficients: newCoefficients,
 	};
+}
+
+/** Solve an optimization problem in standard dictionary form.  By convention, all variable names should be positive (so non-zero) integers. */
+export function solveStandardForm(dict: Dictionary) {
+	if (needsTwoPhase(dict)) {
+		let p = makeSpecial(dict);
+		{
+			const next = pivot(p, true);
+			if (!next) {
+				return null;
+			}
+			p = next;
+		}
+		while (true) {
+			const next = pivot(p, false);
+			if (!next) {
+				break;
+			}
+			p = next;
+		}
+		if (p.coefficients[p.basic.length * cols(p)].sign() < 0) {
+			return null;
+		}
+		dict = makeRegular(p, dict);
+	}
+	while (true) {
+		const next = pivot(dict, false);
+		if (!next) {
+			break;
+		}
+		dict = next;
+	}
+	return dict;
 }
 
 export {};
