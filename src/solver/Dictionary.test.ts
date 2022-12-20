@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { Dictionary, makeSpecial, parse, pivot, stringify } from "./Dictionary";
+import { Dictionary, makeRegular, makeSpecial, parse, pivot, stringify } from "./Dictionary";
 
 describe("Dictionary", () => {
 	it("pivot test 1", () => {
@@ -72,5 +72,21 @@ describe("Dictionary", () => {
 			stringify(sp),
 			"4,5,6;1,2,3,0;4:1,-2:1,1:1,-2:1,1:1,-5:1,-2:1,3:1,-1:1,1:1,-1:1,1:1,-1:1,2:1,1:1,0:1,0:1,0:1,0:1,-1:1"
 		);
+	});
+
+	it("makeRegular", () => {
+		// https://www.matem.unam.mx/~omar/math340/2-phase.html
+		// Same value from the end of pivot test 2 but in the order in the example
+		const d = parse(
+			"2,3,4;1,5,6,0;11:5,3:5,2:5,1:5,-3:5,8:5,-1:5,1:5,3:5,-4:5,3:1,-1:1,0:1,-1:1,2:1,0:1,0:1,0:1,0:1,-1:1"
+		);
+		assert(d);
+
+		// According to the website, o is "4,5,6;1,2,3;4,-2,1,-2,-5,-2,3,-1,-1,1,-1,2,0,1,-1,3", but that appears to be an error.
+		const o = parse("4,5,6;1,2,3;4,-2,1,-2,-5,-2,3,-1,-1,1,-1,2,0,1,-1,1");
+		assert(o);
+
+		const r = makeRegular(d, o);
+		assert.equal(stringify(r), "2,3,4;1,5,6;11:5,3:5,2:5,1:5,8:5,-1:5,1:5,3:5,3:1,-1:1,0:1,-1:1,-3:5,1:5,-1:5,2:5");
 	});
 });
