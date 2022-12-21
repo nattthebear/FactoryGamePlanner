@@ -4,8 +4,9 @@ import solver from "javascript-lp-solver";
 import { SIXTY } from "../store/Common";
 import { Items } from "../../data/generated/items";
 import { Recipes } from "../../data/generated/recipes";
+import { solve } from "./Solver";
 
-interface ResourceConstraint {
+export interface ResourceConstraint {
 	/**
 	 * `limited` - limited quantites are available and try to minimize their use.  Typically ores.  rate > 0.
 	 * `available` - limited quantities are avilable but don't try to minimize their use.  Typically extra specified inputs.  rate > 0
@@ -21,6 +22,13 @@ export interface Problem {
 	constraints: Map<Item, ResourceConstraint>;
 	/** What recipes are allowed. */
 	availableRecipes: Set<Recipe>;
+}
+
+export interface Solution {
+	/** Usage amounts of each recipe, in the same order they're in availableRecipes */
+	recipes: BigRat[];
+	/** The final achieved WP value */
+	wp: BigRat;
 }
 
 const defaultMapResources: Record<string, number> = {
@@ -123,8 +131,34 @@ function doApproxSolve(problem: Problem) {
 	console.log(res);
 }
 
+function doWipSolve(problem: Problem) {
+	let now = performance.now();
+	const res = solve(problem);
+	if (res == null) {
+		console.log("Infeasible??");
+	} else {
+		const { recipes, wp } = res;
+		const recipeNames = [...problem.availableRecipes].map((r) => r.ClassName);
+		const recipeDescs = [...problem.availableRecipes].map((r) => r.DisplayName);
+		const data = recipes
+			.map((ratio, index) => [
+				`${recipeNames[index]} (${recipeDescs[index]})`,
+				`${ratio.toRatioString()} (${ratio.toNumberApprox().toFixed(3)})`,
+			])
+			.filter(([, s]) => s !== "0:1 (0.000)");
+		console.log("WP", wp.toRatioString());
+		console.log(data);
+	}
+	console.log(`SOLVE TIME ${performance.now() - now}ms`);
+}
+
+function doBothSolves(problem: Problem) {
+	doApproxSolve(problem);
+	doWipSolve(problem);
+}
+
 export function test() {
-	doApproxSolve({
+	doBothSolves({
 		constraints: new Map([
 			...Object.entries(defaultMapResources).map(([k, v]): [Item, ResourceConstraint] => [
 				Items.find((i) => i.ClassName === k)!,
@@ -146,7 +180,7 @@ export function test() {
 	});
 }
 export function test2() {
-	doApproxSolve({
+	doBothSolves({
 		constraints: new Map([
 			...Object.entries(defaultMapResources).map(([k, v]): [Item, ResourceConstraint] => [
 				Items.find((i) => i.ClassName === k)!,
@@ -162,7 +196,7 @@ export function test2() {
 	});
 }
 export function test3() {
-	doApproxSolve({
+	doBothSolves({
 		constraints: new Map([
 			...Object.entries(defaultMapResources).map(([k, v]): [Item, ResourceConstraint] => [
 				Items.find((i) => i.ClassName === k)!,
@@ -175,5 +209,27 @@ export function test3() {
 			],
 		]),
 		availableRecipes: new Set(Recipes),
+	});
+}
+export function test4() {
+	doBothSolves({
+		constraints: new Map([
+			[
+				Items.find((i) => i.ClassName === "Desc_LiquidOil_C")!,
+				{ constraint: "limited", rate: BigRat.fromInteger(11700) },
+			],
+			[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "plentiful", rate: BigRat.ZERO }],
+			[
+				Items.find((i) => i.ClassName === "Desc_Plastic_C")!,
+				{ constraint: "produced", rate: new BigRat(600n, 1n) },
+			],
+		]),
+		availableRecipes: new Set([
+			Recipes.find((r) => r.ClassName === "Recipe_Alternate_HeavyOilResidue_C")!,
+			Recipes.find((r) => r.ClassName === "Recipe_ResidualRubber_C")!,
+			Recipes.find((r) => r.ClassName === "Recipe_Alternate_DilutedFuel_C")!,
+			Recipes.find((r) => r.ClassName === "Recipe_Alternate_RecycledRubber_C")!,
+			Recipes.find((r) => r.ClassName === "Recipe_Alternate_Plastic_1_C")!,
+		]),
 	});
 }

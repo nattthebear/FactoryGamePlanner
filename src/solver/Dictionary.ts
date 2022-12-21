@@ -1,6 +1,56 @@
 import { BigRat } from "../math/BigRat";
 
-// We proceed as in https://www.matem.unam.mx/~omar/math340
+/*
+Course notes and general information:  https://www.matem.unam.mx/~omar/math340
+
+Interactive online solver (this is great): https://sagecell.sagemath.org/
+	# http://sporadic.stanford.edu/reference/numerical/sage/numerical/interactive_simplex_method.html#
+	%display typeset
+	A = ([30,0,0,0,0],[0,0,0,30,-60],[-40,0,50,0,0],[-20,40,0,0,0],[0,-20,0,-60,30],[0,0,-100,30,30])
+	b = (11700, -600, 0, 0, 0, 0)
+	c = (-1000/39, 0, 0, 0, 0)
+	P = InteractiveLPProblem(A, b, c, ["x1", "x2", "x3", "x4", "x5"], variable_type=">=")
+	P = P.standard_form()
+	D = P.initial_dictionary()
+	D
+	P.run_simplex_method()
+
+Incorrectly marks problems as infeasible: https://docs.rs/slp/latest/slp/
+
+Good 2d geometric visualizer, use in a Google collab py notebook: https://gilp.henryrobbins.com/en/latest/modules.html
+
+Best JS solver:  https://www.npmjs.com/package/javascript-lp-solver
+	const solver = require('javascript-lp-solver');
+	solver.Solve({
+		optimize: "value",
+		opType: "min",
+		constraints: {
+			copper: { max: 2000 },
+			iron: { max: 4000 },
+			ingots: { max: -200 },
+		},
+		variables: {
+			recipe1: {
+			copper: 30,
+			iron: 0,
+			ingots: -30,
+			value: 6000,
+			},
+			recipe2: {
+			copper: 50,
+			iron: 25,
+			ingots: -100,
+			value: 12500,
+			},
+		},
+	});
+
+Interactive tableau display, bit of a pain:  http://www.phpsimplex.com/simplex/simplex.htm?l=en
+
+
+
+
+*/
 
 export interface Dictionary {
 	/** names of the exiting variables, top to bottom */
@@ -79,11 +129,25 @@ export function pivot(dict: Dictionary, special: boolean): Dictionary | null {
 			}
 			const varName = nonBasic[idx];
 			const cmp = enterCoeff && BigRat.compare(enterCoeff, coeff);
+			// "Standard" rule
 			if (cmp == null || cmp === -1 || (cmp === 0 && varName > enterName)) {
 				enterCol = idx + 1;
 				enterName = varName;
 				enterCoeff = coeff;
 			}
+			// Bland's rule
+			// if (cmp == null || varName < enterName) {
+			// 	enterCol = idx + 1;
+			// 	enterName = varName;
+			// 	enterCoeff = coeff;
+			// }
+			// Take first possible pivot
+			// if (cmp == null) {
+			// 	enterCol = idx + 1;
+			// 	enterName = varName;
+			// 	enterCoeff = coeff;
+			//	break;
+			// }
 		}
 		if (!enterCoeff) {
 			return null;
@@ -98,9 +162,13 @@ export function pivot(dict: Dictionary, special: boolean): Dictionary | null {
 	if (!special) {
 		let exitCoeff: BigRat | undefined;
 		for (let a = coord(enterCol, 0), b = 0, idx = 0; a < max - pitch; a += pitch, b += pitch, idx++) {
-			const coeff = coefficients[b].div(coefficients[a]).neg();
-			if (coeff.sign() <= 0) {
+			const den = coefficients[a];
+			if (den.sign() >= 0) {
 				continue;
+			}
+			const coeff = coefficients[b].div(den).neg();
+			if (coeff.sign() < 0) {
+				throw new Error("Internal error: exit pivot");
 			}
 			const varName = basic[idx];
 			const cmp = exitCoeff && BigRat.compare(exitCoeff, coeff);
@@ -294,7 +362,11 @@ export function solveStandardForm(dict: Dictionary) {
 			}
 			p = next;
 		}
-		while (true) {
+		for (let loop = 0; ; loop++) {
+			if (loop === 200) {
+				console.error("Possible cycle detected");
+				return null;
+			}
 			const next = pivot(p, false);
 			if (!next) {
 				break;
@@ -306,7 +378,11 @@ export function solveStandardForm(dict: Dictionary) {
 		}
 		dict = makeRegular(p, dict);
 	}
-	while (true) {
+	for (let loop = 0; ; loop++) {
+		if (loop === 200) {
+			console.error("Possible cycle detected");
+			return null;
+		}
 		const next = pivot(dict, false);
 		if (!next) {
 			break;
@@ -316,4 +392,91 @@ export function solveStandardForm(dict: Dictionary) {
 	return dict;
 }
 
-export {};
+/** Map from x indices to y indices */
+function makeMapping<T>(x: T[], y: T[]) {
+	const ym = new Map<T, number>();
+	for (let yi = 0; yi < y.length; yi++) {
+		ym.set(y[yi], yi);
+	}
+	const ret = Array<number>(x.length);
+	for (let xi = 0; xi < x.length; xi++) {
+		const yi = ym.get(x[xi]);
+		if (yi == null) {
+			return null;
+		}
+		ret[xi] = yi;
+	}
+	return ret;
+}
+
+export function equal(x: Dictionary | null, y: Dictionary | null) {
+	if (!x || !y) {
+		return x == y;
+	}
+	if (
+		x.basic.length !== y.basic.length ||
+		x.nonBasic.length !== y.nonBasic.length ||
+		x.coefficients.length !== y.coefficients.length
+	) {
+		return false;
+	}
+	const basicMap = makeMapping(x.basic, y.basic);
+	if (!basicMap) {
+		return false;
+	}
+	const nonBasicMap = makeMapping(x.nonBasic, y.nonBasic);
+	if (!nonBasicMap) {
+		return false;
+	}
+	const pitch = cols(x);
+	const nRows = rows(x);
+	for (let j = 0; j < nRows; j++) {
+		for (let i = 0; i < pitch; i++) {
+			const yi = i === 0 ? 0 : nonBasicMap[i - 1] + 1;
+			const yj = j === nRows - 1 ? j : basicMap[j];
+
+			const xv = x.coefficients[j * pitch + i];
+			const yv = y.coefficients[yj * pitch + yi];
+			if (xv.neq(yv)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+/*
+// Basic junk display widget for a Dictionary
+function MatrixDisplay() {
+	const [s, cs] = useState("");
+  let otherDom = null;
+  try {
+  	const [rows, cols, coeffs] = s.split(";").map(z => z.split(","));
+    const nodes = [];
+    const idx = (i, j, v) => nodes[j * (cols.length +  2) + i] = <div>{v}</div>;
+    
+    for (let j = 0; j < rows.length; j++) {
+    idx(0, j, <strong>x{rows[j]}</strong>);
+    }
+    idx(0, rows.length, "wp=");
+    let c = 0;
+    for (let j = 0; j <= rows.length; j++) {
+      for (let i = 1; i <= cols.length + 1; i++) {
+	    	let name = i > 1 ? <b> x{cols[i - 2]}</b> : null;
+        idx(i, j, <React.Fragment>{coeffs[c++]}{name}</React.Fragment>);
+      }
+    }
+    otherDom = <div class="tabel" style={{ gridTemplate: `1fr / ${"1fr ".repeat(cols.length + 2)}` }}>{nodes}</div>;
+  } catch (e) {
+  	otherDom = e && e.message;
+  }
+  return (
+  	<div>
+  	  <input type="text" value={s} onChange={ev => cs(ev.currentTarget.value)} />
+      <div>
+        {otherDom}
+      </div>
+  	</div>
+  );
+}
+*/
