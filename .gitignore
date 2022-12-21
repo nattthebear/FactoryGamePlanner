@@ -1,6 +1,6 @@
 node_modules
 .importerconfig
-data/generated
+data/generated/images
 src/math/ExpressionParser.js
 .parcel-cache
 .parcel-dev

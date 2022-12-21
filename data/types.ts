@@ -23,6 +23,7 @@ export interface Recipe {
 	/** Crafting time in seconds */
 	Duration: BigRat;
 	Building: Building;
+	Alternate: boolean;
 }
 
 export interface Building {

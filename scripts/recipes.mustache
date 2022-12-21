@@ -12,6 +12,7 @@ export const Recipes: Recipe[] = [
 		Outputs: [{{#Outputs}}{ Item: Items[{{Item}}], Quantity: new BigRat({{{QuantityP}}}n, {{{QuantityQ}}}n) }, {{/Outputs}}],
 		Duration: BigRat.fromInteger({{mManufactoringDuration}}),
 		Building: Buildings[{{Building}}],
+		Alternate: {{Alternate}},
 	},
 	{{/.}}
 ];

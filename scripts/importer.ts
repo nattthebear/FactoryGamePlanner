@@ -331,6 +331,42 @@ const BuildableManufacturer = t.type({
 	// "mShouldModifyWorldGrid": "True",
 });
 
+const $Schematic = "Class'/Script/FactoryGame.FGSchematic'";
+const Schematic = t.type({
+	ClassName: t.string,
+	// "FullName": "BlueprintGeneratedClass /Game/FactoryGame/Schematics/ResourceSink/ResourceSink_CyberWagon_Unlock.ResourceSink_CyberWagon_Unlock_C",
+	mType: t.keyof({
+		EST_Custom: null,
+		EST_MAM: null,
+		EST_Tutorial: null,
+		EST_HardDrive: null,
+		EST_Milestone: null,
+		EST_Alternate: null,
+		EST_ResourceSink: null,
+	}),
+	// "mDisplayName": "Cyber Wagon available in the AWESOME Shop",
+	// "mDescription": "",
+	// "mSubCategories": "(None)",
+	// "mMenuPriority": "0.000000",
+	// "mTechTier": "1",
+	// "mCost": "",
+	// "mTimeToComplete": "0.000000",
+	// "mRelevantShopSchematics": "",
+	mUnlocks: t.array(
+		t.type({
+			Class: t.string,
+			mRecipes: t.union([t.undefined, miniobj(t.array(t.string))]),
+		})
+	),
+	// "mSchematicIcon": "(ImageSize=(X=256.000000,Y=256.000000),Margin=(),TintColor=(SpecifiedColor=(R=1.000000,G=1.000000,B=1.000000,A=1.000000)),ResourceObject=Texture2D'\"/Game/FactoryGame/Buildable/Vehicle/Cyberwagon/UI/Cyberwagon_256.Cyberwagon_256\"',UVRegion=(Min=(X=0.000000,Y=0.000000),Max=(X=0.000000,Y=0.000000),bIsValid=0),DrawAs=Image)",
+	// "mSmallSchematicIcon": "None",
+	// "mSchematicDependencies": [],
+	// "mDependenciesBlocksSchematicAccess": "False",
+	// "mHiddenUntilDependenciesMet": "True",
+	// "mRelevantEvents": "",
+	// "mIncludeInBuilds": "IIB_PublicBuilds"
+});
+
 const RawData = t.array(t.type({ NativeClass: t.string, Classes: t.array(t.unknown) }));
 
 const Data = t.type({
@@ -346,6 +382,7 @@ const Data = t.type({
 	[$Recipe]: t.array(Recipe),
 	[$BuildableManufacturer]: t.array(BuildableManufacturer),
 	[$BuildableManufacturerVariablePower]: t.array(BuildableManufacturer),
+	[$Schematic]: t.array(Schematic),
 });
 
 async function doMustache(name: string, data: any) {
@@ -423,6 +460,14 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 
 	const itemsLookup = new Map(items.map((x, i) => [x.ClassName, i]));
 
+	const alternateUnlockData = new Set(
+		data[$Schematic]
+			.filter((s) => s.mType === "EST_Alternate")
+			.flatMap((s) => s.mUnlocks.filter((u) => u.Class === "BP_UnlockRecipe_C"))
+			.flatMap((u) => u.mRecipes!)
+			.map((s) => s.split(".")[1])
+	);
+
 	const mapIngredients = (input: t.TypeOf<typeof IngredientList>) =>
 		input.map((x) => {
 			const index = itemsLookup.get(x.ItemClass);
@@ -451,6 +496,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			}
 			return results[0];
 		})(),
+		Alternate: alternateUnlockData.has(x.ClassName),
 	}));
 
 	const itemsView = items.map((x) => ({
