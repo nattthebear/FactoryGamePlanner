@@ -1,6 +1,6 @@
 import { Item } from "../../data/types";
 import { BigRat } from "../math/BigRat";
-import { SIXTY } from "../store/Common";
+import { SIXTY } from "../editor/store/Common";
 import { Dictionary, solveStandardForm, stringify } from "./Dictionary";
 import { Problem, Solution } from "./Solution";
 

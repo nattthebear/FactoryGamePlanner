@@ -1,7 +1,8 @@
 import { Draft } from "immer";
-import { Recipe } from "../../data/types";
-import { BigRat } from "../math/BigRat";
-import { NodeId, SIXTY, pointAdd, Point, pointDist } from "./Common";
+import { Recipe } from "../../../data/types";
+import { BigRat } from "../../math/BigRat";
+import { Point } from "../../util";
+import { NodeId, SIXTY, pointAdd, pointDist } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State } from "./Store";

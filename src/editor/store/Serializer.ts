@@ -1,9 +1,9 @@
-import { Items } from "../../data/generated/items";
-import { Recipes } from "../../data/generated/recipes";
-import { Item, Recipe } from "../../data/types";
-import { RStream, WStream } from "../base64";
-import { BigRat } from "../math/BigRat";
-import { FACTORY_MAX, FACTORY_MIN } from "../util";
+import { Items } from "../../../data/generated/items";
+import { Recipes } from "../../../data/generated/recipes";
+import { Item, Recipe } from "../../../data/types";
+import { RStream, WStream } from "../../base64";
+import { BigRat } from "../../math/BigRat";
+import { FACTORY_MAX, FACTORY_MIN } from "../../util";
 import { generateId, NodeId } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";

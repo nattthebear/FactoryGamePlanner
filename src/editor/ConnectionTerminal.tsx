@@ -1,7 +1,7 @@
-import { LiquidAttach, ProducerDrawing, SolidAttach } from "../art/Producers";
+import { LiquidAttach, ProducerDrawing, SolidAttach } from "./ProducerArt";
 import { BigRat } from "../math/BigRat";
-import { NodeId, toTranslation } from "../store/Common";
-import { update, useSelector } from "../store/Store";
+import { NodeId, toTranslation } from "./store/Common";
+import { update, useSelector } from "./store/Store";
 
 import "./ConnectionTerminal.css";
 

@@ -1,7 +1,7 @@
 import { Item, Recipe, RecipeFlow } from "../../data/types";
 import { BigRat } from "../math/BigRat";
 import solver from "javascript-lp-solver";
-import { SIXTY } from "../store/Common";
+import { SIXTY } from "../editor/store/Common";
 import { Items } from "../../data/generated/items";
 import { Recipes } from "../../data/generated/recipes";
 import { solve } from "./Solver";

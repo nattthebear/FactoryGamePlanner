@@ -1,4 +1,4 @@
-import { Point } from "../store/Common";
+import { Point } from "../util";
 
 export interface ProducerDrawing {
 	/** `d` value for the main path.  Starts at the center of the building */

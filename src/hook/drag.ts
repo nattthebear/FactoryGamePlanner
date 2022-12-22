@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "preact/hooks";
-import { Point } from "../store/Common";
+import { Point } from "../util";
 
 export function useDrag(onDrag: (diff: Point) => boolean) {
 	const dragState = useRef<{ last: Point | null; dragging: boolean }>({ last: null, dragging: false });

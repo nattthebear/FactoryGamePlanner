@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from "preact/hooks";
-import { makeStore } from "../store/MakeStore";
+import { makeStore } from "../MakeStore";
 import "./Prompt.css";
 
 export interface PromptItem<T> {

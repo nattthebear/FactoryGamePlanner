@@ -3,11 +3,11 @@ import { Recipes } from "../../data/generated/recipes";
 import { useDrag } from "../hook/drag";
 import { useLatestValue } from "../hook/useLatestValue";
 import { BigRat } from "../math/BigRat";
-import { addProducer } from "../store/Actions";
-import { Point, SIXTY, toTranslation } from "../store/Common";
-import { ProductionBuilding, Sink, Source } from "../store/Producers";
-import { selectConnectorIds, selectProducerIds, update, useSelector } from "../store/Store";
-import { BUILDING_MAX, BUILDING_MIN, clamp, clampp, FACTORY_MAX, FACTORY_MIN, FACTORY_SIZE } from "../util";
+import { addProducer } from "./store/Actions";
+import { SIXTY, toTranslation } from "./store/Common";
+import { ProductionBuilding, Sink, Source } from "./store/Producers";
+import { selectConnectorIds, selectProducerIds, update, useSelector } from "./store/Store";
+import { BUILDING_MAX, BUILDING_MIN, clamp, clampp, FACTORY_MAX, FACTORY_MIN, FACTORY_SIZE, Point } from "../util";
 import { Connector } from "./Connector";
 
 import "./FactoryEditor.css";

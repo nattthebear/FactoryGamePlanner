@@ -1,6 +1,6 @@
-import { NodeId, pointAdd, pointEqual } from "../store/Common";
-import { Producer } from "../store/Producers";
-import { selectProducerLocation, update, useSelector } from "../store/Store";
+import { NodeId, pointAdd, pointEqual } from "./store/Common";
+import { Producer } from "./store/Producers";
+import { selectProducerLocation, update, useSelector } from "./store/Store";
 
 import "./Connector.css";
 

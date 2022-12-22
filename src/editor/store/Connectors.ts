@@ -1,6 +1,6 @@
 import { immerable } from "immer";
-import { Item } from "../../data/types";
-import { BigRat } from "../math/BigRat";
+import { Item } from "../../../data/types";
+import { BigRat } from "../../math/BigRat";
 import { Flow, generateId, NodeId } from "./Common";
 
 export class Connector {

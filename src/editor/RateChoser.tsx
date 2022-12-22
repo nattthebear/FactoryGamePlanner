@@ -2,8 +2,8 @@ import produce from "immer";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
 import { evaluate } from "../math/Expression";
-import { Flow } from "../store/Common";
-import { ProductionBuilding, Sink, Source } from "../store/Producers";
+import { Flow } from "./store/Common";
+import { ProductionBuilding, Sink, Source } from "./store/Producers";
 import { prompt } from "./Prompt";
 
 import "./RateChooser.css";

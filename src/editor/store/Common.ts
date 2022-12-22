@@ -1,10 +1,6 @@
-import { Item } from "../../data/types";
-import { BigRat } from "../math/BigRat";
-
-export interface Point {
-	x: number;
-	y: number;
-}
+import { Item } from "../../../data/types";
+import { BigRat } from "../../math/BigRat";
+import { Point } from "../../util";
 
 export const toTranslation = (p: Point) => `translate(${p.x}px, ${p.y}px)`;
 

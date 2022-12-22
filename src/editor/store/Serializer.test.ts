@@ -1,4 +1,4 @@
-import "../../test/test-setup";
+import "../../../test/test-setup";
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
@@ -7,8 +7,8 @@ import produce, { Draft } from "immer";
 import { serialize, deserialize } from "./Serializer";
 import { makeEmptyState, State } from "./Store";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
-import { BigRat } from "../math/BigRat";
-import { Recipes } from "../../data/generated/recipes";
+import { BigRat } from "../../math/BigRat";
+import { Recipes } from "../../../data/generated/recipes";
 import { addProducer, emptyToSink } from "./Actions";
 import { Connector } from "./Connectors";
 

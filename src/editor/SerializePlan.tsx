@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "preact/hooks";
-import { deserialize, serialize } from "../store/Serializer";
-import { State, useSelector } from "../store/Store";
+import { deserialize, serialize } from "./store/Serializer";
+import { State, useSelector } from "./store/Store";
 
 const identity = <T extends any>(x: T) => x;
 

@@ -1,7 +1,7 @@
 import { useDrag } from "../hook/drag";
-import { NodeId, toTranslation } from "../store/Common";
-import { ProductionBuilding } from "../store/Producers";
-import { update, useSelector } from "../store/Store";
+import { NodeId, toTranslation } from "./store/Common";
+import { ProductionBuilding } from "./store/Producers";
+import { update, useSelector } from "./store/Store";
 import { BUILDING_MAX, BUILDING_MIN, clamp, FACTORY_MAX, FACTORY_MIN } from "../util";
 import { ConnectionTerminal } from "./ConnectionTerminal";
 

@@ -11,11 +11,11 @@ import {
 	matchBuildingToOutput,
 	removeConnector,
 	removeProducer,
-} from "../store/Actions";
-import { Point, SIXTY } from "../store/Common";
-import { ProductionBuilding, Sink, Source } from "../store/Producers";
-import { getStateRaw, MouseOverObject, selectMouseOverObject, update, useSelector } from "../store/Store";
-import { BUILDING_MAX, BUILDING_MIN, clampp } from "../util";
+} from "./store/Actions";
+import { SIXTY } from "./store/Common";
+import { ProductionBuilding, Sink, Source } from "./store/Producers";
+import { getStateRaw, MouseOverObject, selectMouseOverObject, update, useSelector } from "./store/Store";
+import { BUILDING_MAX, BUILDING_MIN, clampp, Point } from "../util";
 import {
 	canChooseRecipeForInput,
 	canChooseRecipeForOutput,

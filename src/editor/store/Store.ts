@@ -1,8 +1,9 @@
 import { Draft } from "immer";
-import { BigRat } from "../math/BigRat";
-import { Flow, NodeId, Point, pointEqual } from "./Common";
+import { BigRat } from "../../math/BigRat";
+import { Point } from "../../util";
+import { Flow, NodeId, pointEqual } from "./Common";
 import { Connector } from "./Connectors";
-import { makeStore, Selector } from "./MakeStore";
+import { makeStore, Selector } from "../../MakeStore";
 import { Producer, Sink, Source } from "./Producers";
 import { deserialize } from "./Serializer";
 

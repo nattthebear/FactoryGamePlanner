@@ -1,4 +1,7 @@
-import { Point } from "./store/Common";
+export interface Point {
+	x: number;
+	y: number;
+}
 
 export const FACTORY_SIZE = 4000;
 export const FACTORY_MIN: Point = { x: -FACTORY_SIZE / 2, y: -FACTORY_SIZE / 2 };
