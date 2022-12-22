@@ -4,6 +4,7 @@ import { Item } from "../../../data/types";
 import { getEncodedDataForTab, TAB_PLANNER } from "../../base64";
 import { makeStore } from "../../MakeStore";
 import { BigRat } from "../../math/BigRat";
+import { Problem } from "../../solver/Solution";
 import { Flow } from "../../util";
 import { deserialize } from "./Serializer";
 
@@ -66,3 +67,39 @@ const initialState = (() => {
 })();
 
 export const { useSelector, update, getStateRaw } = makeStore(initialState, "_PlannerStore");
+
+export function makeProblem(state: State): Problem {
+	const res: Problem = {
+		constraints: new Map(),
+		availableRecipes: new Set(),
+	};
+
+	for (let i = 0; i < BasicRecipes.length; i++) {
+		if (state.basicRecipes[i]) {
+			res.availableRecipes.add(BasicRecipes[i]);
+		}
+	}
+	for (let i = 0; i < AlternateRecipes.length; i++) {
+		if (state.alternateRecipes[i]) {
+			res.availableRecipes.add(AlternateRecipes[i]);
+		}
+	}
+
+	for (let i = 0; i < Resources.length; i++) {
+		const rate = state.resources[i];
+		const item = Resources[i];
+		if (!rate) {
+			res.constraints.set(item, { constraint: "plentiful", rate: BigRat.ZERO });
+		} else if (rate.sign() > 0) {
+			res.constraints.set(item, { constraint: "limited", rate });
+		}
+	}
+	for (const { rate, item } of state.inputs) {
+		res.constraints.set(item, { constraint: "available", rate });
+	}
+	for (const { rate, item } of state.products) {
+		res.constraints.set(item, { constraint: "produced", rate });
+	}
+
+	return res;
+}
