@@ -1,3 +1,6 @@
+import { Item } from "../data/types";
+import { BigRat } from "./math/BigRat";
+
 export interface Point {
 	x: number;
 	y: number;
@@ -26,4 +29,10 @@ export function clampp(p: Point, min: Point, max: Point) {
 		x: clamp(p.x, min.x, max.x),
 		y: clamp(p.y, min.y, max.y),
 	};
+}
+
+export interface Flow {
+	/** nominal rate per minute */
+	rate: BigRat;
+	item: Item;
 }

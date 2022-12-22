@@ -2,11 +2,11 @@ import produce from "immer";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
 import { evaluate } from "../math/Expression";
-import { Flow } from "./store/Common";
-import { ProductionBuilding, Sink, Source } from "./store/Producers";
+import { ProductionBuilding, Sink, Source } from "../editor/store/Producers";
 import { prompt } from "./Prompt";
 
 import "./RateChooser.css";
+import { Flow } from "../util";
 
 function evaluateAndVerify(text: string) {
 	if (!text) {

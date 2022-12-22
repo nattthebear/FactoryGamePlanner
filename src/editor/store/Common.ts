@@ -18,12 +18,6 @@ export function pointDist(a: Point, b: Point) {
 	return Math.sqrt(dx * dx + dy * dy);
 }
 
-export interface Flow {
-	/** nominal rate per minute */
-	rate: BigRat;
-	item: Item;
-}
-
 const BrandSymbol = Symbol();
 export type NodeId = { [BrandSymbol]: null };
 

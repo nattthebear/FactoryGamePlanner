@@ -1,3 +1,7 @@
+import { Items } from "../data/generated/items";
+import { Recipes } from "../data/generated/recipes";
+import { BigRat } from "./math/BigRat";
+
 const BASE64_URL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 const BASE64_URL_REV = new Map(BASE64_URL.split("").map((c, i) => [c, i]));
 
@@ -59,4 +63,116 @@ export class WStream {
 		this.res.length = 0;
 		return res;
 	}
+}
+
+/** Number of bits needed to encode this positive value as a fixed-bit-width integer */
+export function bitsNeeded(value: number) {
+	return 32 - Math.clz32(value);
+}
+/** Write a non-negative bigint value */
+export function writeBigPos(w: WStream, n: bigint) {
+	while (true) {
+		const more = +(n !== 0n);
+		w.write(1, more);
+		if (!more) {
+			return;
+		}
+		w.write(6, Number(n & 63n));
+		n >>= 6n;
+	}
+}
+/** Read a non-negative bigint value */
+export function readBigPos(r: RStream) {
+	let n = 0n;
+	let shift = 0n;
+	while (true) {
+		const more = r.read(1);
+		if (!more) {
+			return n;
+		}
+		const next = BigInt(r.read(6));
+		n |= next << shift;
+		shift += 6n;
+	}
+}
+/** Write a BigRat value */
+export function writeBigRat(w: WStream, value: BigRat) {
+	let { p, q } = value.terms();
+	if (q < 0) {
+		q = -q;
+		p = -p;
+	}
+	const neg = +(p < 0);
+	w.write(1, neg);
+	if (neg) {
+		p = -p;
+	}
+	writeBigPos(w, p);
+	writeBigPos(w, q);
+}
+/** Read a BigRat value */
+export function readBigRat(r: RStream) {
+	const neg = r.read(1);
+	let p = readBigPos(r);
+	const q = readBigPos(r);
+	if (neg) {
+		p = -p;
+	}
+	return new BigRat(p, q);
+}
+
+/** Makes a compressing map to store a set of ids with the minimum number of bits */
+export function makeWMap<T>(keys: Iterable<T>) {
+	const map = new Map<T, number>();
+	let i = 0;
+	for (const k of keys) {
+		map.set(k, i++);
+	}
+	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
+	function write(w: WStream, v: T) {
+		const n = map.get(v);
+		if (n == null) {
+			throw new Error("Internal ID error");
+		}
+		w.write(BITS, n);
+	}
+	write.BITS = BITS;
+	return write;
+}
+/** Make a reading map to reverse `makeWMap` */
+export function makeRMap<T>(data: T[]) {
+	const i = data.length;
+	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
+	function read(r: RStream) {
+		const value = r.read(BITS);
+		if (value < data.length) {
+			return data[value];
+		}
+		return null;
+	}
+	read.BITS = BITS;
+	return read;
+}
+
+export const writeRecipe = makeWMap(Recipes);
+export const writeItem = makeWMap(Items);
+export const readRecipe = makeRMap(Recipes);
+export const readItem = makeRMap(Items);
+
+export const TAB_PLANNER = "p";
+export const TAB_EDITOR = "e";
+
+export function getActiveTabFromSearch() {
+	return window.location.search.slice(1, 2);
+}
+export function getEncodedDataForTab(tabName: string) {
+	if (tabName !== getActiveTabFromSearch()) {
+		return null;
+	}
+	return window.location.search.slice(2);
+}
+export function setEncodedDataForTab(tabName: string, data: string) {
+	const urlBase = window.location.href.split("?")[0];
+	const urlSuffix = "?" + tabName + data;
+	window.history.replaceState(null, "", urlBase + urlSuffix);
 }

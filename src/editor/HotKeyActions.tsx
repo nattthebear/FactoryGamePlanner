@@ -23,11 +23,11 @@ import {
 	chooseRecipeByOutput,
 	chooseRecipeForInput,
 	chooseRecipeForOutput,
-} from "./ItemChooser";
+} from "../component/ItemChooser";
 import { KeyButton } from "./KeyButton";
 
 import "./HotKeyActions.css";
-import { chooseBuildingRate, chooseSourceSinkRate } from "./RateChoser";
+import { chooseBuildingRate, chooseSourceSinkRate } from "../component/RateChoser";
 
 export function HotKeyActions() {
 	const currentScreenCoords = useRef<Point | null>(null);

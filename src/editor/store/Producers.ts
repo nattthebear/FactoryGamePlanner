@@ -1,9 +1,9 @@
 import { immerable } from "immer";
 import { Item, Recipe, RecipeFlow } from "../../../data/types";
 import { BigRat } from "../../math/BigRat";
-import { Flow, generateId, NodeId, SIXTY } from "./Common";
+import { generateId, NodeId, SIXTY } from "./Common";
 import { BuildingMap, ProducerDrawing, Sink as SinkGfx, Source as SourceGfx } from "../ProducerArt";
-import { Point } from "../../util";
+import { Flow, Point } from "../../util";
 
 export abstract class Producer implements Point {
 	[immerable] = true;

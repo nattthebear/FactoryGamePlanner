@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect } from "preact/hooks";
+import { isAnyPromptActive } from "../component/Prompt";
 import { useLatestValue } from "../hook/useLatestValue";
-import { isAnyPromptActive } from "./Prompt";
 
 interface Props {
 	keyName: string;

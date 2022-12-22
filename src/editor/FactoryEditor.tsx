@@ -12,7 +12,6 @@ import { Connector } from "./Connector";
 
 import "./FactoryEditor.css";
 import { HotKeyActions } from "./HotKeyActions";
-import { chooseItem, chooseRecipeByOutput } from "./ItemChooser";
 import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
 

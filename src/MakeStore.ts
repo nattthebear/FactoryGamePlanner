@@ -58,6 +58,7 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 	};
 
 	if (debugName) {
+		window[debugName as any] = state as any;
 		subs.add(() => {
 			window[debugName as any] = state as any;
 		});

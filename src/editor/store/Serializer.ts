@@ -1,7 +1,20 @@
 import { Items } from "../../../data/generated/items";
 import { Recipes } from "../../../data/generated/recipes";
 import { Item, Recipe } from "../../../data/types";
-import { RStream, WStream } from "../../base64";
+import {
+	bitsNeeded,
+	makeWMap,
+	readBigPos,
+	readBigRat,
+	readItem,
+	readRecipe,
+	RStream,
+	writeBigPos,
+	writeBigRat,
+	writeItem,
+	writeRecipe,
+	WStream,
+} from "../../base64";
 import { BigRat } from "../../math/BigRat";
 import { FACTORY_MAX, FACTORY_MIN } from "../../util";
 import { generateId, NodeId } from "./Common";
@@ -10,60 +23,6 @@ import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { makeEmptyState, State } from "./Store";
 
 const VERSION = 0;
-
-/** Number of bits needed to encode this positive value as a fixed-bit-width integer */
-function bitsNeeded(value: number) {
-	return 32 - Math.clz32(value);
-}
-
-function writeBigPos(w: WStream, n: bigint) {
-	while (true) {
-		const more = +(n !== 0n);
-		w.write(1, more);
-		if (!more) {
-			return;
-		}
-		w.write(6, Number(n & 63n));
-		n >>= 6n;
-	}
-}
-function readBigPos(r: RStream) {
-	let n = 0n;
-	let shift = 0n;
-	while (true) {
-		const more = r.read(1);
-		if (!more) {
-			return n;
-		}
-		const next = BigInt(r.read(6));
-		n |= next << shift;
-		shift += 6n;
-	}
-}
-
-function writeBigRat(w: WStream, value: BigRat) {
-	let { p, q } = value.terms();
-	if (q < 0) {
-		q = -q;
-		p = -p;
-	}
-	const neg = +(p < 0);
-	w.write(1, neg);
-	if (neg) {
-		p = -p;
-	}
-	writeBigPos(w, p);
-	writeBigPos(w, q);
-}
-function readBigRat(r: RStream) {
-	const neg = r.read(1);
-	let p = readBigPos(r);
-	const q = readBigPos(r);
-	if (neg) {
-		p = -p;
-	}
-	return new BigRat(p, q);
-}
 
 const { saveX, saveY, loadX, loadY } = (() => {
 	const xoffs = FACTORY_MIN.x;
@@ -86,43 +45,6 @@ const { saveX, saveY, loadX, loadY } = (() => {
 		},
 	};
 })();
-
-/** Makes a compressing map to store a set of ids with the minimum number of bits */
-function makeWMap<T>(keys: Iterable<T>) {
-	const map = new Map<T, number>();
-	let i = 0;
-	for (const k of keys) {
-		map.set(k, i++);
-	}
-	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
-	function write(w: WStream, v: T) {
-		const n = map.get(v);
-		if (n == null) {
-			throw new Error("Internal ID error");
-		}
-		w.write(BITS, n);
-	}
-	write.BITS = BITS;
-	return write;
-}
-function makeRMap<T>(data: T[]) {
-	const i = data.length;
-	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
-	function read(r: RStream) {
-		const value = r.read(BITS);
-		if (value < data.length) {
-			return data[value];
-		}
-		return null;
-	}
-	read.BITS = BITS;
-	return read;
-}
-
-const writeRecipe = makeWMap(Recipes);
-const writeItem = makeWMap(Items);
-const readRecipe = makeRMap(Recipes);
-const readItem = makeRMap(Items);
 
 export function serialize(state: State) {
 	const w = new WStream();

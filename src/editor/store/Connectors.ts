@@ -1,7 +1,8 @@
 import { immerable } from "immer";
 import { Item } from "../../../data/types";
 import { BigRat } from "../../math/BigRat";
-import { Flow, generateId, NodeId } from "./Common";
+import { Flow } from "../../util";
+import { generateId, NodeId } from "./Common";
 
 export class Connector {
 	[immerable] = true;

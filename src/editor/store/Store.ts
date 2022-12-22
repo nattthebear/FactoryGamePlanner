@@ -1,11 +1,12 @@
 import { Draft } from "immer";
 import { BigRat } from "../../math/BigRat";
-import { Point } from "../../util";
-import { Flow, NodeId, pointEqual } from "./Common";
+import { Flow, Point } from "../../util";
+import { NodeId, pointEqual } from "./Common";
 import { Connector } from "./Connectors";
 import { makeStore, Selector } from "../../MakeStore";
 import { Producer, Sink, Source } from "./Producers";
 import { deserialize } from "./Serializer";
+import { getEncodedDataForTab, TAB_EDITOR } from "../../base64";
 
 export type MouseOverInfo =
 	| { type: "none" }
@@ -37,7 +38,7 @@ export const makeEmptyState = (): State => ({
 	connectors: new Map(),
 });
 const initialState = (() => {
-	const search = window.location.search.slice(1);
+	const search = getEncodedDataForTab(TAB_EDITOR);
 	if (search) {
 		try {
 			const reconstructed = deserialize(search);
@@ -51,7 +52,7 @@ const initialState = (() => {
 	return makeEmptyState();
 })();
 
-const { useSelector, update, getStateRaw } = makeStore(initialState, "_MainStore");
+const { useSelector, update, getStateRaw } = makeStore(initialState, "_EditorStore");
 export { useSelector, update, getStateRaw };
 
 document.documentElement.addEventListener(

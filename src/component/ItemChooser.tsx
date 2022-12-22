@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { Items } from "../../data/generated/items";
 import { Item, Recipe } from "../../data/types";
 import { Chooser } from "./Chooser";
-import { prompt } from "./Prompt";
+import { prompt } from "../component/Prompt";
 
 import "./ItemChooser.css";
 import { Recipes } from "../../data/generated/recipes";
@@ -72,13 +72,23 @@ function RecipeChooser({ type, onConfirm }: { type: "input" | "output"; onConfir
 	);
 }
 
-export const chooseItem = (title: string) =>
-	prompt<Item | null>({
+/** Choose an item.
+ * @param options If not provided, choice will be taken from all items.
+ */
+export const chooseItem = async (title: string, options?: Item[]) => {
+	const chooserItems = (options ?? Items).map((item) => ({
+		adornment: itemImage(item),
+		name: item.DisplayName,
+		item,
+	}));
+
+	return prompt<Item | null>({
 		title,
 		render: (onConfirm) => (
-			<Chooser items={DisplayItems} value={null} changeValue={(di) => onConfirm(di?.item ?? null)} />
+			<Chooser items={chooserItems} value={null} changeValue={(di) => onConfirm(di?.item ?? null)} />
 		),
 	});
+};
 
 export const chooseRecipeByOutput = () =>
 	prompt<Recipe | null>({

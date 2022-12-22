@@ -1,13 +1,11 @@
 import { FactoryEditor } from "./FactoryEditor";
-import { PromptRoot } from "./Prompt";
-import { SerializePlan } from "./SerializePlan";
+import { SerializeEditor } from "./SerializeEditor";
 
 export function Editor() {
 	return (
 		<>
 			<FactoryEditor />
-			<PromptRoot />
-			<SerializePlan />
+			<SerializeEditor />
 		</>
 	);
 }
