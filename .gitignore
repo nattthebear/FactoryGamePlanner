@@ -4,3 +4,4 @@ data/generated/images
 src/math/ExpressionParser.js
 .parcel-cache
 .parcel-dev
+docs.json

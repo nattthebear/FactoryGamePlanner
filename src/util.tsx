@@ -36,3 +36,27 @@ export interface Flow {
 	rate: BigRat;
 	item: Item;
 }
+
+/** Escape an arbitrary string to allow searching for it as a literal within a regex */
+export function escapeTextForRegExp(s: string) {
+	return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Highlights portions of text that match the given regex with <strong> */
+export function highlightText(text: string, regex: RegExp) {
+	const textNodes: preact.ComponentChild[] = [];
+	regex.lastIndex = 0;
+	while (true) {
+		const from = regex.lastIndex;
+		const match = regex.exec(text);
+		if (!match) {
+			textNodes.push(text.slice(from));
+			break;
+		}
+		if (match.index !== from) {
+			textNodes.push(text.slice(from, match.index));
+		}
+		textNodes.push(<strong>{match[0]}</strong>);
+	}
+	return textNodes;
+}

@@ -88,6 +88,29 @@ const makeRateList = (
 						</button>
 					</div>
 				))}
+				<div
+					class="rate-add"
+					onClick={async () => {
+						const { products, inputs } = getStateRaw();
+						const possibleItems = Items.filter(
+							(i) =>
+								!i.IsResource &&
+								!products.find((r) => r.item === i) &&
+								!inputs.find((r) => r.item === i)
+						);
+						const newItem = await chooseItem("Select new item:", possibleItems);
+						if (newItem) {
+							updateData((draft) => {
+								draft.push({
+									rate: new BigRat(60n, 1n),
+									item: newItem,
+								});
+							});
+						}
+					}}
+				>
+					Add new item
+				</div>
 			</div>
 		);
 	};
@@ -121,10 +144,15 @@ export function ConstraintEditor() {
 	return (
 		<div class="rate-setter">
 			<div class="pane">
+				<div class="title">Outputs</div>
 				<ProductsRateList />
+			</div>
+			<div class="pane">
+				<div class="title">Extra Inputs</div>
 				<InputsRateList />
 			</div>
 			<div class="pane">
+				<div class="title">Resources</div>
 				{resources.map((value, index) => {
 					const item = Resources[index];
 					const defaultValue = defaultResourceData.get(item) ?? null;

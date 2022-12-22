@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "preact/hooks";
 import scrollIntoView from "scroll-into-view-if-needed";
 import { useStateWithPrev } from "../hook/useStateWithPrev";
+import { escapeTextForRegExp, highlightText } from "../util";
 import "./Chooser.css";
 
 export interface ChooserItem {
@@ -14,35 +15,6 @@ export interface Props<T extends ChooserItem> {
 	items: T[];
 	value: T | null;
 	changeValue(newValue: T | null): void;
-}
-
-function escapeRegExp(s: string) {
-	return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function highlightText(text: string, regex: RegExp) {
-	const textNodes: preact.ComponentChild[] = [];
-	regex.lastIndex = 0;
-	while (true) {
-		const from = regex.lastIndex;
-		const match = regex.exec(text);
-		if (!match) {
-			textNodes.push(text.slice(from));
-			break;
-		}
-		if (match.index !== from) {
-			textNodes.push(text.slice(from, match.index));
-		}
-		textNodes.push(<strong>{match[0]}</strong>);
-	}
-	return textNodes;
-}
-
-interface State<T> {
-	search: string;
-	tentative: T | null;
-	regex: RegExp | null;
-	relevant: T[];
 }
 
 export function Chooser<T extends ChooserItem>({ items, value, changeValue }: Props<T>) {
@@ -63,7 +35,7 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue }: Pr
 		}
 	}, [tentative, oldTentative]);
 
-	const regex = search ? new RegExp(escapeRegExp(search), "ig") : null;
+	const regex = search ? new RegExp(escapeTextForRegExp(search), "ig") : null;
 
 	function renderItem(item: T) {
 		const { adornment, name } = item;
@@ -100,7 +72,7 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue }: Pr
 					onInput={(ev) => {
 						const newSearch = ev.currentTarget.value;
 						changeSearch(newSearch);
-						const newRegex = newSearch ? new RegExp(escapeRegExp(newSearch), "ig") : null;
+						const newRegex = newSearch ? new RegExp(escapeTextForRegExp(newSearch), "ig") : null;
 						if (tentative && newRegex && !newRegex.test(newSearch)) {
 							changeTentative(null);
 						}

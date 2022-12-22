@@ -86,7 +86,6 @@ export function deserialize(encoded: string) {
 
 	for (let i = 0; i < state.resources.length; i++) {
 		state.resources[i] = r.read(1) ? readBigRat(r) : null;
-		state.resources[i] = null;
 	}
 
 	const inputs = readFlows();
