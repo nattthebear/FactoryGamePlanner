@@ -1,8 +1,8 @@
 import { immerable } from "../immer";
 
 export function gcd(a: bigint, b: bigint) {
-	for (let t: bigint; b !== 0n; ) {
-		t = b;
+	while (b !== 0n) {
+		const t = b;
 		b = a % b;
 		a = t;
 	}
