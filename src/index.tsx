@@ -1,5 +1,4 @@
-import { enableMapSet } from "immer";
-enableMapSet();
+import "./immer";
 
 import "modern-normalize/modern-normalize.css";
 

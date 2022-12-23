@@ -1,4 +1,4 @@
-import { Draft } from "immer";
+import { Draft } from "../../immer";
 import { Recipe } from "../../../data/types";
 import { BigRat } from "../../math/BigRat";
 import { Point } from "../../util";

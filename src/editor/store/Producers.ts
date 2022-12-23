@@ -1,4 +1,4 @@
-import { immerable } from "immer";
+import { immerable } from "../../immer";
 import { Item, Recipe, RecipeFlow } from "../../../data/types";
 import { BigRat } from "../../math/BigRat";
 import { generateId, NodeId, SIXTY } from "./Common";

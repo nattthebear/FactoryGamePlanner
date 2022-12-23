@@ -1,4 +1,4 @@
-import { immerable } from "immer";
+import { immerable } from "../../immer";
 import { Item } from "../../../data/types";
 import { BigRat } from "../../math/BigRat";
 import { Flow } from "../../util";

@@ -2,7 +2,7 @@ import "../../../test/test-setup";
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import produce, { Draft } from "immer";
+import { produce, Draft } from "../../immer";
 
 import { serialize, deserialize } from "./Serializer";
 import { makeEmptyState, State } from "./Store";

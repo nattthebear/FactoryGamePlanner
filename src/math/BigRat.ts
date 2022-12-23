@@ -1,3 +1,5 @@
+import { immerable } from "../immer";
+
 export function gcd(a: bigint, b: bigint) {
 	for (let t: bigint; b !== 0n; ) {
 		t = b;
@@ -13,10 +15,9 @@ const BIGRAT_REGEX = /^-?\d+(\.\d+)?$/;
 // Privates are public so that Draft<BigRat> and BigRat are compatible.
 // At runtime, BigRats will not be drafted as they're not immerable, so it only matters in types.
 export class BigRat {
-	/** INTERNAL USE ONLY, DO NOT TOUCH */
-	p: bigint;
-	/** INTERNAL USE ONLY, DO NOT TOUCH */
-	q: bigint;
+	readonly [immerable] = false;
+	private p: bigint;
+	private q: bigint;
 	/** Create a BigRat from numerator and denominator */
 	constructor(p: bigint, q: bigint) {
 		if (q === 0n) {
@@ -26,8 +27,7 @@ export class BigRat {
 		this.q = q;
 		this.reduce();
 	}
-	/** INTERNAL USE ONLY, DO NOT TOUCH */
-	reduce() {
+	private reduce() {
 		const d = gcd(this.p, this.q);
 		if (d !== 1n) {
 			this.p /= d;

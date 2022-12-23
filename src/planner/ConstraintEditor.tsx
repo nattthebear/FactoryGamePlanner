@@ -1,4 +1,4 @@
-import { Draft } from "immer";
+import { Draft } from "../immer";
 import { Items } from "../../data/generated/items";
 import { chooseItem } from "../component/ItemChooser";
 import { chooseSourceSinkRate } from "../component/RateChoser";

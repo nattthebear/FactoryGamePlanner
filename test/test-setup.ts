@@ -1,5 +1,4 @@
-import { enableMapSet } from "immer";
-enableMapSet();
+import "../src/immer";
 
 const gg = global as any;
 

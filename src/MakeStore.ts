@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef } from "preact/hooks";
-import produce, { Draft } from "immer";
+import { produce, Draft } from "./immer";
 
 export type BasicSelector<S, V> = (state: S) => V;
 export interface SelectorEq<S, V> {

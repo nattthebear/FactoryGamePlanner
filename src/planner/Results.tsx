@@ -21,7 +21,8 @@ export function Results() {
 		if (rate.sign() > 0) {
 			nodes.push(
 				<div>
-					<strong>{rate.toNumberApprox().toFixed(2)}x</strong> {recipe.DisplayName}
+					<strong>{rate.toNumberApprox().toFixed(2)}x</strong> {recipe.DisplayName}{" "}
+					<em>{rate.toRatioString()}</em>
 				</div>
 			);
 		}
@@ -29,6 +30,8 @@ export function Results() {
 
 	return (
 		<div>
+			WP: {solution.wp.toRatioString()}
+			<br />
 			Recipes used:
 			{nodes}
 		</div>

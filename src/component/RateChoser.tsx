@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "../immer";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
 import { evaluate } from "../math/Expression";

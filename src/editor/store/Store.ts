@@ -1,4 +1,4 @@
-import { Draft } from "immer";
+import { Draft } from "../../immer";
 import { BigRat } from "../../math/BigRat";
 import { Flow, Point } from "../../util";
 import { NodeId, pointEqual } from "./Common";
