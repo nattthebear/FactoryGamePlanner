@@ -6,7 +6,7 @@ export interface Point {
 	y: number;
 }
 
-export const FACTORY_SIZE = 4000;
+export const FACTORY_SIZE = 8000;
 export const FACTORY_MIN: Point = { x: -FACTORY_SIZE / 2, y: -FACTORY_SIZE / 2 };
 export const FACTORY_MAX: Point = { x: FACTORY_SIZE / 2, y: FACTORY_SIZE / 2 };
 
