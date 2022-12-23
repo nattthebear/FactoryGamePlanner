@@ -6,9 +6,10 @@ export interface Point {
 	y: number;
 }
 
-export const FACTORY_SIZE = 8000;
-export const FACTORY_MIN: Point = { x: -FACTORY_SIZE / 2, y: -FACTORY_SIZE / 2 };
-export const FACTORY_MAX: Point = { x: FACTORY_SIZE / 2, y: FACTORY_SIZE / 2 };
+export const FACTORY_WIDTH = 16000;
+export const FACTORY_HEIGHT = 8000;
+export const FACTORY_MIN: Point = { x: -FACTORY_WIDTH / 2, y: -FACTORY_HEIGHT / 2 };
+export const FACTORY_MAX: Point = { x: FACTORY_WIDTH / 2, y: FACTORY_HEIGHT / 2 };
 
 export const BUILDING_BORDER = 500;
 export const BUILDING_MIN = { x: FACTORY_MIN.x + BUILDING_BORDER, y: FACTORY_MIN.y + BUILDING_BORDER };

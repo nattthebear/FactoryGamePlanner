@@ -5,8 +5,8 @@
 	overflow: hidden;
 
 	& svg {
-		width: 8000px; /* FACTORY_SIZE */
-		height: 8000px; /* FACTORY_SIZE */
+		width: 16000px; /* FACTORY_WIDTH */
+		height: 8000px; /* FACTORY_HEIGHT */
 		display: block;
 		position: relative;
 		inset: 50%;

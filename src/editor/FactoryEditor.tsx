@@ -7,7 +7,17 @@ import { addProducer } from "./store/Actions";
 import { SIXTY, toTranslation } from "./store/Common";
 import { ProductionBuilding, Sink, Source } from "./store/Producers";
 import { selectConnectorIds, selectProducerIds, update, useSelector } from "./store/Store";
-import { BUILDING_MAX, BUILDING_MIN, clamp, clampp, FACTORY_MAX, FACTORY_MIN, FACTORY_SIZE, Point } from "../util";
+import {
+	BUILDING_MAX,
+	BUILDING_MIN,
+	clamp,
+	clampp,
+	FACTORY_HEIGHT,
+	FACTORY_MAX,
+	FACTORY_MIN,
+	FACTORY_WIDTH,
+	Point,
+} from "../util";
 import { Connector } from "./Connector";
 
 import "./FactoryEditor.css";
@@ -37,7 +47,7 @@ const backGrid = (() => {
 	}
 	return (
 		<>
-			<rect x={FACTORY_MIN.x} y={FACTORY_MIN.y} width={FACTORY_SIZE} height={FACTORY_SIZE} />
+			<rect x={FACTORY_MIN.x} y={FACTORY_MIN.y} width={FACTORY_WIDTH} height={FACTORY_HEIGHT} />
 			<path d={path.join(" ")} />
 		</>
 	);
