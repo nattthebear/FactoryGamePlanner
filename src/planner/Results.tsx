@@ -36,7 +36,9 @@ export function Results() {
 			<br />
 			<button
 				onClick={() => {
-					updateEditor(connectSolution(problem, solution));
+					updateEditor((draft) => {
+						Object.assign(draft, connectSolution(problem, solution));
+					});
 				}}
 			>
 				TEMP - Copy to Editor
