@@ -31,6 +31,34 @@ export interface Solution {
 	wp: BigRat;
 }
 
+export function stringifyProblem(problem: Problem) {
+	return (
+		[...problem.constraints.entries()]
+			.map(([k, v]) => `${k.ClassName},${v.constraint},${v.rate.toRatioString()}`)
+			.join(";") +
+		"@@" +
+		[...problem.availableRecipes].map((r) => r.ClassName).join(";")
+	);
+}
+const itemClassLookup = new Map(Items.map((i) => [i.ClassName, i]));
+const recipeClassLookup = new Map(Recipes.map((r) => [r.ClassName, r]));
+/** Doesn't do much error checking! */
+export function unstringifyProblem(s: string): Problem {
+	const [constraintData, recipeData] = s.split("@@").map((t) => t.split(";"));
+	return {
+		constraints: new Map(
+			constraintData.map((t) => {
+				const [clazz, constraint, rate] = t.split(",");
+				return [
+					itemClassLookup.get(clazz)!,
+					{ constraint: constraint as ResourceConstraint["constraint"], rate: BigRat.fromRatioString(rate) },
+				];
+			})
+		),
+		availableRecipes: new Set(recipeData.map((clazz) => recipeClassLookup.get(clazz)!)),
+	};
+}
+
 const defaultMapResources: Record<string, number> = {
 	Desc_OreIron_C: 70380,
 	Desc_OreCopper_C: 28860,
@@ -124,11 +152,11 @@ function doApproxSolve(problem: Problem) {
 		px.variables[clazz] = mats;
 	}
 	console.log(`SETUP TIME ${performance.now() - now}ms`);
-	console.log(px);
+	// console.log(px);
 	now = performance.now();
 	const res = solver.Solve(px);
 	console.log(`SOLVE TIME ${performance.now() - now}ms`);
-	console.log(res);
+	// console.log(res);
 }
 
 function doWipSolve(problem: Problem) {
@@ -137,22 +165,23 @@ function doWipSolve(problem: Problem) {
 	if (res == null) {
 		console.log("Infeasible??");
 	} else {
-		const { recipes, wp } = res;
-		const recipeNames = [...problem.availableRecipes].map((r) => r.ClassName);
-		const recipeDescs = [...problem.availableRecipes].map((r) => r.DisplayName);
-		const data = recipes
-			.map((ratio, index) => [
-				`${recipeNames[index]} (${recipeDescs[index]})`,
-				`${ratio.toRatioString()} (${ratio.toNumberApprox().toFixed(3)})`,
-			])
-			.filter(([, s]) => s !== "0:1 (0.000)");
-		console.log("WP", wp.toRatioString());
-		console.log(data);
+		// const { recipes, wp } = res;
+		// const recipeNames = [...problem.availableRecipes].map((r) => r.ClassName);
+		// const recipeDescs = [...problem.availableRecipes].map((r) => r.DisplayName);
+		// const data = recipes
+		// 	.map((ratio, index) => [
+		// 		`${recipeNames[index]} (${recipeDescs[index]})`,
+		// 		`${ratio.toRatioString()} (${ratio.toNumberApprox().toFixed(3)})`,
+		// 	])
+		// 	.filter(([, s]) => s !== "0:1 (0.000)");
+		// console.log("WP", wp.toRatioString());
+		// console.log(data);
+		console.log("Solved!");
 	}
 	console.log(`SOLVE TIME ${performance.now() - now}ms`);
 }
 
-function doBothSolves(problem: Problem) {
+export function doBothSolves(problem: Problem) {
 	doApproxSolve(problem);
 	doWipSolve(problem);
 }

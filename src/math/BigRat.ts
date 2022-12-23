@@ -107,19 +107,39 @@ export class BigRat {
 		return this.p * y.q !== this.q * y.p;
 	}
 	add(y: BigRat) {
+		if (this.p === 0n) {
+			return y;
+		}
+		if (y.p === 0n) {
+			return this;
+		}
 		return new BigRat(this.p * y.q + this.q * y.p, this.q * y.q);
 	}
 	sub(y: BigRat) {
 		return new BigRat(this.p * y.q - this.q * y.p, this.q * y.q);
 	}
 	mul(y: BigRat) {
+		if (this.p === 0n || y.p === 0n) {
+			return BigRat.ZERO;
+		}
 		return new BigRat(this.p * y.p, this.q * y.q);
 	}
 	div(y: BigRat) {
+		if (this.p === 0n) {
+			return this;
+		}
 		return new BigRat(this.p * y.q, this.q * y.p);
 	}
+	fma(x: BigRat, y: BigRat) {
+		if (x.p === 0n || y.p === 0n) {
+			return this;
+		}
+		const rp = x.p * y.p;
+		const rq = x.q * y.q;
+		return new BigRat(this.p * rq + this.q * rp, this.q * rq);
+	}
 	abs() {
-		return new BigRat(abs(this.p), abs(this.q));
+		return new BigRat(abs(this.p), this.q);
 	}
 	neg() {
 		return new BigRat(-this.p, this.q);
@@ -155,6 +175,14 @@ export class BigRat {
 			throw new TypeError("Number is not an integer");
 		}
 		return new BigRat(BigInt(n), 1n);
+	}
+	static fromRatioString(s: string) {
+		const match = s.match(/^(\d+):(\d+)$/);
+		if (!match) {
+			throw new TypeError("BigRat parse error");
+		}
+		const [, p, q] = match;
+		return new BigRat(BigInt(p), BigInt(q));
 	}
 	static ZERO = new BigRat(0n, 1n);
 	static ONE = new BigRat(1n, 1n);

@@ -242,7 +242,7 @@ export function pivot(dict: Dictionary, special: boolean): Dictionary | null {
 			}
 			const top = newCoefficients[aTop];
 			const bottom = aRow < rowEnd ? coefficients[aRow] : BigRat.ZERO;
-			newCoefficients[aTo] = top.mul(pivotValue).add(bottom);
+			newCoefficients[aTo] = bottom.fma(top, pivotValue);
 		}
 	}
 
@@ -466,7 +466,7 @@ function MatrixDisplay() {
         idx(i, j, <React.Fragment>{coeffs[c++]}{name}</React.Fragment>);
       }
     }
-    otherDom = <div class="tabel" style={{ gridTemplate: `1fr / ${"1fr ".repeat(cols.length + 2)}` }}>{nodes}</div>;
+    otherDom = <div style={{ display: "grid", gridTemplate: `1fr / ${"1fr ".repeat(cols.length + 2)}` }}>{nodes}</div>;
   } catch (e) {
   	otherDom = e && e.message;
   }

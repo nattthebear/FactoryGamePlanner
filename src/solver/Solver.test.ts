@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { Problem, ResourceConstraint, Solution } from "./Solution";
+import { Problem, ResourceConstraint, Solution, unstringifyProblem } from "./Solution";
 import { Recipes } from "../../data/generated/recipes";
 import { Items } from "../../data/generated/items";
 import { Item } from "../../data/types";
@@ -73,20 +73,20 @@ describe("setupDictionary", () => {
 	});
 });
 
-describe("solve", () => {
-	function debugPrint(p: Problem, s: Solution) {
-		let str = `wp: ${s.wp.toRatioString()}`;
-		let i = 0;
-		for (const recipe of p.availableRecipes) {
-			const rate = s.recipes[i++];
-			if (rate.sign() === 0) {
-				continue;
-			}
-			str += ` ${recipe.DisplayName}: ${rate.toRatioString()}`;
+function debugPrint(p: Problem, s: Solution) {
+	let str = `wp: ${s.wp.toRatioString()}`;
+	let i = 0;
+	for (const recipe of p.availableRecipes) {
+		const rate = s.recipes[i++];
+		if (rate.sign() === 0) {
+			continue;
 		}
-		return str;
+		str += ` ${recipe.DisplayName}: ${rate.toRatioString()}`;
 	}
+	return str;
+}
 
+describe("solve", () => {
 	it("mod frames", () => {
 		const problem: Problem = {
 			constraints: new Map([

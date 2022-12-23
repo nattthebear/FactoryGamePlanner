@@ -1,3 +1,4 @@
+import { doBothSolves, stringifyProblem } from "../solver/Solution";
 import { solve } from "../solver/Solver";
 import { makeProblem, useSelector } from "./store/Store";
 
@@ -10,6 +11,8 @@ export function Results() {
 	if (!solution) {
 		return <div>No solution found. Check your inputs and recipes.</div>;
 	}
+	doBothSolves(problem);
+	console.log([stringifyProblem(problem)]);
 
 	const nodes = Array<preact.ComponentChild>(problem.availableRecipes.size);
 	let index = 0;
