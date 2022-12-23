@@ -1,3 +1,5 @@
+import { connectSolution } from "../editor/store/ConnectSolution";
+import { update as updateEditor } from "../editor/store/Store";
 import { doBothSolves, stringifyProblem } from "../solver/Solution";
 import { solve } from "../solver/Solver";
 import { makeProblem, useSelector } from "./store/Store";
@@ -31,6 +33,14 @@ export function Results() {
 	return (
 		<div>
 			WP: {solution.wp.toRatioString()}
+			<br />
+			<button
+				onClick={() => {
+					updateEditor(connectSolution(problem, solution));
+				}}
+			>
+				TEMP - Copy to Editor
+			</button>
 			<br />
 			Recipes used:
 			{nodes}
