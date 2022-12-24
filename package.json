@@ -9,7 +9,7 @@
 		"peggify": "peggy --format es -o src/math/ExpressionParser.js src/math/expression.peggy",
 		"test": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs --test src/math/BigRat.test.ts src/math/Expression.test.ts src/base64.test.ts src/editor/store/Serializer.test.ts src/solver/Dictionary.test.ts src/solver/Solver.test.ts",
 		"prettier": "prettier --write src/**/*.ts src/**/*.tsx src/**/*.css",
-		"clear-cache": "rimraf ./parcel-dev ./parcel-cache",
+		"clear-cache": "rimraf ./.parcel-dev ./.parcel-cache",
 		"type-check": "tsc --noEmit",
 		"timed-tests": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs src/solver/Solver.timed.ts"
 	},
