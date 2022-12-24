@@ -5,7 +5,7 @@ import { Point } from "../../util";
 export const toTranslation = (p: Point) => `translate(${p.x}px, ${p.y}px)`;
 
 export function pointEqual(a: Point, b: Point) {
-	return a.x === b.x && b.x === b.y;
+	return a.x === b.x && a.y === b.y;
 }
 
 export function pointAdd(a: Point, b: Point) {

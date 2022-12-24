@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Recipes } from "../../data/generated/recipes";
 import { useDrag } from "../hook/drag";
 import { useLatestValue } from "../hook/useLatestValue";
@@ -72,6 +72,9 @@ export function FactoryEditor() {
 	const svgRef = useRef<SVGSVGElement | null>(null);
 	const panStart = useDrag(onDrag);
 
+	const producerComponents = useMemo(() => producers.map((id) => <Producer key={id} id={id} />), [producers]);
+	const connectorComponents = useMemo(() => connectors.map((id) => <Connector key={id} id={id} />), [connectors]);
+
 	function onWheel(ev: WheelEvent) {
 		ev.preventDefault();
 		update((draft) => {
@@ -106,12 +109,8 @@ export function FactoryEditor() {
 				>
 					{backGrid}
 				</g>
-				{connectors.map((id) => (
-					<Connector key={id} id={id} />
-				))}
-				{producers.map((id) => (
-					<Producer key={id} id={id} />
-				))}
+				{connectorComponents}
+				{producerComponents}
 			</svg>
 			<HotKeyActions />
 		</div>

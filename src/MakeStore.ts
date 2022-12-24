@@ -15,27 +15,29 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 
 	const ret = {
 		useSelector<V>(selector: Selector<S, V>) {
-			const updateSignal = useReducer<number, void>((i) => i + 1, 0)[1];
+			const equal = typeof selector === "function" ? Object.is : selector.equal;
 			const select = typeof selector === "function" ? selector : selector.select;
 
-			const selected = select(state);
-			const refValue = { select, selected };
-			const ref = useRef(refValue);
-			ref.current = refValue;
+			const updateSignal = useReducer<number, void>((i) => i + 1, 0)[1];
+			const ref = useRef<{ select: BasicSelector<S, V>; selected: V }>();
+			const newSelected = select(state);
+			const oldSelected = ref.current?.selected;
+			const selected = ref.current && equal(newSelected, oldSelected) ? oldSelected! : newSelected;
+
+			ref.current = { select, selected };
 
 			useEffect(() => {
-				const equal = typeof selector === "function" ? Object.is : selector.equal;
 				function subscription() {
 					let newSelected: V;
 					try {
-						newSelected = ref.current.select(state);
+						newSelected = ref.current!.select(state);
 					} catch {
 						// This can be hit in various scenarios when removing components.
 						// https://react-redux.js.org/api/hooks#stale-props-and-zombie-children
 						updateSignal();
 						return;
 					}
-					if (!equal(newSelected, ref.current.selected)) {
+					if (!equal(newSelected, ref.current!.selected)) {
 						updateSignal();
 					}
 				}
