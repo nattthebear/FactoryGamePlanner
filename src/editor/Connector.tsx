@@ -22,13 +22,14 @@ export function Connector({ id }: { id: NodeId }) {
 	const op = pointAdd(outputLoc, outputAttach);
 
 	const dx = op.x - ip.x;
+	const dxc = Math.max(dx * 0.8, 400);
 	const dy = op.y - ip.y;
 
 	return (
 		<>
 			<path
 				class="connector"
-				d={`M ${ip.x} ${ip.y} c ${dx * 0.8} 0 ${dx * 0.2} ${dy} ${dx} ${dy}`}
+				d={`M ${ip.x} ${ip.y} c ${dxc} 0 ${dx - dxc} ${dy} ${dx} ${dy}`}
 				onMouseEnter={() =>
 					update((draft) => {
 						draft.mouseOver = {
