@@ -26,7 +26,7 @@ import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
 
 const ZOOM_MAX = 5;
-const ZOOM_MIN = 1 / ZOOM_MAX;
+const ZOOM_MIN = 1 / 10;
 const ZOOM_SPEED = 1.0011;
 
 const viewBox = `${FACTORY_MIN.x} ${FACTORY_MIN.y} ${FACTORY_MAX.x - FACTORY_MIN.x} ${FACTORY_MAX.y - FACTORY_MIN.y}`;

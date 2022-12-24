@@ -57,25 +57,39 @@ function arrangePositions(producers: Map<NodeId, Producer>, connectors: Map<Node
 	}
 
 	let xdiv = 0;
+	const visitedForDepth = new Set<TreeNode>();
+	const finishedForDepth = new Set<TreeNode>();
+	const cycleEdges = new Set<Connector>();
 
-	function setDisplayDepth(node: TreeNode, displayDepth: number, visitedForDepth: Set<NodeId>) {
+	function setDisplayDepth(node: TreeNode, displayDepth: number, from?: Connector) {
+		if (!finishedForDepth.has(node) && visitedForDepth.has(node)) {
+			if (from) {
+				cycleEdges.add(from);
+			}
+			return;
+		}
 		const producer = node.value;
 		node.displayDepth = Math.max(node.displayDepth, displayDepth);
 		xdiv = Math.max(xdiv, displayDepth);
 
+		// if (finishedForDepth.has(node)) {
+		// 	return;
+		// }
+		visitedForDepth.add(node);
 		for (const inputList of producer.inputs) {
 			for (const inputId of inputList) {
-				if (!visitedForDepth.has(inputId)) {
-					visitedForDepth.add(inputId);
-					const inputProducer = producers.get(connectors.get(inputId)!.input)!;
-					const existingNode = visited.get(inputProducer)!;
-					setDisplayDepth(existingNode, displayDepth + 1, visitedForDepth);
+				const connector = connectors.get(inputId)!;
+				if (!cycleEdges.has(connector)) {
+					const inputProducer = producers.get(connector.input)!;
+					const inputNode = visited.get(inputProducer)!;
+					setDisplayDepth(inputNode, displayDepth + 1, connector);
 				}
 			}
 		}
+		finishedForDepth.add(node);
 	}
 	for (const node of roots) {
-		setDisplayDepth(node, 0, new Set<NodeId>());
+		setDisplayDepth(node, 0);
 	}
 
 	let ydiv = -1;
