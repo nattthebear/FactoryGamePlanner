@@ -8,8 +8,8 @@ import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State } from "./Store";
 
-const ARRANGE_X_DELTA = 1000;
-const ARRANGE_Y_DELTA = 400;
+const ARRANGE_X_DELTA = 800;
+const ARRANGE_Y_DELTA = 300;
 
 function arrangePositions(producers: Map<NodeId, Producer>, connectors: Map<NodeId, Connector>) {
 	interface TreeNode {

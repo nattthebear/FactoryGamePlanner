@@ -1,6 +1,6 @@
 .connector {
 	stroke: #33f;
-	stroke-width: 12px;
+	stroke-width: 10px;
 	fill: none;
 }
 
@@ -9,8 +9,8 @@
 	dominant-baseline: middle;
 	pointer-events: none;
 	paint-order: stroke;
-	font-size: 12px;
-	stroke-width: 3px;
+	font-size: 20px;
+	stroke-width: 4px;
 	fill: #fff;
 	stroke: rgba(0, 0, 0, 0.8);
 	stroke-linejoin: round;
