@@ -25,7 +25,9 @@ export function Connector({ id }: { id: NodeId }) {
 	const dy = op.y - ip.y;
 
 	let slx = 400;
-	slx = Math.min(slx, slx * 0.5 * Math.abs(dy / dx));
+	if (dx > 0) {
+		slx = Math.min(slx, slx * 0.5 * Math.abs(dy / dx));
+	}
 	const dxc = Math.max(dx * 0.8, slx);
 
 	return (
