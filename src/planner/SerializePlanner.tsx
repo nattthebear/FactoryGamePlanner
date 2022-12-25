@@ -8,10 +8,10 @@ const identity = <T extends any>(x: T) => x;
 export function SerializePlanner() {
 	const state = useSelector<State>(identity);
 	useEffect(() => {
-		const handle = requestIdleCallback(() => {
+		const handle = setTimeout(() => {
 			setEncodedDataForTab(TAB_PLANNER, serialize(state));
-		});
-		return () => cancelIdleCallback(handle);
+		}, 100);
+		return () => clearTimeout(handle);
 	});
 	return null;
 }
