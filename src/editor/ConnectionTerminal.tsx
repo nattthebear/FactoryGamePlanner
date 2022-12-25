@@ -20,6 +20,21 @@ export function ConnectionTerminal({
 	const connectionSum = useSelector((s) =>
 		connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO)
 	);
+	const activeConnectionAttempt = useSelector((s) => {
+		if (s.wip.type === "connector:input") {
+			if (isOutput && s.wip.producerId === producerId && s.wip.index === index) {
+				return "self";
+			}
+			return !isOutput && item === s.wip.item;
+		}
+		if (s.wip.type === "connector:output") {
+			if (!isOutput && s.wip.producerId === producerId && s.wip.index === index) {
+				return "self";
+			}
+			return isOutput && item === s.wip.item;
+		}
+		return null;
+	});
 
 	let diff = rate.sub(connectionSum);
 	if (!isOutput) {
@@ -52,7 +67,18 @@ export function ConnectionTerminal({
 				})
 			}
 		>
-			<path class="outline" d={d} />
+			<path
+				class={
+					activeConnectionAttempt === true
+						? "outline connecting-yes"
+						: activeConnectionAttempt === false
+						? "outline connecting-no"
+						: activeConnectionAttempt === "self"
+						? "outline connecting-self"
+						: "outline"
+				}
+				d={d}
+			/>
 			<image href={item.Icon} />
 			{cmp !== 0 && (
 				<text>

@@ -32,6 +32,8 @@ export abstract class Producer implements Point {
 	abstract clone(): this;
 
 	abstract getDrawing(): ProducerDrawing;
+
+	abstract canCombineWith(other: Producer): boolean;
 }
 
 export class ProductionBuilding extends Producer {
@@ -88,6 +90,10 @@ export class ProductionBuilding extends Producer {
 	getDrawing(): ProducerDrawing {
 		return BuildingMap[this.recipe.Building.ClassName];
 	}
+
+	canCombineWith(other: Producer): boolean {
+		return other instanceof ProductionBuilding && other.recipe === this.recipe;
+	}
 }
 
 export class Sink extends Producer {
@@ -117,6 +123,10 @@ export class Sink extends Producer {
 	getDrawing(): ProducerDrawing {
 		return SinkGfx;
 	}
+
+	canCombineWith(other: Producer): boolean {
+		return other instanceof Sink && other.item === this.item;
+	}
 }
 
 export class Source extends Producer {
@@ -145,5 +155,9 @@ export class Source extends Producer {
 
 	getDrawing(): ProducerDrawing {
 		return SourceGfx;
+	}
+
+	canCombineWith(other: Producer): boolean {
+		return other instanceof Source && other.item === this.item;
 	}
 }

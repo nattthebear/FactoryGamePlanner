@@ -2,6 +2,16 @@
 	& > .outline {
 		stroke-width: 3px;
 		fill: #fff;
+
+		&.connecting-yes {
+			fill: #afa;
+		}
+		&.connecting-no {
+			fill: #888;
+		}
+		&.connecting-self {
+			fill: #bbf;
+		}
 	}
 
 	&.surplus .outline {

@@ -1,4 +1,3 @@
-import { useEffect, useReducer, useState } from "preact/hooks";
 import { makeStore } from "../MakeStore";
 import "./Prompt.css";
 

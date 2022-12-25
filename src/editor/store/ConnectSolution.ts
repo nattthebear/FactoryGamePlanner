@@ -243,6 +243,7 @@ export function connectSolution(problem: Problem, solution: Solution): State {
 	return {
 		viewport: { center: { x: 0, y: 0 }, zoom: 1 },
 		mouseOver: { type: "none" },
+		wip: { type: "none" },
 		producers,
 		connectors,
 	};

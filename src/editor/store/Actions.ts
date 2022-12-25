@@ -50,6 +50,14 @@ export const addConnector =
 		const fromProducer = draft.producers.get(from.producerId)!;
 		const toProducer = draft.producers.get(to.producerId)!;
 
+		const hasExistingConnector = fromProducer.outputs[from.outputIndex].some((id) => {
+			const connector = draft.connectors.get(id)!;
+			return connector.output === to.producerId && connector.outputIndex === to.inputIndex;
+		});
+		if (hasExistingConnector) {
+			return;
+		}
+
 		const connector = new Connector(
 			BigRat.ONE,
 			fromProducer.outputFlows()[from.outputIndex].item,
@@ -324,7 +332,45 @@ export const splitOffConnectorClosest = (connectorId: NodeId, point: Point) => (
 	}
 };
 
-// export const splitProducer = (id: NodeId, leftRate: BigRat) => (draft: Draft<State>) => {
-// 	const left = draft.producers.get(id)!
-// 	const right = left.clone()
-// }
+export const mergeProducers = (pid1: NodeId, pid2: NodeId) => (draft: Draft<State>) => {
+	const producer = draft.producers.get(pid1)!;
+	const toDelete = draft.producers.get(pid2)!;
+	producer.rate = producer.rate.add(toDelete.rate);
+
+	for (let inputIndex = 0; inputIndex < producer.inputs.length; inputIndex++) {
+		for (const connectorId of toDelete.inputs[inputIndex]) {
+			const connector = draft.connectors.get(connectorId)!;
+			const otherConnector = producer.inputs[inputIndex]
+				.map((cid) => draft.connectors.get(cid)!)
+				.find((c) => c.input === connector.input);
+
+			if (otherConnector) {
+				otherConnector.rate = otherConnector.rate.add(connector.rate);
+				draft.connectors.delete(connectorId);
+				maybeSpliceValue(draft.producers.get(connector.input)!.outputs[connector.inputIndex], connectorId);
+			} else {
+				producer.inputs[inputIndex].push(connectorId);
+				draft.connectors.get(connectorId)!.output = pid1;
+			}
+		}
+	}
+	for (let outputIndex = 0; outputIndex < producer.outputs.length; outputIndex++) {
+		for (const connectorId of toDelete.outputs[outputIndex]) {
+			const connector = draft.connectors.get(connectorId)!;
+			const otherConnector = producer.outputs[outputIndex]
+				.map((cid) => draft.connectors.get(cid)!)
+				.find((c) => c.output === connector.output);
+
+			if (otherConnector) {
+				otherConnector.rate = otherConnector.rate.add(connector.rate);
+				draft.connectors.delete(connectorId);
+				maybeSpliceValue(draft.producers.get(connector.output)!.inputs[connector.outputIndex], connectorId);
+			} else {
+				producer.outputs[outputIndex].push(connectorId);
+				draft.connectors.get(connectorId)!.input = pid1;
+			}
+		}
+	}
+
+	draft.producers.delete(pid2);
+};

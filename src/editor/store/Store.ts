@@ -7,6 +7,7 @@ import { makeStore, Selector } from "../../MakeStore";
 import { Producer, Sink, Source } from "./Producers";
 import { deserialize } from "./Serializer";
 import { getEncodedDataForTab, TAB_EDITOR } from "../../base64";
+import { Item } from "../../../data/types";
 
 export type MouseOverInfo =
 	| { type: "none" }
@@ -18,12 +19,19 @@ export type MouseOverInfo =
 	| { type: "producer:connection:input" | "producer:connection:output"; producerId: NodeId; index: number }
 	| { type: "connector"; connectorId: NodeId };
 
+export type WipInfo =
+	| { type: "none" }
+	| { type: "connector:input"; producerId: NodeId; index: number; item: Item }
+	| { type: "connector:output"; producerId: NodeId; index: number; item: Item }
+	| { type: "producer:merge"; producerId: NodeId };
+
 export interface State {
 	viewport: {
 		center: Point;
 		zoom: number;
 	};
 	mouseOver: MouseOverInfo;
+	wip: WipInfo;
 	producers: Map<NodeId, Producer>;
 	connectors: Map<NodeId, Connector>;
 }
@@ -34,6 +42,7 @@ export const makeEmptyState = (): State => ({
 		zoom: 1,
 	},
 	mouseOver: { type: "none" },
+	wip: { type: "none" },
 	producers: new Map(),
 	connectors: new Map(),
 });

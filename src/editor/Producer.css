@@ -3,6 +3,16 @@ g.producer {
 		stroke: #666;
 		stroke-width: 3px;
 		fill: #eee;
+
+		&.merging-yes {
+			fill: #afa;
+		}
+		&.merging-no {
+			fill: #888;
+		}
+		&.merging-self {
+			fill: #bbf;
+		}
 	}
 
 	& > text {

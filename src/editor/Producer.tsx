@@ -9,6 +9,17 @@ import "./Producer.css";
 
 export function Producer({ id }: { id: NodeId }) {
 	const producer = useSelector((s) => s.producers.get(id)!);
+	const activeMergeAttempt = useSelector((s) => {
+		if (s.wip.type !== "producer:merge") {
+			return null;
+		}
+		const other = s.producers.get(s.wip.producerId)!;
+		if (other === producer) {
+			return "self";
+		}
+		return other.canCombineWith(producer);
+	});
+
 	const dragStart = useDrag(({ x, y }) => {
 		update((draft) => {
 			const { zoom } = draft.viewport;
@@ -34,7 +45,15 @@ export function Producer({ id }: { id: NodeId }) {
 	return (
 		<g class="producer" style={`transform: ${toTranslation(producer)}`}>
 			<path
-				class="outline"
+				class={
+					activeMergeAttempt === true
+						? "outline merging-yes"
+						: activeMergeAttempt === false
+						? "outline merging-no"
+						: activeMergeAttempt === "self"
+						? "outline merging-self"
+						: "outline"
+				}
 				d={drawing.d}
 				onMouseDown={(ev) => {
 					ev.stopPropagation();

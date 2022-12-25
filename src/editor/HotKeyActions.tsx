@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
 import {
+	addConnector,
 	addProducer,
 	adjustConnectorClosest,
 	emptyToRecipe,
@@ -9,13 +10,14 @@ import {
 	fillFromSource,
 	matchBuildingToInput,
 	matchBuildingToOutput,
+	mergeProducers,
 	removeConnector,
 	removeProducer,
 	splitOffConnectorClosest,
 } from "./store/Actions";
 import { SIXTY } from "./store/Common";
 import { ProductionBuilding, Sink, Source } from "./store/Producers";
-import { getStateRaw, MouseOverObject, selectMouseOverObject, update, useSelector } from "./store/Store";
+import { getStateRaw, MouseOverObject, selectMouseOverObject, update, useSelector, WipInfo } from "./store/Store";
 import { BUILDING_MAX, BUILDING_MIN, clampp, Point } from "../util";
 import {
 	canChooseRecipeForInput,
@@ -33,6 +35,21 @@ import { chooseBuildingRate, chooseSourceSinkRate } from "../component/RateChose
 export function HotKeyActions() {
 	const currentScreenCoords = useRef<Point | null>(null);
 	const currentObject = useSelector(selectMouseOverObject);
+	const currentWip = useSelector((s) => s.wip);
+
+	useEffect(() => {
+		function listener(ev: KeyboardEvent) {
+			if (ev.key === "Escape") {
+				update((draft) => {
+					draft.wip = { type: "none" };
+				});
+			}
+		}
+		document.addEventListener("keydown", listener, { passive: true, capture: true });
+		return () => {
+			document.removeEventListener("keydown", listener, { capture: true });
+		};
+	}, []);
 
 	useEffect(() => {
 		function mouseMove(ev: MouseEvent) {
@@ -72,88 +89,149 @@ export function HotKeyActions() {
 	}
 
 	const actionRender: {
-		[K in MouseOverObject["type"]]: (o: MouseOverObject & { type: K }) => preact.ComponentChild;
+		[K in MouseOverObject["type"]]: (o: MouseOverObject & { type: K }, w: WipInfo) => preact.ComponentChild;
 	} = {
 		none: () => {
 			return null;
 		},
-		viewport: () => (
-			<>
-				<KeyButton
-					keyName="b"
-					onAct={async (wasClick) => {
-						const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
-						const recipe = await chooseRecipeByOutput();
-						if (recipe) {
-							update(addProducer(new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe)));
-						}
-					}}
-				>
-					Add builder
-				</KeyButton>
-				<KeyButton
-					keyName="u"
-					onAct={async (wasClick) => {
-						const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
-						const item = await chooseItem("Choose item for source:");
-						if (item) {
-							update(addProducer(new Source(p.x, p.y, SIXTY, item)));
-						}
-					}}
-				>
-					Add source
-				</KeyButton>
-				<KeyButton
-					keyName="k"
-					onAct={async (wasClick) => {
-						const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
-						const item = await chooseItem("Choose item for sink:");
-						if (item) {
-							update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
-						}
-					}}
-				>
-					Add Sink
-				</KeyButton>
-			</>
-		),
-		producer: (o) => (
-			<>
-				<KeyButton
-					keyName="x"
-					onAct={async () => {
-						const { producer } = o;
-						update(removeProducer(producer.id));
-					}}
-				>
-					Remove Building
-				</KeyButton>
-				<KeyButton
-					keyName="r"
-					onAct={async () => {
-						const { producer } = o;
-						if (producer instanceof ProductionBuilding) {
-							const newRate = await chooseBuildingRate(producer);
-							if (newRate) {
-								update((draft) => {
-									draft.producers.get(producer.id)!.rate = newRate;
-								});
+		viewport: (o, w) => {
+			if (w.type !== "none") {
+				return null;
+			}
+			return (
+				<>
+					<KeyButton
+						keyName="b"
+						onAct={async (wasClick) => {
+							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const recipe = await chooseRecipeByOutput();
+							if (recipe) {
+								update(addProducer(new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe)));
 							}
-						} else if (producer instanceof Source || producer instanceof Sink) {
-							const newRate = await chooseSourceSinkRate(producer);
-							if (newRate) {
-								update((draft) => {
-									draft.producers.get(producer.id)!.rate = newRate;
-								});
+						}}
+					>
+						Add builder
+					</KeyButton>
+					<KeyButton
+						keyName="u"
+						onAct={async (wasClick) => {
+							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const item = await chooseItem("Choose item for source:");
+							if (item) {
+								update(addProducer(new Source(p.x, p.y, SIXTY, item)));
 							}
-						}
-					}}
-				>
-					Change rate
-				</KeyButton>
-			</>
-		),
-		"producer:connection:input": (o) => {
+						}}
+					>
+						Add source
+					</KeyButton>
+					<KeyButton
+						keyName="k"
+						onAct={async (wasClick) => {
+							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const item = await chooseItem("Choose item for sink:");
+							if (item) {
+								update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
+							}
+						}}
+					>
+						Add Sink
+					</KeyButton>
+				</>
+			);
+		},
+		producer: (o, w) => {
+			if (w.type !== "none") {
+				if (w.type === "producer:merge") {
+					return (
+						<KeyButton
+							keyName="m"
+							onAct={() => {
+								if (o.producer.canCombineWith(getStateRaw().producers.get(w.producerId)!)) {
+									update((draft) => {
+										mergeProducers(o.producer.id, w.producerId)(draft);
+										draft.wip = { type: "none" };
+									});
+								}
+							}}
+						>
+							Finish Merge
+						</KeyButton>
+					);
+				}
+				return null;
+			}
+
+			return (
+				<>
+					<KeyButton
+						keyName="x"
+						onAct={async () => {
+							const { producer } = o;
+							update(removeProducer(producer.id));
+						}}
+					>
+						Remove Building
+					</KeyButton>
+					<KeyButton
+						keyName="r"
+						onAct={async () => {
+							const { producer } = o;
+							if (producer instanceof ProductionBuilding) {
+								const newRate = await chooseBuildingRate(producer);
+								if (newRate) {
+									update((draft) => {
+										draft.producers.get(producer.id)!.rate = newRate;
+									});
+								}
+							} else if (producer instanceof Source || producer instanceof Sink) {
+								const newRate = await chooseSourceSinkRate(producer);
+								if (newRate) {
+									update((draft) => {
+										draft.producers.get(producer.id)!.rate = newRate;
+									});
+								}
+							}
+						}}
+					>
+						Change rate
+					</KeyButton>
+					<KeyButton
+						keyName="m"
+						onAct={() => {
+							update((draft) => {
+								draft.wip = { type: "producer:merge", producerId: o.producer.id };
+							});
+						}}
+					>
+						Merge
+					</KeyButton>
+				</>
+			);
+		},
+		"producer:connection:input": (o, w) => {
+			if (w.type !== "none") {
+				if (w.type === "connector:input" && w.item === o.flow.item) {
+					return (
+						<KeyButton
+							keyName="c"
+							onAct={() => {
+								update((draft) => {
+									addConnector(
+										{ producerId: w.producerId, outputIndex: w.index },
+										{ producerId: o.producer.id, inputIndex: o.index },
+										"input"
+									)(draft);
+									draft.wip = { type: "none" };
+								});
+							}}
+						>
+							Finish Add Connector
+						</KeyButton>
+					);
+				}
+				return null;
+			}
+
 			const totalIn = o.connectors.reduce((acc, val) => acc.add(val.rate), BigRat.ZERO);
 			const hasShortfall = totalIn.lt(o.flow.rate);
 			return (
@@ -188,10 +266,48 @@ export function HotKeyActions() {
 					>
 						Balance rates with new source
 					</KeyButton>
+					<KeyButton
+						keyName="c"
+						onAct={() => {
+							update((draft) => {
+								draft.wip = {
+									type: "connector:output",
+									producerId: o.producer.id,
+									index: o.index,
+									item: o.flow.item,
+								};
+							});
+						}}
+					>
+						Add Connector
+					</KeyButton>
 				</>
 			);
 		},
-		"producer:connection:output": (o) => {
+		"producer:connection:output": (o, w) => {
+			if (w.type !== "none") {
+				if (w.type === "connector:output" && w.item === o.flow.item) {
+					return (
+						<KeyButton
+							keyName="c"
+							onAct={() => {
+								update((draft) => {
+									addConnector(
+										{ producerId: o.producer.id, outputIndex: o.index },
+										{ producerId: w.producerId, inputIndex: w.index },
+										"output"
+									)(draft);
+									draft.wip = { type: "none" };
+								});
+							}}
+						>
+							Finish Add Connector
+						</KeyButton>
+					);
+				}
+				return null;
+			}
+
 			const totalOut = o.connectors.reduce((acc, val) => acc.add(val.rate), BigRat.ZERO);
 			const hasSurplus = totalOut.lt(o.flow.rate);
 			return (
@@ -226,10 +342,28 @@ export function HotKeyActions() {
 					>
 						Balance rates with new sink
 					</KeyButton>
+					<KeyButton
+						keyName="c"
+						onAct={() => {
+							update((draft) => {
+								draft.wip = {
+									type: "connector:input",
+									producerId: o.producer.id,
+									index: o.index,
+									item: o.flow.item,
+								};
+							});
+						}}
+					>
+						Add Connector
+					</KeyButton>
 				</>
 			);
 		},
-		connector: (o) => {
+		connector: (o, w) => {
+			if (w.type !== "none") {
+				return null;
+			}
 			return (
 				<>
 					<KeyButton
@@ -266,5 +400,5 @@ export function HotKeyActions() {
 		},
 	};
 
-	return <div class="hotkey-actions">{actionRender[currentObject.type](currentObject as any)}</div>;
+	return <div class="hotkey-actions">{actionRender[currentObject.type](currentObject as any, currentWip)}</div>;
 }
