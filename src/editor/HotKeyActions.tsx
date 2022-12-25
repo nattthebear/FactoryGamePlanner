@@ -11,6 +11,7 @@ import {
 	matchBuildingToOutput,
 	removeConnector,
 	removeProducer,
+	splitOffConnectorClosest,
 } from "./store/Actions";
 import { SIXTY } from "./store/Common";
 import { ProductionBuilding, Sink, Source } from "./store/Producers";
@@ -249,6 +250,16 @@ export function HotKeyActions() {
 						}}
 					>
 						Match rate of closest connection
+					</KeyButton>
+					<KeyButton
+						keyName="s"
+						onAct={(wasClick) => {
+							const { connector } = o;
+							const p = calculateActionPosition(wasClick);
+							update(splitOffConnectorClosest(connector.id, p));
+						}}
+					>
+						Split connector off closest building
 					</KeyButton>
 				</>
 			);

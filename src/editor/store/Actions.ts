@@ -258,6 +258,72 @@ export const adjustConnectorClosest = (connectorId: NodeId, point: Point) => (dr
 	}
 };
 
+/** Split off a producer at a connector's input side */
+export const splitOffConnectorInput = (id: NodeId, p: Point) => (draft: Draft<State>) => {
+	const connector = draft.connectors.get(id)!;
+	const producer = draft.producers.get(connector.input)!;
+	const outputs = producer.outputs[connector.inputIndex];
+	if (outputs.length < 2) {
+		return;
+	}
+	const rateTotal = sumConnections(draft, outputs);
+	const rateRatio = connector.rate.div(rateTotal);
+
+	const newProducer = producer.clone();
+	newProducer.x = p.x;
+	newProducer.y = p.y;
+	newProducer.rate = newProducer.rate.mul(rateRatio);
+	producer.rate = producer.rate.sub(newProducer.rate);
+	draft.producers.set(newProducer.id, newProducer);
+
+	outputs.splice(outputs.indexOf(id), 1);
+	connector.input = newProducer.id;
+	newProducer.outputs[connector.inputIndex].push(id);
+};
+
+/** Split off a producer at a connector's output side */
+export const splitOffConnectorOutput = (id: NodeId, p: Point) => (draft: Draft<State>) => {
+	const connector = draft.connectors.get(id)!;
+	const producer = draft.producers.get(connector.output)!;
+	const inputs = producer.inputs[connector.outputIndex];
+	if (inputs.length < 2) {
+		return;
+	}
+	const rateTotal = sumConnections(draft, inputs);
+	const rateRatio = connector.rate.div(rateTotal);
+
+	const newProducer = producer.clone();
+	newProducer.x = p.x;
+	newProducer.y = p.y;
+	newProducer.rate = newProducer.rate.mul(rateRatio);
+	producer.rate = producer.rate.sub(newProducer.rate);
+
+	inputs.splice(inputs.indexOf(id), 1);
+	connector.output = newProducer.id;
+	newProducer.inputs[connector.outputIndex].push(id);
+};
+
+/** Either `splitOffConnectorInput` or `splitOffConnectorOutput` based on distance */
+export const splitOffConnectorClosest = (connectorId: NodeId, point: Point) => (draft: Draft<State>) => {
+	const connector = draft.connectors.get(connectorId)!;
+	const inputProd = draft.producers.get(connector.input)!;
+	const outputProd = draft.producers.get(connector.output)!;
+
+	const inputAttach = inputProd.outputAttachPoints[connector.inputIndex];
+	const outputAttach = outputProd.inputAttachPoints[connector.outputIndex];
+
+	const ip = pointAdd(inputProd, inputAttach);
+	const op = pointAdd(outputProd, outputAttach);
+
+	const dInput = pointDist(point, ip);
+	const dOutput = pointDist(point, op);
+	if (dInput < dOutput) {
+		splitOffConnectorInput(connectorId, point)(draft);
+	} else {
+		splitOffConnectorOutput(connectorId, point)(draft);
+	}
+};
+
 // export const splitProducer = (id: NodeId, leftRate: BigRat) => (draft: Draft<State>) => {
 // 	const left = draft.producers.get(id)!
 // 	const right = left.clone()
