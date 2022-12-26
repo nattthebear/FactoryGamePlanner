@@ -32,7 +32,7 @@ export interface Building {
 	ClassName: string;
 	DisplayName: string;
 	Description: string;
-	/** Continuous power consumption MW */
+	/** Continuous power consumption in MW.  Negative is a power producer. */
 	PowerConsumption: BigRat;
 	/** Overclocking power exponent */
 	OverclockPowerFactor: BigRat;

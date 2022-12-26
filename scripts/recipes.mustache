@@ -10,7 +10,7 @@ export const Recipes: Recipe[] = [
 		DisplayName: {{mDisplayName}},
 		Inputs: [{{#Inputs}}{ Item: Items[{{Item}}], Quantity: new BigRat({{{QuantityP}}}n, {{{QuantityQ}}}n) }, {{/Inputs}}],
 		Outputs: [{{#Outputs}}{ Item: Items[{{Item}}], Quantity: new BigRat({{{QuantityP}}}n, {{{QuantityQ}}}n) }, {{/Outputs}}],
-		Duration: BigRat.fromInteger({{mManufactoringDuration}}),
+		Duration: {{{DurationExpr}}},
 		Building: Buildings[{{Building}}],
 		Alternate: {{Alternate}},
 		PowerConsumption: {{{PowerConsumptionExpr}}},

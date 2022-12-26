@@ -7,6 +7,12 @@ import { chain } from "fp-ts/lib/Either.js";
 import mustache from "mustache";
 import { fileURLToPath } from "node:url";
 import { parseObject } from "./objectParser";
+import { BigRat } from "../src/math/BigRat";
+
+function unevalBigRat(r: BigRat) {
+	const { p, q } = r.terms();
+	return `new BigRat(${p}n, ${q}n)`;
+}
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -217,7 +223,7 @@ const ItemDescriptor = t.type({
 	// "mStackSize": "SS_HUGE",
 	// "mCanBeDiscarded": "False",
 	// "mRememberPickUp": "False",
-	// "mEnergyValue": "0.000000",
+	mEnergyValue: stringFloat,
 	// "mRadioactiveDecay": "10.000000",
 	mForm: Form,
 	mSmallIcon: Texture2D,
@@ -250,7 +256,7 @@ const ResourceDescriptor = t.type({
 	// "mStackSize": "SS_MEDIUM",
 	// "mCanBeDiscarded": "True",
 	// "mRememberPickUp": "True",
-	// "mEnergyValue": "0.000000",
+	mEnergyValue: stringFloat,
 	// "mRadioactiveDecay": "0.000000",
 	mForm: Form,
 	mSmallIcon: Texture2D,
@@ -382,6 +388,89 @@ const Schematic = t.type({
 	// "mIncludeInBuilds": "IIB_PublicBuilds"
 });
 
+const $BuildableGeneratorFuel = "Class'/Script/FactoryGame.FGBuildableGeneratorFuel'";
+const $BuildableGeneratorNuclear = "Class'/Script/FactoryGame.FGBuildableGeneratorNuclear'";
+const BuildableGenerator = t.type({
+	ClassName: t.string,
+	// "m_SFXSockets": "(\"AudioSocketTurbine\",\"CoalGeneratorPotential\")",
+	// "m_CurrentPotential": "1",
+	// "mFuelClasses": "",
+	// "mDefaultFuelClasses": "(/Game/FactoryGame/Resource/RawResources/Coal/Desc_Coal.Desc_Coal_C,/Game/FactoryGame/Resource/Parts/CompactedCoal/Desc_CompactedCoal.Desc_CompactedCoal_C,/Game/FactoryGame/Resource/Parts/PetroleumCoke/Desc_PetroleumCoke.Desc_PetroleumCoke_C)",
+	mFuel: t.array(
+		t.type({
+			mFuelClass: t.string,
+			mSupplementalResourceClass: t.string,
+			mByproduct: t.string,
+			mByproductAmount: t.union([t.literal(""), stringInteger]),
+		})
+	),
+	// "mAvailableFuelClasses": "",
+	// "mFuelResourceForm": "RF_SOLID",
+	mFuelLoadAmount: stringInteger,
+	// "mRequiresSupplementalResource": "True",
+	// "mSupplementalLoadAmount": "1000",
+	mSupplementalToPowerRatio: stringFloat,
+	// "mIsFullBlast": "True",
+	// "mCachedInputConnections": "",
+	// "mCachedPipeInputConnections": "",
+	mPowerProduction: stringInteger,
+	// "mLoadPercentage": "0.000000",
+	// "mPowerConsumption": "0.000000",
+	// "mPowerConsumptionExponent": "1.600000",
+	// "mDoesHaveShutdownAnimation": "True",
+	// "mOnHasPowerChanged": "()",
+	// "mOnHasProductionChanged": "()",
+	// "mOnHasStandbyChanged": "()",
+	// "mMinimumProducingTime": "2.000000",
+	// "mMinimumStoppedTime": "5.000000",
+	// "mCanEverMonitorProductivity": "True",
+	// "mCanChangePotential": "True",
+	// "mMinPotential": "0.010000",
+	// "mMaxPotential": "1.000000",
+	// "mMaxPotentialIncreasePerCrystal": "0.500000",
+	// "mFluidStackSizeDefault": "SS_FLUID",
+	// "mFluidStackSizeMultiplier": "1",
+	// "OnReplicationDetailActorCreatedEvent": "()",
+	// "mEffectUpdateInterval": "0.000000",
+	// "mDefaultProductivityMeasurementDuration": "300.000000",
+	// "mLastProductivityMeasurementProduceDuration": "300.000000",
+	// "mLastProductivityMeasurementDuration": "300.000000",
+	// "mCurrentProductivityMeasurementProduceDuration": "0.000000",
+	// "mCurrentProductivityMeasurementDuration": "0.000000",
+	// "mProductivityMonitorEnabled": "False",
+	// "mCachedSkeletalMeshes": "",
+	// "mAddToSignificanceManager": "True",
+	// "mSignificanceRange": "20000.000000",
+	mDisplayName: t.string,
+	mDescription: multiLineString,
+	// "MaxRenderDistance": "-1.000000",
+	// "mHighlightVector": "(X=0.000000,Y=0.000000,Z=0.000000)",
+	// "mAlternativeMaterialRecipes": "",
+	// "mContainsComponents": "True",
+	// "mBuildEffectSpeed": "0.000000",
+	// "mAllowColoring": "True",
+	// "mAllowPatterning": "True",
+	// "mSkipBuildEffect": "False",
+	// "mForceNetUpdateOnRegisterPlayer": "False",
+	// "mToggleDormancyOnInteraction": "False",
+	// "mIsMultiSpawnedBuildable": "False",
+	// "mShouldShowHighlight": "False",
+	// "mShouldShowAttachmentPointVisuals": "False",
+	// "mCreateClearanceMeshRepresentation": "True",
+	// "mCanContainLightweightInstances": "False",
+	// "mAffectsOcclusion": "False",
+	// "mOcclusionShape": "ROCS_Box",
+	// "mScaleCustomOffset": "1.000000",
+	// "mCustomScaleType": "ROCSS_Center",
+	// "mOcclusionBoxInfo": "",
+	// "mAttachmentPoints": "",
+	// "mInteractingPlayers": "",
+	// "mIsUseable": "True",
+	// "mHideOnBuildEffectStart": "False",
+	// "mShouldModifyWorldGrid": "True",
+	// "mBlueprintBuildEffectID": "-1"
+});
+
 const RawData = t.array(t.type({ NativeClass: t.string, Classes: t.array(t.unknown) }));
 
 const Data = t.type({
@@ -398,6 +487,8 @@ const Data = t.type({
 	[$BuildableManufacturer]: t.array(BuildableManufacturer),
 	[$BuildableManufacturerVariablePower]: t.array(BuildableManufacturer),
 	[$Schematic]: t.array(Schematic),
+	[$BuildableGeneratorFuel]: t.array(BuildableGenerator),
+	[$BuildableGeneratorNuclear]: t.array(BuildableGenerator),
 });
 
 async function doMustache(name: string, data: any) {
@@ -436,8 +527,84 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		...data[$ResourceDescriptor].map((x) => ({ ...x, isResource: true, isPiped: x.mForm !== "RF_SOLID" })),
 		...rawRegularItems.map((x) => ({ ...x, isResource: false, isPiped: x.mForm !== "RF_SOLID" })),
 	];
-	const allRecipes = data[$Recipe];
-	const buildings = [...data[$BuildableManufacturer], ...data[$BuildableManufacturerVariablePower]];
+
+	const powerBuildings = [
+		// HACK: Exclude biomass generators because they have no belts and most of their power types aren't known here.
+		...data[$BuildableGeneratorFuel].filter((d) => d.ClassName !== "Build_GeneratorBiomass_C"),
+		...data[$BuildableGeneratorNuclear],
+	];
+	const allRecipes = [
+		...data[$Recipe],
+		...powerBuildings.flatMap((p) =>
+			p.mFuel.map((fuel) => {
+				const ClassName = `$GENERATED_POWER$${p.ClassName}$${fuel.mFuelClass}`;
+				const fuelItem = allItems.find((i) => i.ClassName === fuel.mFuelClass);
+				if (!fuelItem) {
+					throw new Error(`Couldn't find fuel item for ${fuel.mFuelClass}`);
+				}
+				const mDisplayName = `Power from ${fuelItem.mDisplayName}`;
+				let mManufactoringDuration = BigRat.parse(fuelItem.mEnergyValue);
+				mManufactoringDuration = mManufactoringDuration
+					.mul(BigRat.fromInteger(p.mFuelLoadAmount))
+					.div(BigRat.fromInteger(p.mPowerProduction));
+				const mIngredients: { ItemClass: string; Amount: number | BigRat }[] = [
+					{
+						ItemClass: fuel.mFuelClass,
+						Amount: p.mFuelLoadAmount,
+					},
+				];
+				if (fuel.mSupplementalResourceClass) {
+					let amount = BigRat.fromInteger(p.mPowerProduction)
+						.mul(BigRat.parse(p.mSupplementalToPowerRatio))
+						.mul(mManufactoringDuration);
+					const suppItem = allItems.find((i) => i.ClassName === fuel.mSupplementalResourceClass);
+					if (!suppItem) {
+						throw new Error(`Couldn't find fuel item for ${fuel.mFuelClass}`);
+					}
+					if (suppItem.mForm !== "RF_SOLID") {
+						amount = amount.div(BigRat.fromInteger(1000));
+					}
+					mIngredients.push({
+						ItemClass: fuel.mSupplementalResourceClass,
+						Amount: amount,
+					});
+				}
+				const mProduct = fuel.mByproductAmount
+					? [
+							{
+								ItemClass: fuel.mByproduct,
+								Amount: fuel.mByproductAmount,
+							},
+					  ]
+					: [];
+
+				return {
+					ClassName,
+					mDisplayName,
+					mIngredients,
+					mProduct,
+					mManufactoringDuration,
+					mProducedIn: [p.ClassName],
+					mVariablePowerConsumptionConstant: 0,
+					mVariablePowerConsumptionFactor: 1,
+				};
+			})
+		),
+	];
+	const buildings = [
+		...data[$BuildableManufacturer],
+		...data[$BuildableManufacturerVariablePower],
+		...powerBuildings.map((p) => {
+			return {
+				ClassName: p.ClassName,
+				mManufacturingSpeed: "1.000000",
+				mPowerConsumption: -p.mPowerProduction,
+				mPowerConsumptionExponent: "1",
+				mDisplayName: p.mDisplayName,
+				mDescription: p.mDescription,
+			};
+		}),
+	];
 
 	const buildingClazzes = new Map(buildings.map((x, i) => [x.ClassName, i]));
 	const recipesMaybeBuildable = allRecipes.filter(
@@ -483,7 +650,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			.map((s) => s.split(".")[1])
 	);
 
-	const mapIngredients = (input: t.TypeOf<typeof IngredientList>) =>
+	const mapIngredients = (input: { ItemClass: string; Amount: number | BigRat }[]) =>
 		input.map((x) => {
 			const index = itemsLookup.get(x.ItemClass);
 			if (index == null) {
@@ -492,8 +659,8 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			const item = items[index];
 			return {
 				Item: itemsLookup.get(x.ItemClass),
-				QuantityP: x.Amount,
-				QuantityQ: item.mForm !== "RF_SOLID" ? 1000 : 1,
+				QuantityP: typeof x.Amount === "number" ? x.Amount : x.Amount.terms().p,
+				QuantityQ: typeof x.Amount === "number" ? (item.mForm !== "RF_SOLID" ? 1000 : 1) : x.Amount.terms().q,
 			};
 		});
 
@@ -515,6 +682,10 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		PowerConsumptionExpr: x.mVariablePowerConsumptionConstant
 			? `BigRat.fromInteger(${x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2})`
 			: "null",
+		DurationExpr:
+			typeof x.mManufactoringDuration === "number"
+				? `BigRat.fromInteger(${x.mManufactoringDuration})`
+				: unevalBigRat(x.mManufactoringDuration),
 	}));
 
 	const itemsView = items.map((x) => ({

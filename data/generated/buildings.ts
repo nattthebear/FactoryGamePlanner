@@ -65,4 +65,25 @@ export const Buildings: Building[] = [
 		PowerConsumption: BigRat.fromInteger(0),
 		OverclockPowerFactor: BigRat.parse("1.321929"),
 	},
+	{
+		ClassName: "Build_GeneratorCoal_C",
+		DisplayName: "Coal Generator",
+		Description: "Burns Coal to boil Water, the produced steam rotates turbines to generate electricity for the power grid.\nHas a Conveyor Belt and Pipe input, so both the Coal and Water supply can be automated.\n\nCaution: Always generates at the set clock speed. Shuts down if fuel requirements are not met.",
+		PowerConsumption: BigRat.fromInteger(-75),
+		OverclockPowerFactor: BigRat.parse("1"),
+	},
+	{
+		ClassName: "Build_GeneratorFuel_C",
+		DisplayName: "Fuel Generator",
+		Description: "Consumes Fuel to generate electricity for the power grid.\nHas a Pipe input so the Fuel supply can be automated.\n\nCaution: Always generates at the set clock speed. Shuts down if fuel requirements are not met.",
+		PowerConsumption: BigRat.fromInteger(-150),
+		OverclockPowerFactor: BigRat.parse("1"),
+	},
+	{
+		ClassName: "Build_GeneratorNuclear_C",
+		DisplayName: "Nuclear Power Plant",
+		Description: "Consumes Nuclear Fuel Rods and Water to produce electricity for the power grid.\n\nProduces Nuclear Waste, which is extracted from the conveyor belt output.\n\nCaution: Always generates at the set clock speed. Shuts down if fuel requirements are not met.",
+		PowerConsumption: BigRat.fromInteger(-2500),
+		OverclockPowerFactor: BigRat.parse("1"),
+	},
 ];

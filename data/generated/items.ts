@@ -13,6 +13,7 @@ import Desc_Water_C from "url:./images/Desc_Water_C.png";
 import Desc_OreBauxite_C from "url:./images/Desc_OreBauxite_C.png";
 import Desc_OreUranium_C from "url:./images/Desc_OreUranium_C.png";
 import Desc_NuclearWaste_C from "url:./images/Desc_NuclearWaste_C.png";
+import Desc_PlutoniumWaste_C from "url:./images/Desc_PlutoniumWaste_C.png";
 import Desc_Battery_C from "url:./images/Desc_Battery_C.png";
 import Desc_AluminumIngot_C from "url:./images/Desc_AluminumIngot_C.png";
 import Desc_NonFissibleUranium_C from "url:./images/Desc_NonFissibleUranium_C.png";
@@ -231,6 +232,15 @@ export const Items: Item[] = [
 		Description: "The by-product of consuming Uranium Fuel Rods in the Nuclear Power Plant.\nNon-fissible Uranium can be extracted. Handle with caution.\n\nCaution: HIGHLY Radioactive.",
 		IsResource: false,
 		Icon: Desc_NuclearWaste_C,
+		IsPiped: false,
+		Color: "#fff",
+	},
+	{
+		ClassName: "Desc_PlutoniumWaste_C",
+		DisplayName: "Plutonium Waste",
+		Description: "The by-product of consuming Plutonium Fuel Rods in the Nuclear Power Plant.\nNeeds to be stored in a safe location. Handle with caution.\n\nCaution: EXTREMELY Radioactive.",
+		IsResource: false,
+		Icon: Desc_PlutoniumWaste_C,
 		IsPiped: false,
 		Color: "#fff",
 	},
