@@ -1,4 +1,5 @@
 import { Building } from "../types";
+import { BigRat } from "../../src/math/BigRat";
 
 export const Buildings: Building[] = [
 	{{#.}}
@@ -6,6 +7,8 @@ export const Buildings: Building[] = [
 		ClassName: {{ClassName}},
 		DisplayName: {{mDisplayName}},
 		Description: {{mDescription}},
+		PowerConsumption: BigRat.fromInteger({{mPowerConsumption}}),
+		OverclockPowerFactor: BigRat.parse({{mPowerConsumptionExponent}}),
 	},
 	{{/.}}
 ];

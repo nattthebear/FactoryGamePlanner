@@ -124,6 +124,21 @@ const stringInteger = new t.Type<number>(
 	t.identity
 );
 
+const stringFloat = new t.Type<string>(
+	"stringFloat",
+	t.string.is,
+	(input, context) => {
+		if (typeof input !== "string") {
+			return t.failure(input, context, "Value must be a string");
+		}
+		if (!input.match(/^[0-9]+(\.[0-9]+)?$/)) {
+			return t.failure(input, context, `String ${input} doesn't look like an integer`);
+		}
+		return t.success(input);
+	},
+	t.identity
+);
+
 const multiLineString = new t.Type<string>(
 	"multiLineString",
 	t.string.is,
@@ -267,8 +282,8 @@ const Recipe = t.type({
 	// "mManualManufacturingMultiplier": "1.000000",
 	mProducedIn: miniobj(t.union([t.array(buildingClass), t.literal("")])),
 	// "mRelevantEvents": "",
-	// "mVariablePowerConsumptionConstant": "0.000000",
-	// "mVariablePowerConsumptionFactor": "1.000000"
+	mVariablePowerConsumptionConstant: stringInteger,
+	mVariablePowerConsumptionFactor: stringInteger,
 });
 
 const $BuildableManufacturer = "Class'/Script/FactoryGame.FGBuildableManufacturer'";
@@ -285,8 +300,8 @@ const BuildableManufacturer = t.type({
 	// "mPipeInputConnections": "",
 	// "mFactoryOutputConnections": "",
 	// "mPipeOutputConnections": "",
-	// "mPowerConsumption": "4.000000",
-	// "mPowerConsumptionExponent": "1.600000",
+	mPowerConsumption: stringInteger,
+	mPowerConsumptionExponent: stringFloat,
 	// "mDoesHaveShutdownAnimation": "False",
 	// "mOnHasPowerChanged": "()",
 	// "mOnHasProductionChanged": "()",
@@ -497,6 +512,9 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			return results[0];
 		})(),
 		Alternate: alternateUnlockData.has(x.ClassName),
+		PowerConsumptionExpr: x.mVariablePowerConsumptionConstant
+			? `BigRat.fromInteger(${x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2})`
+			: "null",
 	}));
 
 	const itemsView = items.map((x) => ({

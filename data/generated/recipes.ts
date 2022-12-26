@@ -12,6 +12,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Wire_C",
@@ -21,6 +22,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_IngotCopper_C",
@@ -30,6 +32,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[1],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_IronPlateReinforced_C",
@@ -39,6 +42,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Concrete_C",
@@ -48,6 +52,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Screw_C",
@@ -57,6 +62,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_IronPlate_C",
@@ -66,6 +72,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_IronRod_C",
@@ -75,6 +82,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_IngotIron_C",
@@ -84,6 +92,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[1],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_AdheredIronPlate_C",
@@ -93,6 +102,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_CircuitBoard_C",
@@ -102,6 +112,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_LiquidFuel_C",
@@ -111,6 +122,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PetroleumCoke_C",
@@ -120,6 +132,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Plastic_C",
@@ -129,6 +142,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Rubber_C",
@@ -138,6 +152,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_ResidualFuel_C",
@@ -147,6 +162,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_ResidualPlastic_C",
@@ -156,6 +172,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_ResidualRubber_C",
@@ -165,6 +182,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_BoltedFrame_C",
@@ -174,6 +192,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_ModularFrame_C",
@@ -183,6 +202,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(60),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Rotor_C",
@@ -192,6 +212,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(15),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_CopperSheet_C",
@@ -201,6 +222,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_1_C",
@@ -210,6 +232,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(30),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CoatedCable_C",
@@ -219,6 +242,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CoatedIronCanister_C",
@@ -228,6 +252,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_FluidCanister_C",
@@ -237,6 +262,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Fuel_C",
@@ -246,6 +272,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_LiquidBiofuel_C",
@@ -255,6 +282,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedBiofuel_C",
@@ -264,6 +292,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedCrudeOil_C",
@@ -273,6 +302,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedOilResidue_C",
@@ -282,6 +312,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedWater_C",
@@ -291,6 +322,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageBioFuel_C",
@@ -300,6 +332,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageFuel_C",
@@ -309,6 +342,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageOil_C",
@@ -318,6 +352,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageOilResidue_C",
@@ -327,6 +362,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageWater_C",
@@ -336,6 +372,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(1),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CoatedIronPlate_C",
@@ -345,6 +382,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CokeSteelIngot_C",
@@ -354,6 +392,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[2],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CopperAlloyIngot_C",
@@ -363,6 +402,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[2],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CopperRotor_C",
@@ -372,6 +412,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_DilutedPackagedFuel_C",
@@ -381,6 +422,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectroAluminumScrap_C",
@@ -390,6 +432,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UraniumCell_C",
@@ -399,6 +442,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[6],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_CoolingSystem_C",
@@ -408,6 +452,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(10),
 		Building: Buildings[6],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_NitricAcid_C",
@@ -417,6 +462,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[6],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_NonFissileUranium_C",
@@ -426,6 +472,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[6],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_AluminumCasing_C",
@@ -435,6 +482,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_AluminumSheet_C",
@@ -444,6 +492,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_RadioControlUnit_C",
@@ -453,6 +502,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(48),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_AluminaSolution_C",
@@ -462,6 +512,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_AluminumScrap_C",
@@ -471,6 +522,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(1),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedAlumina_C",
@@ -480,6 +532,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(1),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_IngotAluminum_C",
@@ -489,6 +542,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[2],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_QuartzCrystal_C",
@@ -498,6 +552,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Silica_C",
@@ -507,6 +562,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_CrystalOscillator_C",
@@ -516,6 +572,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageAlumina_C",
@@ -525,6 +582,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(1),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectrodeCircuitBoard_C",
@@ -534,6 +592,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_FlexibleFramework_C",
@@ -543,6 +602,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_FusedWire_C",
@@ -552,6 +612,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(20),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_HeavyFlexibleFrame_C",
@@ -561,6 +622,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Computer_C",
@@ -570,6 +632,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_4_C",
@@ -579,6 +642,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(60),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_5_C",
@@ -588,6 +652,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_HeavyOilResidue_C",
@@ -597,6 +662,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_HighSpeedWiring_C",
@@ -606,6 +672,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(32),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_EncasedIndustrialBeam_C",
@@ -615,6 +682,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(10),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Motor_C",
@@ -624,6 +692,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Stator_C",
@@ -633,6 +702,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_ModularFrameHeavy_C",
@@ -642,6 +712,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(30),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_3_C",
@@ -651,6 +722,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_AILimiter_C",
@@ -660,6 +732,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_PlasticSmartPlating_C",
@@ -669,6 +742,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_PolymerResin_C",
@@ -678,6 +752,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PureAluminumIngot_C",
@@ -687,6 +762,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[1],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_PureCateriumIngot_C",
@@ -696,6 +772,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(5),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_PureCopperIngot_C",
@@ -705,6 +782,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_PureIronIngot_C",
@@ -714,6 +792,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_PureQuartzCrystal_C",
@@ -723,6 +802,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_RecycledRubber_C",
@@ -732,6 +812,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_RubberConcrete_C",
@@ -741,6 +822,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_SteamedCopperSheet_C",
@@ -750,6 +832,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_SteelCanister_C",
@@ -759,6 +842,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[0],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_SteelCoatedPlate_C",
@@ -768,6 +852,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_SteelRod_C",
@@ -777,6 +862,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(5),
 		Building: Buildings[0],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SteelBeam_C",
@@ -786,6 +872,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SteelPipe_C",
@@ -795,6 +882,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_IngotSteel_C",
@@ -804,6 +892,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[2],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_2_C",
@@ -813,6 +902,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_TurboHeavyFuel_C",
@@ -822,6 +912,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedTurboFuel_C",
@@ -831,6 +922,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[5],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageTurboFuel_C",
@@ -840,6 +932,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[5],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Coal_2_C",
@@ -849,6 +942,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[0],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_EnrichedCoal_C",
@@ -858,6 +952,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_WetConcrete_C",
@@ -867,6 +962,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_AlcladCasing_C",
@@ -876,6 +972,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_AutomatedMiner_C",
@@ -885,6 +982,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(60),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ClassicBattery_C",
@@ -894,6 +992,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Battery_C",
@@ -903,6 +1002,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[6],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_ComputerSuper_C",
@@ -912,6 +1012,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(32),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SulfuricAcid_C",
@@ -921,6 +1022,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedSulfuricAcid_C",
@@ -930,6 +1032,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_7_C",
@@ -939,6 +1042,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(80),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_HighSpeedConnector_C",
@@ -948,6 +1052,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageSulfuricAcid_C",
@@ -957,6 +1062,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(1),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CoolingDevice_C",
@@ -966,6 +1072,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(32),
 		Building: Buildings[6],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_HeatSink_C",
@@ -975,6 +1082,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_FusedModularFrame_C",
@@ -984,6 +1092,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(40),
 		Building: Buildings[6],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_GasTank_C",
@@ -993,6 +1102,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(1),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedNitrogen_C",
@@ -1002,6 +1112,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(1),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_UnpackageNitrogen_C",
@@ -1011,6 +1122,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(1),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_DilutedFuel_C",
@@ -1020,6 +1132,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[6],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectricMotor_C",
@@ -1029,6 +1142,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_FertileUranium_C",
@@ -1038,6 +1152,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[6],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PlutoniumCell_C",
@@ -1047,6 +1162,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PressureConversionCube_C",
@@ -1056,6 +1172,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(60),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_CopperDust_C",
@@ -1065,6 +1182,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Plutonium_C",
@@ -1074,6 +1192,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(60),
 		Building: Buildings[8],
 		Alternate: false,
+		PowerConsumption: BigRat.fromInteger(500),
 	},
 	{
 		ClassName: "Recipe_PlutoniumFuelRod_C",
@@ -1083,6 +1202,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(240),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_PackagedNitricAcid_C",
@@ -1092,6 +1212,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_9_C",
@@ -1101,6 +1222,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[8],
 		Alternate: false,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_UnpackageNitricAcid_C",
@@ -1110,6 +1232,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[5],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_HeatFusedFrame_C",
@@ -1119,6 +1242,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(20),
 		Building: Buildings[6],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_InstantPlutoniumCell_C",
@@ -1128,6 +1252,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[8],
 		Alternate: true,
+		PowerConsumption: BigRat.fromInteger(500),
 	},
 	{
 		ClassName: "Recipe_Alternate_InstantScrap_C",
@@ -1137,6 +1262,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[6],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_OCSupercomputer_C",
@@ -1146,6 +1272,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(20),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_PlutoniumFuelUnit_C",
@@ -1155,6 +1282,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_RadioControlSystem_C",
@@ -1164,6 +1292,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(40),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_SloppyAlumina_C",
@@ -1173,6 +1302,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_SuperStateComputer_C",
@@ -1182,6 +1312,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(50),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_ElectromagneticControlRod_C",
@@ -1191,6 +1322,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(30),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_NuclearFuelRod_C",
@@ -1200,6 +1332,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(150),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_6_C",
@@ -1209,6 +1342,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_TurboBlendFuel_C",
@@ -1218,6 +1352,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[6],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_TurboPressureMotor_C",
@@ -1227,6 +1362,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(32),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Beacon_1_C",
@@ -1236,6 +1372,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Cable_1_C",
@@ -1245,6 +1382,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Cable_2_C",
@@ -1254,6 +1392,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_IngotCaterium_C",
@@ -1263,6 +1402,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[1],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CircuitBoard_1_C",
@@ -1272,6 +1412,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CircuitBoard_2_C",
@@ -1281,6 +1422,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(48),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Computer_1_C",
@@ -1290,6 +1432,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Computer_2_C",
@@ -1299,6 +1442,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(64),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Concrete_C",
@@ -1308,6 +1452,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_CrystalOscillator_C",
@@ -1317,6 +1462,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(32),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectromagneticControlRod_1_C",
@@ -1326,6 +1472,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(15),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Gunpowder_1_C",
@@ -1335,6 +1482,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_HeatSink_1_C",
@@ -1344,6 +1492,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ModularFrameHeavy_C",
@@ -1353,6 +1502,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(64),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_HighSpeedConnector_C",
@@ -1362,6 +1512,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(40),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_IngotIron_C",
@@ -1371,6 +1522,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[2],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_IngotSteel_1_C",
@@ -1380,6 +1532,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(3),
 		Building: Buildings[2],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_IngotSteel_2_C",
@@ -1389,6 +1542,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[2],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ModularFrame_C",
@@ -1398,6 +1552,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(60),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Motor_1_C",
@@ -1407,6 +1562,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(48),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_NuclearFuelRod_1_C",
@@ -1416,6 +1572,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(300),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Plastic_1_C",
@@ -1425,6 +1582,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[3],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Quickwire_C",
@@ -1434,6 +1592,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_RadioControlUnit_1_C",
@@ -1443,6 +1602,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ReinforcedIronPlate_1_C",
@@ -1452,6 +1612,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_ReinforcedIronPlate_2_C",
@@ -1461,6 +1622,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(32),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_EncasedIndustrialBeam_C",
@@ -1470,6 +1632,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(15),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Rotor_C",
@@ -1479,6 +1642,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Screw_C",
@@ -1488,6 +1652,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[0],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Screw_2_C",
@@ -1497,6 +1662,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[0],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Silica_C",
@@ -1506,6 +1672,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Stator_C",
@@ -1515,6 +1682,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(15),
 		Building: Buildings[4],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Turbofuel_C",
@@ -1524,6 +1692,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_TurboMotor_1_C",
@@ -1533,6 +1702,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(64),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_MotorTurbo_C",
@@ -1542,6 +1712,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(32),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_8_C",
@@ -1551,6 +1722,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_UraniumCell_1_C",
@@ -1560,6 +1732,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[7],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Wire_1_C",
@@ -1569,6 +1742,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[0],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_Wire_2_C",
@@ -1578,6 +1752,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[0],
 		Alternate: true,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Beacon_C",
@@ -1587,6 +1762,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Biofuel_C",
@@ -1596,6 +1772,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_FilterGasMask_C",
@@ -1605,6 +1782,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(8),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_FilterHazmat_C",
@@ -1614,6 +1792,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(16),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_SpikedRebar_C",
@@ -1623,6 +1802,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Quickwire_C",
@@ -1632,6 +1812,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(5),
 		Building: Buildings[0],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Rebar_Stunshot_C",
@@ -1641,6 +1822,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_CartridgeSmart_C",
@@ -1650,6 +1832,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Alternate_PolyesterFabric_C",
@@ -1659,6 +1842,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(2),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_NobeliskGas_C",
@@ -1668,6 +1852,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Rebar_Spreadshot_C",
@@ -1677,6 +1862,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_NobeliskShockwave_C",
@@ -1686,6 +1872,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(60),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Gunpowder_C",
@@ -1695,6 +1882,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(4),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_GunpowderMK2_C",
@@ -1704,6 +1892,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[3],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Nobelisk_C",
@@ -1713,6 +1902,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(6),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_NobeliskCluster_C",
@@ -1722,6 +1912,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(24),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Cartridge_C",
@@ -1731,6 +1922,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[4],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_Rebar_Explosive_C",
@@ -1740,6 +1932,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_NobeliskNuke_C",
@@ -1749,6 +1942,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(120),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_CartridgeChaos_C",
@@ -1758,6 +1952,7 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[6],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 	{
 		ClassName: "Recipe_CartridgeChaos_Packaged_C",
@@ -1767,5 +1962,6 @@ export const Recipes: Recipe[] = [
 		Duration: BigRat.fromInteger(12),
 		Building: Buildings[7],
 		Alternate: false,
+		PowerConsumption: null,
 	},
 ];
