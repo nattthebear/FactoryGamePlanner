@@ -48,7 +48,7 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue }: Pr
 		);
 	}
 
-	const relevantItems = items.filter((item) => !regex || regex.test(item.name));
+	const relevantItems = items.filter((item) => !regex || ((regex.lastIndex = 0), regex.test(item.name)));
 	const exactMatch = relevantItems.find((item) => item.name.length === search.length);
 
 	return (
