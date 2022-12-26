@@ -23,6 +23,8 @@ const CONNECTION_SIZE = 72;
 /** Rounded corner radius */
 const CORNER_SIZE = 12;
 
+const POWER_CORNER_SIZE = 60;
+
 const WIDTH_XS = 140;
 const WIDTH_S = 160;
 const WIDTH_M = 190;
@@ -327,6 +329,68 @@ export const Accelerator = drawShape(() => {
 	draw("z");
 });
 
+export const CoalBurner = drawShape(() => {
+	draw("M", -WIDTH_L / 2 - POWER_CORNER_SIZE, CONNECTION_SIZE);
+
+	connection(spots[0].solid, 0);
+	connection(spots[0].liquid, 0);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_L);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(CONNECTION_SIZE * 2);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_L);
+	corners.angle(POWER_CORNER_SIZE);
+
+	draw("z");
+});
+
+export const FuelBurner = drawShape(() => {
+	draw("M", -WIDTH_M / 2 - POWER_CORNER_SIZE, WIDTH_M / 2);
+
+	lines.straight((WIDTH_M - CONNECTION_SIZE) / 2);
+	connection(spots[0].liquid, 0);
+	lines.straight((WIDTH_M - CONNECTION_SIZE) / 2);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_M);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_M);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_M);
+	corners.angle(POWER_CORNER_SIZE);
+
+	draw("z");
+});
+
+export const NuclearPlant = drawShape(() => {
+	draw("M", -WIDTH_L / 2 - POWER_CORNER_SIZE, WIDTH_L / 2);
+
+	lines.straight(WIDTH_L / 2 - CONNECTION_SIZE);
+	connection(spots[0].liquid, 0);
+	connection(spots[0].solid, 0);
+	lines.straight(WIDTH_L / 2 - CONNECTION_SIZE);
+	corners.round(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_L);
+	corners.round(POWER_CORNER_SIZE);
+
+	lines.straight((WIDTH_L - CONNECTION_SIZE) / 2);
+	connection(spots[1].solid, 0);
+	lines.straight((WIDTH_L - CONNECTION_SIZE) / 2);
+	corners.round(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_L);
+	corners.round(POWER_CORNER_SIZE);
+
+	draw("z");
+});
+
 export const BuildingMap: Record<string, ProducerDrawing> = {
 	Build_ConstructorMk1_C: Constructor,
 	Build_SmelterMk1_C: Smelter,
@@ -337,6 +401,9 @@ export const BuildingMap: Record<string, ProducerDrawing> = {
 	Build_Blender_C: Blender,
 	Build_ManufacturerMk1_C: Manufacturer,
 	Build_HadronCollider_C: Accelerator,
+	Build_GeneratorCoal_C: CoalBurner,
+	Build_GeneratorFuel_C: FuelBurner,
+	Build_GeneratorNuclear_C: NuclearPlant,
 };
 
 export const Sink = drawShape(() => {

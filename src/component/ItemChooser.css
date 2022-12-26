@@ -1,4 +1,14 @@
 .item-chooser-image {
 	width: 24px;
 	height: 24px;
+
+	&.fake-power {
+		background-color: #777;
+		padding: 1px;
+
+		& img {
+			width: 22px;
+			height: 22px;
+		}
+	}
 }

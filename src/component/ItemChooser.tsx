@@ -1,11 +1,13 @@
 import { useEffect, useState } from "preact/hooks";
 import { Items } from "../../data/generated/items";
+import { Recipes } from "../../data/generated/recipes";
 import { Item, Recipe } from "../../data/types";
 import { Chooser } from "./Chooser";
 import { prompt } from "../component/Prompt";
 
+import SchematicIcon_Factory from "url:../../data/generated/images/SchematicIcon_Factory.png";
+
 import "./ItemChooser.css";
-import { Recipes } from "../../data/generated/recipes";
 
 function fillMultiMap<K, V>(map: Map<K, V[]>, key: K, value: V) {
 	let array = map.get(key);
@@ -48,6 +50,28 @@ const DisplayItems = Items.map((item) => ({
 	producingRecipes: recipeToOutputs.get(item)?.map(formatRecipe),
 }));
 type DisplayItem = typeof DisplayItems[number];
+
+/** Hack:  Add a way to choose power for the recipe by outputs chooser */
+const FakePowerItem: DisplayItem = {
+	adornment: (
+		<div class="item-chooser-image fake-power">
+			<img src={SchematicIcon_Factory} />
+		</div>
+	),
+	name: "Power",
+	item: {
+		ClassName: "FakePower",
+		DisplayName: "Power",
+		Description: "",
+		Icon: "",
+		IsResource: false,
+		IsPiped: false,
+		Color: "",
+	},
+	consumingRecipes: [],
+	producingRecipes: Recipes.filter((r) => r.Building.PowerConsumption.sign() < 0).map(formatRecipe),
+};
+DisplayItems.push(FakePowerItem);
 
 function RecipeChooser({ type, onConfirm }: { type: "input" | "output"; onConfirm: (value: Recipe | null) => void }) {
 	const [displayItem, changeDisplayItem] = useState<DisplayItem | null>(null);
@@ -92,13 +116,13 @@ export const chooseItem = async (title: string, options?: Item[]) => {
 
 export const chooseRecipeByOutput = () =>
 	prompt<Recipe | null>({
-		title: "Choose item and recipe:",
+		title: "Choose output item and recipe:",
 		render: (onConfirm) => <RecipeChooser type="output" onConfirm={onConfirm} />,
 	});
 
 export const chooseRecipeByInput = () =>
 	prompt<Recipe | null>({
-		title: "Choose item and recipe:",
+		title: "Choose input item and recipe:",
 		render: (onConfirm) => <RecipeChooser type="input" onConfirm={onConfirm} />,
 	});
 

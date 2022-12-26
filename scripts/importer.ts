@@ -697,9 +697,14 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		}[x.mForm],
 	}));
 
+	const HACK_PowerIcon = new Texture(
+		"/Game/FactoryGame/Buildable/Factory/TradingPost/UI/SchematicIcons/SchematicIcon_Factory"
+	);
+
 	// for (const x of items) {
 	// 	await x.mSmallIcon.exportImage(x.ClassName);
 	// }
+	// await HACK_PowerIcon.exportImage("SchematicIcon_Factory");
 
 	await doMustache("items", itemsView);
 	await doMustache("recipes", recipeView);
