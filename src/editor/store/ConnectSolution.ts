@@ -22,7 +22,7 @@ function arrangePositions(producers: Map<NodeId, Producer>, connectors: Map<Node
 	const roots: TreeNode[] = [];
 	const toVisit: TreeNode[] = [];
 	for (const p of producers.values()) {
-		if (p instanceof Sink) {
+		if (p.outputs.length === 0) {
 			const node: TreeNode = {
 				value: p,
 				children: [],
