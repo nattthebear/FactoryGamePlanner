@@ -8,6 +8,7 @@ export interface Item {
 	IsResource: boolean;
 	IsPiped: boolean;
 	Color: string;
+	SinkPoints: BigRat;
 }
 
 export interface RecipeFlow {

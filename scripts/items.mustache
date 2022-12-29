@@ -1,4 +1,5 @@
 import { Item } from "../types";
+import { BigRat } from "../../src/math/BigRat";
 
 {{#.}}
 import {{{ClassName}}} from "url:./images/{{{ClassName}}}.png";
@@ -14,6 +15,7 @@ export const Items: Item[] = [
 		Icon: {{{ClassName}}},
 		IsPiped: {{isPiped}},
 		Color: {{Color}},
+		SinkPoints: BigRat.fromInteger({{mResourceSinkPoints}}),
 	},
 	{{/.}}
 ];

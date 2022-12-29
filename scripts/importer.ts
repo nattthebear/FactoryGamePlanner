@@ -240,7 +240,7 @@ const ItemDescriptor = t.type({
 	// "mShouldOverrideScannerDisplayText": "False",
 	// "mScannerDisplayText": "",
 	mScannerLightColor: Color,
-	// "mResourceSinkPoints": "0",
+	mResourceSinkPoints: stringInteger,
 });
 
 const $ResourceDescriptor = "Class'/Script/FactoryGame.FGResourceDescriptor'";
@@ -273,7 +273,7 @@ const ResourceDescriptor = t.type({
 	// "mShouldOverrideScannerDisplayText": "False",
 	// "mScannerDisplayText": "",
 	// "mScannerLightColor": "(B=0,G=0,R=0,A=0)",
-	// "mResourceSinkPoints": "11",
+	mResourceSinkPoints: stringInteger,
 });
 
 const $Recipe = "Class'/Script/FactoryGame.FGRecipe'";
