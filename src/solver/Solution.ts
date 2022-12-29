@@ -18,7 +18,7 @@ export interface ResourceConstraint {
 }
 
 export interface Problem {
-	/** Any item not present here is assumed to be unavailable. */
+	/** Any item not present here is assumed to be unavailable (limited, rate 0). */
 	constraints: Map<Item, ResourceConstraint>;
 	/** What recipes are allowed. */
 	availableRecipes: Set<Recipe>;
