@@ -77,7 +77,11 @@ export function Results() {
 		const sign = net.power.sign();
 		const text = sign < 0 ? "consumed" : "produced";
 		const rate = sign < 0 ? net.power.neg() : net.power;
-		return <div>Power: {rate.toNumberApprox().toFixed(2)} MW</div>;
+		return (
+			<div>
+				Power: {rate.toNumberApprox().toFixed(2)} MW {text}
+			</div>
+		);
 	}
 
 	return (

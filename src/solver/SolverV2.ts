@@ -72,7 +72,7 @@ export function stringifyProblem(problem: ProblemV2) {
 		[...problem.constraints.entries()]
 			.map(([k, v]) => `${k.ClassName},${v.constraint},${v.rate?.toRatioString() ?? "null"}`)
 			.join(";"),
-		problem.power ? `${problem.power.constraint},${problem.power.rate?.toRatioString ?? "null"}` : "null",
+		problem.power ? `${problem.power.constraint},${problem.power.rate?.toRatioString() ?? "null"}` : "null",
 		problem.clockFactor.toRatioString(),
 		[...problem.availableRecipes].map((r) => r.ClassName).join(";"),
 	].join("@@");
@@ -175,6 +175,11 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 
 		if (power == null || power.rate != null) {
 			powerRow = a++;
+		} else if (power.constraint === "produced" && power.rate == null) {
+			if (!isTwoPhase) {
+				isTwoPhase = true;
+				objectives.clear();
+			}
 		}
 
 		nRows = a + 1; // +1 for objective row at the bottom
@@ -215,7 +220,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 			}
 		}
 		if (power?.constraint === "produced" && power.rate == null) {
-			powerCoeff = BigRat.ONE;
+			powerCoeff = BigRat.MINUS_ONE;
 		}
 	} else {
 		for (const [item, { constraint, rate }] of constraints.entries()) {
@@ -335,6 +340,10 @@ export function solveV2(problem: ProblemV2): SolutionV2 | null {
 				if (constraint === "produced" && rate == null) {
 					draft.constraints.set(item, { constraint: "produced", rate: net.items.get(item)! });
 				}
+			}
+
+			if (problem.power?.constraint === "produced" && problem.power.rate == null) {
+				draft.power = { constraint: "produced", rate: net.power };
 			}
 		});
 

@@ -5,7 +5,7 @@ import { Recipes } from "../../data/generated/recipes";
 import { Items } from "../../data/generated/items";
 import { Item } from "../../data/types";
 import { BigRat } from "../math/BigRat";
-import { ConstraintV2, ProblemV2, setupDictionary, SolutionV2, solveV2 } from "./SolverV2";
+import { ConstraintV2, ProblemV2, setupDictionary, SolutionV2, solveV2, unstringifyProblem } from "./SolverV2";
 import { stringify } from "./Dictionary";
 
 const defaultMapResources: Record<string, number> = {
@@ -146,6 +146,14 @@ describe("setupDictionary", () => {
 			assert(!isTwoPhase);
 
 			assert.equal(stringify(dictionary), "2,3,4;1;10000:1,-30:1,-500:1,30:1,20:1,-5:1,0:1,-87:20");
+		});
+
+		it("make maximized power", () => {
+			const problem = makeProblem({ constraint: "produced", rate: null });
+			const { dictionary, isTwoPhase } = setupDictionary(problem);
+			assert(isTwoPhase);
+
+			assert.equal(stringify(dictionary), "2,3;1;10000:1,-30:1,-500:1,30:1,0:1,-4:1");
 		});
 	});
 });
@@ -304,5 +312,44 @@ describe("solveV2", () => {
 			debugPrint(problem, solution),
 			"wp: 1655:1 Silica: 200:9 Aluminum Scrap: 25:6 Alumina Solution: 25:3 Aluminum Ingot: 50:3"
 		);
+	});
+
+	it("simple maximize problem", () => {
+		const problem = unstringifyProblem(
+			"Desc_OreIron_C,available,43:1;Desc_OreCopper_C,available,79:1;Desc_IronIngot_C,produced,null;Desc_CopperIngot_C,produced,null@@available,null@@1:1@@Recipe_IngotCopper_C;Recipe_IngotIron_C"
+		);
+		const solution = solveV2(problem);
+		assert(solution);
+		assert.equal(debugPrint(problem, solution), "wp: 3367:100 Copper Ingot: 79:30 Iron Ingot: 43:30");
+	});
+
+	it("basic coal power", () => {
+		const problem = unstringifyProblem(
+			"Desc_Coal_C,available,600:1;Desc_Water_C,available,null@@produced,60:1@@1:1@@$GENERATED_POWER$Build_GeneratorCoal_C$Desc_Coal_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_CompactedCoal_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_PetroleumCoke_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidFuel_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidTurboFuel_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidBiofuel_C;$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_NuclearFuelRod_C;$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_PlutoniumFuelRod_C"
+		);
+		const solution = solveV2(problem);
+		assert(solution);
+		assert.equal(debugPrint(problem, solution), "wp: 96:25 Power from Coal: 4:5");
+	});
+
+	it("mix coal and oil power", () => {
+		const problem = unstringifyProblem(
+			"Desc_Coal_C,available,10:1;Desc_Water_C,available,null;Desc_LiquidOil_C,available,600:1@@produced,60:1@@1:1@@Recipe_LiquidFuel_C;Recipe_ResidualFuel_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_Coal_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_CompactedCoal_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_PetroleumCoke_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidFuel_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidTurboFuel_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidBiofuel_C;$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_NuclearFuelRod_C;$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_PlutoniumFuelRod_C;Recipe_Alternate_HeavyOilResidue_C"
+		);
+		const solution = solveV2(problem);
+		assert(solution);
+		assert.equal(
+			debugPrint(problem, solution),
+			"wp: 41:10 Residual Fuel: 2:85 Power from Coal: 2:3 Power from Fuel: 4:51 Alternate: Heavy Oil Residue: 3:85"
+		);
+	});
+
+	it("power maximization", () => {
+		const problem = unstringifyProblem(
+			"Desc_Coal_C,available,10:1;Desc_Water_C,available,null@@produced,null@@1:1@@$GENERATED_POWER$Build_GeneratorCoal_C$Desc_Coal_C"
+		);
+		const solution = solveV2(problem);
+		assert(solution);
+		assert.equal(debugPrint(problem, solution), "wp: 16:5 Power from Coal: 2:3");
 	});
 });

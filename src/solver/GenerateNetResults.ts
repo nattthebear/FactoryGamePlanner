@@ -45,7 +45,9 @@ export function generateNetResults(problem: ProblemV2, solution: SolutionV2): Ne
 			items.set(Item, existingRate);
 		}
 
-		const buildingPower = calculateOverclockedPowerRatio(recipe.Building, problem.clockFactor).mul(buildingRate);
+		const buildingPower = calculateOverclockedPowerRatio(recipe.Building, problem.clockFactor)
+			.mul(recipe.PowerConsumption ?? recipe.Building.PowerConsumption)
+			.mul(buildingRate);
 		power = power.sub(buildingPower);
 	}
 
