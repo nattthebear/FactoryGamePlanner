@@ -1,5 +1,6 @@
 import { defaultResourceData } from "../../data/defaultResources";
 import { Items } from "../../data/generated/items";
+import { Recipes } from "../../data/generated/recipes";
 import { Item, Recipe } from "../../data/types";
 import { SIXTY } from "../editor/store/Common";
 import { produce } from "../immer";
@@ -66,8 +67,52 @@ export interface SolutionV2 {
 	wp: BigRat;
 }
 
+export function stringifyProblem(problem: ProblemV2) {
+	return [
+		[...problem.constraints.entries()]
+			.map(([k, v]) => `${k.ClassName},${v.constraint},${v.rate?.toRatioString() ?? "null"}`)
+			.join(";"),
+		problem.power ? `${problem.power.constraint},${problem.power.rate?.toRatioString ?? "null"}` : "null",
+		problem.clockFactor.toRatioString(),
+		[...problem.availableRecipes].map((r) => r.ClassName).join(";"),
+	].join("@@");
+}
+const itemClassLookup = new Map(Items.map((i) => [i.ClassName, i]));
+const recipeClassLookup = new Map(Recipes.map((r) => [r.ClassName, r]));
+/** Doesn't do much error checking! */
+export function unstringifyProblem(s: string): ProblemV2 {
+	const [constraintData, powerData, clockFactorData, availableRecipeData] = s.split("@@");
+
+	return {
+		constraints: new Map(
+			constraintData.split(";").map((t) => {
+				const [clazz, constraint, rate] = t.split(",");
+				return [
+					itemClassLookup.get(clazz)!,
+					{
+						constraint: constraint as "produced" | "available",
+						rate: rate === "null" ? null : BigRat.fromRatioString(rate),
+					},
+				];
+			})
+		),
+		power: (() => {
+			if (powerData === "null") {
+				return null;
+			}
+			const [constraint, rate] = powerData.split(",");
+			return {
+				constraint: constraint as "produced" | "available",
+				rate: rate === "null" ? null : BigRat.fromRatioString(rate),
+			};
+		})(),
+		clockFactor: BigRat.fromRatioString(clockFactorData),
+		availableRecipes: new Set(availableRecipeData.split(";").map((clazz) => recipeClassLookup.get(clazz)!)),
+	};
+}
+
 /*
-Objective functions:
+How to compute objective functions:
 If there's at least one "produced" null, run a pre-problem with the objective function
 being simply a 1x for every "produced" null.  The results there then become production constraints
 for the problem.
