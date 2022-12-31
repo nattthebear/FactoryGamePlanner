@@ -7,6 +7,8 @@ import { prompt } from "./Prompt";
 
 import "./RateChooser.css";
 import { Flow } from "../util";
+import { Item } from "../../data/types";
+import { FakePower } from "../../data/power";
 
 function evaluateAndVerify(text: string) {
 	if (!text) {
@@ -86,7 +88,7 @@ function BuildingRateChooser({
 	onConfirm,
 }: {
 	producer: ProductionBuilding;
-	onConfirm: (newValue: BigRat) => void;
+	onConfirm: (newValue: BigRat | null) => void;
 }) {
 	const [value, changeValue] = useState(producer.rate);
 
@@ -119,6 +121,10 @@ function BuildingRateChooser({
 				</div>
 				<div class="flows">{newProducer.outputFlows().map(renderFlow)}</div>
 			</div>
+			<div class="dialog-buttons">
+				<button onClick={() => onConfirm(null)}>Cancel</button>
+				<button onClick={() => onConfirm(value)}>Ok</button>
+			</div>
 		</div>
 	);
 }
@@ -128,7 +134,7 @@ function SourceSinkRateChooser({
 	onConfirm,
 }: {
 	producer: Sink | Source;
-	onConfirm: (newValue: BigRat) => void;
+	onConfirm: (newValue: BigRat | null) => void;
 }) {
 	const [value, changeValue] = useState(producer.rate);
 
@@ -150,25 +156,84 @@ function SourceSinkRateChooser({
 			</form>
 			<div class="display">
 				{renderFlows(newProducer.inputFlows())}
-
 				<div class="rate">
 					<div class="num">{value.toNumberApprox().toFixed(2)}/min</div>
 					<div class="ratio">{value.toRatioString()}</div>
 				</div>
 				{renderFlows(newProducer.outputFlows())}
 			</div>
+			<div class="dialog-buttons">
+				<button onClick={() => onConfirm(null)}>Cancel</button>
+				<button onClick={() => onConfirm(value)}>Ok</button>
+			</div>
 		</div>
 	);
 }
 
 export const chooseBuildingRate = (producer: ProductionBuilding) =>
-	prompt<BigRat>({
+	prompt<BigRat | null>({
 		title: "Choose new rate.",
 		render: (onConfirm) => <BuildingRateChooser producer={producer} onConfirm={onConfirm} />,
 	});
 
 export const chooseSourceSinkRate = (producer: Source | Sink) =>
-	prompt<BigRat>({
+	prompt<BigRat | null>({
 		title: "Choose new rate.",
 		render: (onConfirm) => <SourceSinkRateChooser producer={producer} onConfirm={onConfirm} />,
+	});
+
+function ConstraintRateChooser({
+	rate,
+	item,
+	onConfirm,
+	isOutput,
+}: {
+	rate: BigRat | "unlimited";
+	item: Item;
+	onConfirm: (newValue: BigRat | "unlimited" | null) => void;
+	isOutput: boolean;
+}) {
+	const [value, changeValue] = useState(rate);
+
+	function renderValue() {
+		if (value === "unlimited") {
+			return isOutput ? "Maximize" : "Unlimited";
+		}
+		const suffix = item === FakePower ? " MW" : "/min";
+		return value.toNumberApprox().toFixed(2) + suffix;
+	}
+
+	return (
+		<div class="source-sink-rate-chooser">
+			<form
+				onSubmit={(ev) => {
+					ev.preventDefault();
+					onConfirm(value);
+				}}
+			>
+				<ExpressionInput onChange={changeValue} />
+			</form>
+			<div class="display">
+				{!isOutput && <img src={item.Icon} />}
+				<div class="rate">
+					<div class="num">{renderValue()}</div>
+					<div class="ratio">{value === "unlimited" ? "" : value.toRatioString()}</div>
+				</div>
+				{isOutput && <img src={item.Icon} />}
+			</div>
+			<div class="dialog-buttons">
+				<button onClick={() => onConfirm("unlimited")}>{isOutput ? "Maximize" : "Unlimited"}</button>
+				<button onClick={() => onConfirm(null)}>Cancel</button>
+				<button onClick={() => onConfirm(value)}>Ok</button>
+			</div>
+		</div>
+	);
+}
+
+export const chooseConstraintRate = (existingRate: BigRat | "unlimited", item: Item, isOutput: boolean) =>
+	prompt<BigRat | "unlimited" | null>({
+		title: "Choose new rate.",
+		render: (onConfirm) => (
+			<ConstraintRateChooser rate={existingRate} item={item} onConfirm={onConfirm} isOutput={isOutput} />
+		),
 	});

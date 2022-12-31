@@ -15,9 +15,10 @@ export interface Props<T extends ChooserItem> {
 	items: T[];
 	value: T | null;
 	changeValue(newValue: T | null): void;
+	onTentative?(newValue: T | null): void;
 }
 
-export function Chooser<T extends ChooserItem>({ items, value, changeValue }: Props<T>) {
+export function Chooser<T extends ChooserItem>({ items, value, changeValue, onTentative }: Props<T>) {
 	const [search, changeSearch] = useState("");
 	const [tentative, changeTentative, oldTentative] = useStateWithPrev<T | null>(null);
 	const inputRef = useRef<HTMLInputElement | null>(null);
@@ -75,6 +76,7 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue }: Pr
 						const newRegex = newSearch ? new RegExp(escapeTextForRegExp(newSearch), "ig") : null;
 						if (tentative && newRegex && !newRegex.test(newSearch)) {
 							changeTentative(null);
+							onTentative?.(null);
 						}
 					}}
 					onKeyDown={(ev) => {
@@ -90,6 +92,7 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue }: Pr
 										: relevantItems.length - 1;
 								index %= relevantItems.length;
 								changeTentative(relevantItems[index]);
+								onTentative?.(relevantItems[index]);
 							}
 						}
 					}}

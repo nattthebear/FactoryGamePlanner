@@ -1,6 +1,6 @@
 import { readBigPos, readBigRat, readItem, RStream, writeBigPos, writeBigRat, writeItem, WStream } from "../../base64";
-import { Flow } from "../../util";
-import { makeEmptyState, State } from "./Store";
+import { BigRat } from "../../math/BigRat";
+import { makeEmptyState, NullableFlow, State } from "./Store";
 
 const VERSION = 0;
 
@@ -16,23 +16,15 @@ export function serialize(state: State) {
 		w.write(1, +b);
 	}
 
-	function writeFlows(data: Flow[]) {
+	function writeFlows(data: NullableFlow[]) {
 		writeBigPos(w, BigInt(data.length));
 		for (const d of data) {
-			writeBigRat(w, d.rate);
+			writeBigRat(w, d.rate ?? BigRat.ZERO);
 			writeItem(w, d.item);
 		}
 	}
 
 	writeFlows(state.products);
-	for (const rate of state.resources) {
-		if (rate) {
-			w.write(1, 1);
-			writeBigRat(w, rate);
-		} else {
-			w.write(1, 0);
-		}
-	}
 	writeFlows(state.inputs);
 
 	return w.finish();
@@ -50,19 +42,15 @@ export function deserialize(encoded: string) {
 	const state = makeEmptyState();
 
 	for (let i = 0; i < state.basicRecipes.length; i++) {
-		if (r.read(1)) {
-			state.basicRecipes[i] = true;
-		}
+		state.basicRecipes[i] = !!r.read(1);
 	}
 	for (let i = 0; i < state.alternateRecipes.length; i++) {
-		if (r.read(1)) {
-			state.alternateRecipes[i] = true;
-		}
+		state.alternateRecipes[i] = !!r.read(1);
 	}
 
 	function readFlows() {
 		const length = Number(readBigPos(r));
-		const ret = Array<Flow>(length);
+		const ret = Array<NullableFlow>(length);
 		for (let i = 0; i < length; i++) {
 			const rate = readBigRat(r);
 			const item = readItem(r);
@@ -71,7 +59,7 @@ export function deserialize(encoded: string) {
 				return null;
 			}
 			ret[i] = {
-				rate,
+				rate: rate.sign() <= 0 ? null : rate,
 				item,
 			};
 		}
@@ -83,10 +71,6 @@ export function deserialize(encoded: string) {
 		return null;
 	}
 	state.products = products;
-
-	for (let i = 0; i < state.resources.length; i++) {
-		state.resources[i] = r.read(1) ? readBigRat(r) : null;
-	}
 
 	const inputs = readFlows();
 	if (!inputs) {

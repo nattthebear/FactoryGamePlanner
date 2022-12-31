@@ -1,10 +1,12 @@
 import { Items } from "../../../data/generated/items";
 import { Recipes } from "../../../data/generated/recipes";
+import { FakePower } from "../../../data/power";
 import { Item } from "../../../data/types";
 import { getEncodedDataForTab, TAB_PLANNER } from "../../base64";
 import { makeStore } from "../../MakeStore";
 import { BigRat } from "../../math/BigRat";
 import { Problem } from "../../solver/Solution";
+import { ProblemV2 } from "../../solver/SolverV2";
 import { Flow } from "../../util";
 import { deserialize } from "./Serializer";
 
@@ -27,8 +29,14 @@ export const defaultResourceData = new Map<Item, BigRat>(
 		{ className: "Desc_NitrogenGas_C", rate: 12000 },
 	].map(({ className, rate }) => [Items.find((i) => i.ClassName === className)!, BigRat.fromInteger(rate)])
 );
+const Water = Items.find((i) => i.ClassName === "Desc_Water_C")!;
 
 const resourceDefaults = Resources.map((r) => defaultResourceData.get(r) ?? null);
+
+export interface NullableFlow {
+	rate: BigRat | null;
+	item: Item;
+}
 
 export interface State {
 	/** Is each basic recipe available? */
@@ -36,20 +44,28 @@ export interface State {
 	/** Is each alternate recipe available? */
 	alternateRecipes: boolean[];
 	/** Every requested output. */
-	products: Flow[];
-	/** Available amounts of each of the natural resources.  Can be zero.  `null` means no limit. */
-	resources: (BigRat | null)[];
-	/** Any additional inputs available besides the natural resources. */
-	inputs: Flow[];
+	products: NullableFlow[];
+	/** Every available input. */
+	inputs: NullableFlow[];
 }
 
 export const makeEmptyState = (): State => ({
 	basicRecipes: BasicRecipes.map(() => true),
 	alternateRecipes: AlternateRecipes.map(() => false),
 	products: [],
-	resources: resourceDefaults,
 	inputs: [],
 });
+
+export function buildDefaultInputs() {
+	const ret = Array<NullableFlow>(defaultResourceData.size + 1);
+	let i = 0;
+	for (const [key, value] of defaultResourceData.entries()) {
+		ret[i++] = { rate: value, item: key };
+	}
+	ret[i++] = { rate: null, item: Water };
+	ret[i++] = { rate: null, item: FakePower };
+	return ret;
+}
 
 const initialState = (() => {
 	const search = getEncodedDataForTab(TAB_PLANNER);
@@ -63,14 +79,18 @@ const initialState = (() => {
 			console.error(e);
 		}
 	}
-	return makeEmptyState();
+	const ret = makeEmptyState();
+	ret.inputs = buildDefaultInputs();
+	return ret;
 })();
 
 export const { useSelector, update, getStateRaw } = makeStore(initialState, "_PlannerStore");
 
-export function makeProblem(state: State): Problem {
-	const res: Problem = {
+export function makeProblem(state: State): ProblemV2 {
+	const res: ProblemV2 = {
 		constraints: new Map(),
+		power: null,
+		clockFactor: BigRat.ONE,
 		availableRecipes: new Set(),
 	};
 
@@ -85,20 +105,19 @@ export function makeProblem(state: State): Problem {
 		}
 	}
 
-	for (let i = 0; i < Resources.length; i++) {
-		const rate = state.resources[i];
-		const item = Resources[i];
-		if (!rate) {
-			res.constraints.set(item, { constraint: "plentiful", rate: BigRat.ZERO });
-		} else if (rate.sign() > 0) {
-			res.constraints.set(item, { constraint: "limited", rate });
+	for (const { rate, item } of state.inputs) {
+		if (item !== FakePower) {
+			res.constraints.set(item, { constraint: "available", rate });
+		} else {
+			res.power = { constraint: "available", rate };
 		}
 	}
-	for (const { rate, item } of state.inputs) {
-		res.constraints.set(item, { constraint: "available", rate });
-	}
 	for (const { rate, item } of state.products) {
-		res.constraints.set(item, { constraint: "produced", rate });
+		if (item !== FakePower) {
+			res.constraints.set(item, { constraint: "produced", rate });
+		} else {
+			res.power = { constraint: "produced", rate };
+		}
 	}
 
 	return res;

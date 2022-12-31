@@ -4,13 +4,15 @@
 	display: flex;
 
 	& .tabs-holder {
-		flex: 4 0 0;
+		flex: 5 0 0;
 		display: flex;
 		flex-direction: column;
+		padding: 4px;
+		background-color: #888;
 
 		& .tabs {
 			display: flex;
-			background-color: #888;
+			/* background-color: #888; */
 
 			& .tab {
 				flex: 1 0 0;
@@ -22,11 +24,12 @@
 
 		& .tab-content {
 			flex: 1 0 0;
+			background-color: #fff;
 			padding: 2px;
 		}
 	}
 
 	& .results-area {
-		flex: 6 0 0;
+		flex: 5 0 0;
 	}
 }

@@ -1,13 +1,34 @@
 .prompt-backdrop {
 	position: fixed;
 	inset: 0;
+	background-color: #fffa;
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
 	& .prompt {
-		width: 300px;
+		width: 360px;
+		padding: 10px;
 		background-color: #fff;
+
+		& .title {
+			font-size: 20px;
+			padding-bottom: 10px;
+		}
+
+		& .dialog-buttons {
+			padding-top: 10px;
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+
+			& button {
+				flex: 0 0 80px;
+				border: none;
+				height: 25px;
+				padding: 0;
+			}
+		}
 	}
 }

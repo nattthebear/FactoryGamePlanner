@@ -1,4 +1,8 @@
 .chooser {
+	& input {
+		width: 100%;
+		margin-bottom: 10px;
+	}
 	& .scroll {
 		max-height: 120px;
 		overflow-y: auto;

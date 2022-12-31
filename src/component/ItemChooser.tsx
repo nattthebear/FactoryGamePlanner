@@ -4,10 +4,11 @@ import { Recipes } from "../../data/generated/recipes";
 import { Item, Recipe } from "../../data/types";
 import { Chooser } from "./Chooser";
 import { prompt } from "../component/Prompt";
+import { BigRat } from "../math/BigRat";
 
 import SchematicIcon_Factory from "url:../../data/generated/images/SchematicIcon_Factory.png";
-
 import "./ItemChooser.css";
+import { FakePower, ItemsWithFakePower } from "../../data/power";
 
 function fillMultiMap<K, V>(map: Map<K, V[]>, key: K, value: V) {
 	let array = map.get(key);
@@ -42,32 +43,23 @@ const formatRecipe = (recipe: Recipe) => ({
 	recipe,
 });
 
-const DisplayItems = Items.map((item) => ({
+const DisplayItems = ItemsWithFakePower.map((item) => ({
 	adornment: itemImage(item),
 	name: item.DisplayName,
 	item,
 	consumingRecipes: recipeToInputs.get(item)?.map(formatRecipe),
-	producingRecipes: recipeToOutputs.get(item)?.map(formatRecipe),
+	producingRecipes: (item === FakePower
+		? Recipes.filter((r) => r.Building.PowerConsumption.sign() < 0)
+		: recipeToOutputs.get(item)
+	)?.map(formatRecipe),
 }));
 type DisplayItem = typeof DisplayItems[number];
 
 /** Hack:  Add a way to choose power for the recipe by outputs chooser */
 const FakePowerItem: DisplayItem = {
-	adornment: (
-		<div class="item-chooser-image fake-power">
-			<img src={SchematicIcon_Factory} />
-		</div>
-	),
-	name: "Power",
-	item: {
-		ClassName: "FakePower",
-		DisplayName: "Power",
-		Description: "",
-		Icon: "",
-		IsResource: false,
-		IsPiped: false,
-		Color: "",
-	},
+	adornment: itemImage(FakePower),
+	name: FakePower.DisplayName,
+	item: FakePower,
 	consumingRecipes: [],
 	producingRecipes: Recipes.filter((r) => r.Building.PowerConsumption.sign() < 0).map(formatRecipe),
 };
@@ -75,6 +67,7 @@ DisplayItems.push(FakePowerItem);
 
 function RecipeChooser({ type, onConfirm }: { type: "input" | "output"; onConfirm: (value: Recipe | null) => void }) {
 	const [displayItem, changeDisplayItem] = useState<DisplayItem | null>(null);
+	const [tentativeRecipe, changeTentativeRecipe] = useState<Recipe | null>(null);
 	const displayItems = DisplayItems.filter((di) => (type === "input" ? di.consumingRecipes : di.producingRecipes));
 
 	const recipes = displayItem?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
@@ -91,7 +84,25 @@ function RecipeChooser({ type, onConfirm }: { type: "input" | "output"; onConfir
 	return (
 		<>
 			<Chooser items={displayItems} value={displayItem} changeValue={onChangeItemValue} />
-			{recipes && <Chooser items={recipes} value={null} changeValue={(dr) => onConfirm(dr?.recipe ?? null)} />}
+			{recipes && (
+				<>
+					<div class="recipe-chooser-divider" />
+					<Chooser
+						items={recipes}
+						value={null}
+						changeValue={(dr) => onConfirm(dr?.recipe ?? null)}
+						onTentative={(dr) => {
+							changeTentativeRecipe(dr?.recipe ?? null);
+						}}
+					/>
+				</>
+			)}
+			<div class="dialog-buttons">
+				<button onClick={() => onConfirm(null)}>Cancel</button>
+				<button disabled={!recipes || !tentativeRecipe} onClick={() => onConfirm(tentativeRecipe)}>
+					Ok
+				</button>
+			</div>
 		</>
 	);
 }

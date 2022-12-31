@@ -698,13 +698,14 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 	}));
 
 	const HACK_PowerIcon = new Texture(
-		"/Game/FactoryGame/Buildable/Factory/TradingPost/UI/SchematicIcons/SchematicIcon_Factory"
+		"/Game/FactoryGame/Interface/UI/Assets/MonochromeIcons/TXUI_MIcon_Power"
+		// "/Game/FactoryGame/Buildable/Factory/TradingPost/UI/SchematicIcons/SchematicIcon_Factory"
 	);
 
 	// for (const x of items) {
 	// 	await x.mSmallIcon.exportImage(x.ClassName);
 	// }
-	// await HACK_PowerIcon.exportImage("SchematicIcon_Factory");
+	// await HACK_PowerIcon.exportImage("TXUI_MIcon_Power");
 
 	await doMustache("items", itemsView);
 	await doMustache("recipes", recipeView);

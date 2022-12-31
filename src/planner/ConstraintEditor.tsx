@@ -1,16 +1,19 @@
 import { Draft } from "../immer";
 import { Items } from "../../data/generated/items";
 import { chooseItem } from "../component/ItemChooser";
-import { chooseSourceSinkRate } from "../component/RateChoser";
-import { Sink, Source } from "../editor/store/Producers";
+import { chooseConstraintRate } from "../component/RateChoser";
 import { BigRat } from "../math/BigRat";
-import { Flow } from "../util";
-import { defaultResourceData, getStateRaw, Resources, update, useSelector } from "./store/Store";
+import { buildDefaultInputs, getStateRaw, NullableFlow, Resources, update, useSelector } from "./store/Store";
+
+import "./ConstraintEditor.css";
+import { Item } from "../../data/types";
+import { FakePower, ItemsWithFakePower } from "../../data/power";
 
 const makeRateList = (
-	useData: () => Flow[],
-	updateData: (cb: (draft: Draft<Flow[]>) => void) => void,
-	promptRate: (flow: Flow) => Promise<BigRat | null>
+	useData: () => NullableFlow[],
+	updateData: (cb: (draft: Draft<NullableFlow[]>) => void) => void,
+	promptRate: (rate: BigRat | "unlimited", item: Item) => Promise<BigRat | "unlimited" | null>,
+	unlimitedText: string
 ) =>
 	function RateList() {
 		const data = useData();
@@ -30,7 +33,7 @@ const makeRateList = (
 								})
 							}
 						>
-							&#9650;
+							▲
 						</button>
 						<button
 							disabled={index === data.length - 1}
@@ -43,17 +46,15 @@ const makeRateList = (
 								})
 							}
 						>
-							&#9660;
+							▼
 						</button>
 						<button
 							onClick={async () => {
 								const { products, inputs } = getStateRaw();
-								const possibleItems = Items.filter(
+								const possibleItems = ItemsWithFakePower.filter(
 									(i) =>
 										i === d.item ||
-										(!i.IsResource &&
-											!products.find((r) => r.item === i) &&
-											!inputs.find((r) => r.item === i))
+										(!products.find((r) => r.item === i) && !inputs.find((r) => r.item === i))
 								);
 								const newItem = await chooseItem("Select new item:", possibleItems);
 								if (newItem) {
@@ -67,15 +68,18 @@ const makeRateList = (
 						</button>
 						<button
 							onClick={async () => {
-								const newRate = await promptRate(d);
+								const newRate = await promptRate(d.rate ?? "unlimited", d.item);
 								if (newRate) {
 									updateData((draft) => {
-										draft[index].rate = newRate;
+										draft[index].rate = newRate === "unlimited" ? null : newRate;
 									});
 								}
 							}}
 						>
-							{d.rate.toNumberApprox().toFixed(2).toString()}/min
+							{d.rate
+								? d.rate.toNumberApprox().toFixed(2).toString() +
+								  (d.item === FakePower ? " MW" : "/min")
+								: unlimitedText}
 						</button>
 						<button
 							onClick={() =>
@@ -84,7 +88,7 @@ const makeRateList = (
 								})
 							}
 						>
-							&#x2716;
+							✖
 						</button>
 					</div>
 				))}
@@ -92,11 +96,8 @@ const makeRateList = (
 					class="rate-add"
 					onClick={async () => {
 						const { products, inputs } = getStateRaw();
-						const possibleItems = Items.filter(
-							(i) =>
-								!i.IsResource &&
-								!products.find((r) => r.item === i) &&
-								!inputs.find((r) => r.item === i)
+						const possibleItems = ItemsWithFakePower.filter(
+							(i) => !products.find((r) => r.item === i) && !inputs.find((r) => r.item === i)
 						);
 						const newItem = await chooseItem("Select new item:", possibleItems);
 						if (newItem) {
@@ -115,89 +116,55 @@ const makeRateList = (
 		);
 	};
 
-const chooseInputRate = async (flow: Flow) => {
-	// HACK:  Shouldn't be referencing sinks/sources here
-	const fakeSink = new Sink(0, 0, flow.rate, flow.item);
-	return chooseSourceSinkRate(fakeSink);
-};
-const chooseOutputRate = async (flow: Flow) => {
-	// HACK:  Shouldn't be referencing sinks/sources here
-	const fakeSource = new Source(0, 0, flow.rate, flow.item);
-	return chooseSourceSinkRate(fakeSource);
-};
-
 const ProductsRateList = makeRateList(
 	() => useSelector((state) => state.products),
 	(cb) => update((draft) => cb(draft.products)),
-	chooseOutputRate
+	(rate, item) => chooseConstraintRate(rate, item, true),
+	"maximize"
 );
 
 const InputsRateList = makeRateList(
 	() => useSelector((state) => state.inputs),
 	(cb) => update((draft) => cb(draft.inputs)),
-	chooseInputRate
+	(rate, item) => chooseConstraintRate(rate, item, false),
+	"unlimited"
 );
 
 export function ConstraintEditor() {
-	const resources = useSelector((state) => state.resources);
-
 	return (
 		<div class="rate-setter">
 			<div class="pane">
+				<div class="title">Settings</div>
+			</div>
+			<div class="pane">
 				<div class="title">Outputs</div>
 				<ProductsRateList />
+				<button
+					onClick={() =>
+						update((draft) => {
+							draft.products = [];
+						})
+					}
+				>
+					Clear outputs
+				</button>
 			</div>
 			<div class="pane">
-				<div class="title">Extra Inputs</div>
+				<div class="title">Inputs</div>
 				<InputsRateList />
-			</div>
-			<div class="pane">
-				<div class="title">Resources</div>
-				{resources.map((value, index) => {
-					const item = Resources[index];
-					const defaultValue = defaultResourceData.get(item) ?? null;
-					const isDefault = (!value && !defaultValue) || (value && defaultValue && value.eq(defaultValue));
-					return (
-						<div class="resource-item">
-							{item.DisplayName}
-							<button
-								onClick={async () => {
-									const newValue = await chooseInputRate({
-										rate: value ?? new BigRat(100n, 1n),
-										item,
-									});
-									if (newValue) {
-										update((draft) => {
-											draft.resources[index] = newValue;
-										});
-									}
-								}}
-							>
-								{value ? `${value.toNumberApprox().toFixed(2)}/min` : "Unlimited"}
-							</button>
-							<button
-								disabled={!!isDefault}
-								onClick={() =>
-									update((draft) => {
-										draft.resources[index] = defaultValue;
-									})
-								}
-							>
-								Set Default
-							</button>
-							<button
-								disabled={!value}
-								onClick={() =>
-									update((draft) => {
-										draft.resources[index] = null;
-									})
-								}
-							>
-								Set Unlimited
-							</button>
-						</div>
-					);
-				})}
+				<button
+					onClick={() =>
+						update((draft) => {
+							const inputs = buildDefaultInputs();
+							draft.inputs = inputs;
+							draft.products = draft.products.filter(
+								(p) => !inputs.find((i) => i.item.ClassName === p.item.ClassName)
+							);
+						})
+					}
+				>
+					Set inputs to default
+				</button>
 			</div>
 		</div>
 	);

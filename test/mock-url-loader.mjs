@@ -1,7 +1,7 @@
-const MOCK_PROTOCOL = "url:";
+const MOCK_PROTOCOLS = ["url:", "data-url:"];
 
 export function resolve(specifier, context, nextResolve) {
-	if (specifier.startsWith(MOCK_PROTOCOL)) {
+	if (MOCK_PROTOCOLS.some((p) => specifier.startsWith(p))) {
 		return {
 			shortCircuit: true,
 			url: specifier,
@@ -11,7 +11,7 @@ export function resolve(specifier, context, nextResolve) {
 }
 
 export function load(url, context, nextLoad) {
-	if (url.startsWith(MOCK_PROTOCOL)) {
+	if (MOCK_PROTOCOLS.some((p) => url.startsWith(p))) {
 		return {
 			format: "module",
 			shortCircuit: true,

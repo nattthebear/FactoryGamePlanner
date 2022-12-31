@@ -7,13 +7,15 @@
 		"start": "parcel serve ./src/index.html --dist-dir .parcel-dev --public-url / --port 3000",
 		"import": "ts-node-esm --experimental-specifier-resolution=node scripts/importer.ts",
 		"peggify": "peggy --format es -o src/math/ExpressionParser.js src/math/expression.peggy",
-		"test": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs --test src/math/BigRat.test.ts src/math/Expression.test.ts src/base64.test.ts src/editor/store/Serializer.test.ts src/solver/Dictionary.test.ts src/solver/Solver.test.ts",
+		"test": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs --test src/math/BigRat.test.ts src/math/Expression.test.ts src/base64.test.ts src/editor/store/Serializer.test.ts src/solver/Dictionary.test.ts src/solver/Solver.test.ts src/solver/SolverV2.test.ts",
 		"prettier": "prettier --write src/**/*.ts src/**/*.tsx src/**/*.css",
 		"clear-cache": "rimraf ./.parcel-dev ./.parcel-cache",
 		"type-check": "tsc --noEmit",
 		"timed-tests": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs src/solver/Solver.timed.ts"
 	},
 	"devDependencies": {
+		"@parcel/optimizer-data-url": "^2.8.1",
+		"@parcel/transformer-inline-string": "^2.8.1",
 		"@types/mustache": "^4.2.2",
 		"@types/node": "^18.11.13",
 		"fp-ts": "^2.13.1",

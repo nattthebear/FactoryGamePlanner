@@ -1,5 +1,6 @@
 import { Items } from "../data/generated/items";
 import { Recipes } from "../data/generated/recipes";
+import { ItemsWithFakePower } from "../data/power";
 import { BigRat } from "./math/BigRat";
 
 const BASE64_URL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -155,9 +156,9 @@ export function makeRMap<T>(data: T[]) {
 }
 
 export const writeRecipe = makeWMap(Recipes);
-export const writeItem = makeWMap(Items);
+export const writeItem = makeWMap(ItemsWithFakePower);
 export const readRecipe = makeRMap(Recipes);
-export const readItem = makeRMap(Items);
+export const readItem = makeRMap(ItemsWithFakePower);
 
 export const TAB_PLANNER = "p";
 export const TAB_EDITOR = "e";
