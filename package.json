@@ -11,7 +11,8 @@
 		"prettier": "prettier --write src/**/*.ts src/**/*.tsx src/**/*.css",
 		"clear-cache": "rimraf ./.parcel-dev ./.parcel-cache",
 		"type-check": "tsc --noEmit",
-		"timed-tests": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs src/solver/Solver.timed.ts"
+		"timed-tests": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs src/solver/Solver.timed.ts",
+		"timed-tests2": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs src/solver/SolverV2.timed.ts"
 	},
 	"devDependencies": {
 		"@parcel/optimizer-data-url": "^2.8.1",
