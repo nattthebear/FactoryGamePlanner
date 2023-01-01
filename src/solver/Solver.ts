@@ -131,12 +131,12 @@ function makeRangeArray(n: number, first: number) {
 
 export function setupDictionary({ constraints, power, clockFactor, availableRecipes }: Problem): {
 	dictionary: Dictionary;
-	isTwoPhase: boolean;
+	isDualObjective: boolean;
 } {
 	const itemsToConstraintRows = new Map<Item, number>();
 	const objectives = new Set<Item>();
 	const plentiful = new Set<Item>();
-	let isTwoPhase = false;
+	let isDualObjective = false;
 	let powerRow = -1;
 	let powerCoeff: BigRat | null = null;
 	let nRows: number;
@@ -149,12 +149,12 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 			} else {
 				plentiful.add(item);
 				if (constraint === "produced") {
-					if (!isTwoPhase) {
+					if (!isDualObjective) {
 						objectives.clear();
-						isTwoPhase = true;
+						isDualObjective = true;
 					}
 					objectives.add(item);
-				} else if (!isTwoPhase) {
+				} else if (!isDualObjective) {
 					objectives.add(item);
 				}
 			}
@@ -175,8 +175,8 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 		if (power == null || power.rate != null) {
 			powerRow = a++;
 		} else if (power.constraint === "produced" && power.rate == null) {
-			if (!isTwoPhase) {
-				isTwoPhase = true;
+			if (!isDualObjective) {
+				isDualObjective = true;
 				objectives.clear();
 			}
 		}
@@ -212,7 +212,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 	}
 
 	const objectiveCoefficients = new Map<Item, BigRat>();
-	if (isTwoPhase) {
+	if (isDualObjective) {
 		for (const [item, { constraint, rate }] of constraints.entries()) {
 			if (constraint === "produced" && rate == null) {
 				objectiveCoefficients.set(item, BigRat.MINUS_ONE);
@@ -297,7 +297,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 			nonBasic,
 			coefficients,
 		},
-		isTwoPhase,
+		isDualObjective,
 	};
 }
 
@@ -324,17 +324,17 @@ function buildSolution(problem: Problem, dictionary: Dictionary): Solution {
 }
 
 export function solve(problem: Problem): Solution | null {
-	let { dictionary, isTwoPhase } = setupDictionary(problem);
-	if (isTwoPhase) {
-		const phaseOneDict = solveStandardForm(dictionary);
-		if (!phaseOneDict) {
+	let { dictionary, isDualObjective } = setupDictionary(problem);
+	if (isDualObjective) {
+		const objectiveOneDict = solveStandardForm(dictionary);
+		if (!objectiveOneDict) {
 			return null;
 		}
 
-		const phaseOneSolution = buildSolution(problem, phaseOneDict);
-		const net = generateNetResults(problem, phaseOneSolution);
+		const objectiveOneSolution = buildSolution(problem, objectiveOneDict);
+		const net = generateNetResults(problem, objectiveOneSolution);
 
-		const phaseTwoProblem = produce(problem, (draft) => {
+		const objectiveTwoProblem = produce(problem, (draft) => {
 			for (const [item, { constraint, rate }] of problem.constraints) {
 				if (constraint === "produced" && rate == null) {
 					draft.constraints.set(item, { constraint: "produced", rate: net.items.get(item)! });
@@ -346,12 +346,12 @@ export function solve(problem: Problem): Solution | null {
 			}
 		});
 
-		const phaseTwoSetup = setupDictionary(phaseTwoProblem);
-		if (phaseTwoSetup.isTwoPhase) {
+		const objectiveTwoSetup = setupDictionary(objectiveTwoProblem);
+		if (objectiveTwoSetup.isDualObjective) {
 			throw new Error("Internal Error");
 		}
 
-		dictionary = phaseTwoSetup.dictionary;
+		dictionary = objectiveTwoSetup.dictionary;
 	}
 
 	const outputDict = solveStandardForm(dictionary);

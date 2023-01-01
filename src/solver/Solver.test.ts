@@ -40,8 +40,8 @@ describe("setupDictionary", () => {
 			availableRecipes: new Set([Recipes.find((r) => r.ClassName === "Recipe_IngotIron_C")!]),
 		};
 
-		const { dictionary, isTwoPhase } = setupDictionary(problem);
-		assert(!isTwoPhase);
+		const { dictionary, isDualObjective } = setupDictionary(problem);
+		assert(!isDualObjective);
 		assert.equal(stringify(dictionary), "2,3;1;10000:1,-30:1,-500:1,30:1,0:1,-21:5");
 	});
 
@@ -69,8 +69,8 @@ describe("setupDictionary", () => {
 			]),
 		};
 
-		const { dictionary, isTwoPhase } = setupDictionary(problem);
-		assert(!isTwoPhase);
+		const { dictionary, isDualObjective } = setupDictionary(problem);
+		assert(!isDualObjective);
 		assert.equal(
 			stringify(dictionary),
 			"7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23;1,2,3,4,5,6;70380:1,-30:1,0:1,0:1,0:1,0:1,0:1,28860:1,0:1,0:1,0:1,0:1,0:1,0:1,52860:1,0:1,0:1,0:1,0:1,0:1,0:1,30900:1,0:1,0:1,0:1,0:1,0:1,0:1,11040:1,0:1,0:1,0:1,0:1,0:1,0:1,11700:1,0:1,0:1,0:1,0:1,0:1,0:1,10500:1,0:1,0:1,0:1,0:1,0:1,0:1,6840:1,0:1,0:1,0:1,0:1,0:1,0:1,9780:1,0:1,0:1,0:1,0:1,0:1,0:1,2100:1,0:1,0:1,0:1,0:1,0:1,0:1,12000:1,0:1,0:1,0:1,0:1,0:1,0:1,-10:1,0:1,0:1,0:1,0:1,0:1,2:1,0:1,30:1,-15:1,0:1,-30:1,0:1,0:1,0:1,0:1,15:1,-10:1,0:1,0:1,-12:1,0:1,0:1,0:1,40:1,0:1,-60:1,0:1,0:1,0:1,0:1,0:1,20:1,-30:1,0:1,0:1,0:1,0:1,0:1,0:1,5:1,-3:1,0:1,-21:5,0:1,0:1,0:1,0:1,0:1"
@@ -96,16 +96,16 @@ describe("setupDictionary", () => {
 
 		it("no power available", () => {
 			const problem = makeProblem(null);
-			const { dictionary, isTwoPhase } = setupDictionary(problem);
-			assert(!isTwoPhase);
+			const { dictionary, isDualObjective } = setupDictionary(problem);
+			assert(!isDualObjective);
 
 			assert.equal(stringify(dictionary), "2,3,4;1;10000:1,-30:1,-500:1,30:1,0:1,-4:1,0:1,-21:5");
 		});
 
 		it("limited power available", () => {
 			const problem = makeProblem({ constraint: "available", rate: new BigRat(20n, 1n) });
-			const { dictionary, isTwoPhase } = setupDictionary(problem);
-			assert(!isTwoPhase);
+			const { dictionary, isDualObjective } = setupDictionary(problem);
+			assert(!isDualObjective);
 
 			assert.equal(stringify(dictionary), "2,3,4;1;10000:1,-30:1,-500:1,30:1,20:1,-4:1,0:1,-108:25");
 		});
@@ -129,8 +129,8 @@ describe("setupDictionary", () => {
 					Recipes.find((r) => r.ClassName === "Recipe_IronPlate_C")!,
 				]),
 			};
-			const { dictionary, isTwoPhase } = setupDictionary(problem);
-			assert(!isTwoPhase);
+			const { dictionary, isDualObjective } = setupDictionary(problem);
+			assert(!isDualObjective);
 
 			assert.equal(
 				stringify(dictionary),
@@ -142,16 +142,16 @@ describe("setupDictionary", () => {
 			const problem = makeProblem({ constraint: "available", rate: new BigRat(20n, 1n) });
 			problem.clockFactor = BigRat.fromInteger(2);
 			// A building at 2x uses 2.5x the power, so 1.25x the power cost per unit
-			const { dictionary, isTwoPhase } = setupDictionary(problem);
-			assert(!isTwoPhase);
+			const { dictionary, isDualObjective } = setupDictionary(problem);
+			assert(!isDualObjective);
 
 			assert.equal(stringify(dictionary), "2,3,4;1;10000:1,-30:1,-500:1,30:1,20:1,-5:1,0:1,-87:20");
 		});
 
 		it("make maximized power", () => {
 			const problem = makeProblem({ constraint: "produced", rate: null });
-			const { dictionary, isTwoPhase } = setupDictionary(problem);
-			assert(isTwoPhase);
+			const { dictionary, isDualObjective } = setupDictionary(problem);
+			assert(isDualObjective);
 
 			assert.equal(stringify(dictionary), "2,3;1;10000:1,-30:1,-500:1,30:1,0:1,-4:1");
 		});
