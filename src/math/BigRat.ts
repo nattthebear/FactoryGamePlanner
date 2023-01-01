@@ -33,7 +33,7 @@ export class BigRat {
 			this.p /= d;
 			this.q /= d;
 		}
-		if (this.q < 0) {
+		if (this.q < 0n) {
 			this.p = -this.p;
 			this.q = -this.q;
 		}
