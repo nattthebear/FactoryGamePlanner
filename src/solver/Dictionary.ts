@@ -90,6 +90,7 @@ export class Dictionary {
 
 	stringify() {
 		// Match a stringification convention where the constant terms are first, not last
+		// TODO: Since this is only used for internal tests, if we fix all of them we could remove this swizzling
 		let ret = `${this.basic.join()};${this.nonBasic.join()};`;
 		let first = true;
 		for (let j = 0; j < this.nRows; j++) {
@@ -379,17 +380,18 @@ export class Dictionary {
 		this.nonBasic[enterCol] = exitName;
 
 		const exitRowStart = exitRow * pitch;
+		const exitRowEnd = exitRowStart + pitch;
 
 		{
 			const pivotIndex = exitRowStart + enterCol;
-			const factor = BigRat.ONE.div(coefficients[pivotIndex]).neg();
+			const factor = BigRat.MINUS_ONE.div(coefficients[pivotIndex]);
 			coefficients[pivotIndex] = BigRat.MINUS_ONE;
-			for (let i = 0; i < pitch; i++) {
-				coefficients[exitRowStart + i] = coefficients[exitRowStart + i].mul(factor);
+			for (let a = exitRowStart; a < exitRowEnd; a++) {
+				coefficients[a] = coefficients[a].mul(factor);
 			}
 		}
 
-		for (let destRowStart = 0; destRowStart < max; destRowStart += pitch) {
+		for (let destRowStart = 0, destRowEnd = pitch; destRowStart < max; destRowStart += pitch, destRowEnd += pitch) {
 			if (destRowStart === exitRowStart) {
 				continue;
 			}
@@ -401,8 +403,8 @@ export class Dictionary {
 				coefficients[pivotIndex] = BigRat.ZERO;
 			}
 
-			for (let i = 0; i < pitch; i++) {
-				coefficients[destRowStart + i] = coefficients[destRowStart + i].fma(r, coefficients[exitRowStart + i]);
+			for (let aTo = destRowStart, aFrom = exitRowStart; aTo < destRowEnd; aTo++, aFrom++) {
+				coefficients[aTo] = coefficients[aTo].fma(r, coefficients[aFrom]);
 			}
 		}
 
