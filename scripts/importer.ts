@@ -11,7 +11,7 @@ import { BigRat } from "../src/math/BigRat";
 
 function unevalBigRat(r: BigRat) {
 	const { p, q } = r.terms();
-	return `new BigRat(${p}n, ${q}n)`;
+	return `BigRat.create(${p}, ${q})`;
 }
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));

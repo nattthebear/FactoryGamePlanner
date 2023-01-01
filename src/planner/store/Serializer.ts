@@ -17,7 +17,7 @@ export function serialize(state: State) {
 	}
 
 	function writeFlows(data: NullableFlow[]) {
-		writeBigPos(w, BigInt(data.length));
+		writeBigPos(w, data.length);
 		for (const d of data) {
 			writeBigRat(w, d.rate ?? BigRat.ZERO);
 			writeItem(w, d.item);

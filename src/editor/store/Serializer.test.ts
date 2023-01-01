@@ -79,10 +79,10 @@ describe("serialize + deserialize", () => {
 			assertStateEqual(u, t);
 		});
 	dit("basic test", (draft) => {
-		addProducer(new ProductionBuilding(1000, 300, new BigRat(7n, 2n), Recipes[50]))(draft);
+		addProducer(new ProductionBuilding(1000, 300, BigRat.create(7, 2), Recipes[50]))(draft);
 	});
 	dit("basic test 2", (draft) => {
-		const p = new ProductionBuilding(49, 96, new BigRat(20n, 1n), Recipes[2]);
+		const p = new ProductionBuilding(49, 96, BigRat.create(20, 1), Recipes[2]);
 		addProducer(p)(draft);
 		emptyToSink(p.id, 0)(draft);
 	});

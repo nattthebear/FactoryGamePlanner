@@ -103,7 +103,7 @@ const makeRateList = (
 						if (newItem) {
 							updateData((draft) => {
 								draft.push({
-									rate: new BigRat(60n, 1n),
+									rate: BigRat.create(60, 1),
 									item: newItem,
 								});
 							});

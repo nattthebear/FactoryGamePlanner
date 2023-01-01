@@ -103,7 +103,7 @@ describe("setupDictionary", () => {
 		});
 
 		it("limited power available", () => {
-			const problem = makeProblem({ constraint: "available", rate: new BigRat(20n, 1n) });
+			const problem = makeProblem({ constraint: "available", rate: BigRat.create(20, 1) });
 			const { dictionary, isTwoPhase } = setupDictionary(problem);
 			assert(!isTwoPhase);
 
@@ -139,7 +139,7 @@ describe("setupDictionary", () => {
 		});
 
 		it("limited power available, with overclocks", () => {
-			const problem = makeProblem({ constraint: "available", rate: new BigRat(20n, 1n) });
+			const problem = makeProblem({ constraint: "available", rate: BigRat.create(20, 1) });
 			problem.clockFactor = BigRat.fromInteger(2);
 			// A building at 2x uses 2.5x the power, so 1.25x the power cost per unit
 			const { dictionary, isTwoPhase } = setupDictionary(problem);
@@ -238,7 +238,7 @@ describe("solve", () => {
 				[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "available", rate: null }],
 				[
 					Items.find((i) => i.ClassName === "Desc_SpaceElevatorPart_7_C")!,
-					{ constraint: "produced", rate: new BigRat(3n, 2n) },
+					{ constraint: "produced", rate: BigRat.create(3, 2) },
 				],
 			]),
 			power: { constraint: "available", rate: null },
@@ -263,7 +263,7 @@ describe("solve", () => {
 				[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "available", rate: null }],
 				[
 					Items.find((i) => i.ClassName === "Desc_Plastic_C")!,
-					{ constraint: "produced", rate: new BigRat(600n, 1n) },
+					{ constraint: "produced", rate: BigRat.create(600, 1) },
 				],
 			]),
 			power: { constraint: "available", rate: null },
@@ -294,7 +294,7 @@ describe("solve", () => {
 				[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "available", rate: null }],
 				[
 					Items.find((i) => i.ClassName === "Desc_AluminumIngot_C")!,
-					{ constraint: "produced", rate: new BigRat(1000n, 1n) },
+					{ constraint: "produced", rate: BigRat.create(1000, 1) },
 				],
 			]),
 			power: { constraint: "available", rate: null },

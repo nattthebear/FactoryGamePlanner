@@ -52,7 +52,7 @@ export function serialize(state: State) {
 	w.write(6, VERSION);
 
 	const writePId = makeWMap(state.producers.keys());
-	writeBigPos(w, BigInt(writePId.BITS));
+	writeBigPos(w, writePId.BITS);
 
 	for (const c of state.connectors.values()) {
 		if (c.rate.eq(BigRat.ZERO)) {

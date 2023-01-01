@@ -70,8 +70,10 @@ export class WStream {
 export function bitsNeeded(value: number) {
 	return 32 - Math.clz32(value);
 }
-/** Write a non-negative bigint value */
-export function writeBigPos(w: WStream, n: bigint) {
+/** Write a non-negative number value */
+export function writeBigPos(w: WStream, _n: number) {
+	// Use bigint here and on read so we can bitshift 52 bit numbers
+	let n = BigInt(_n);
 	while (true) {
 		const more = +(n !== 0n);
 		w.write(1, more);
@@ -82,14 +84,14 @@ export function writeBigPos(w: WStream, n: bigint) {
 		n >>= 6n;
 	}
 }
-/** Read a non-negative bigint value */
+/** Read a non-negative number value */
 export function readBigPos(r: RStream) {
 	let n = 0n;
 	let shift = 0n;
 	while (true) {
 		const more = r.read(1);
 		if (!more) {
-			return n;
+			return Number(n);
 		}
 		const next = BigInt(r.read(6));
 		n |= next << shift;
@@ -119,7 +121,7 @@ export function readBigRat(r: RStream) {
 	if (neg) {
 		p = -p;
 	}
-	return new BigRat(p, q);
+	return BigRat.create(p, q);
 }
 
 /** Makes a compressing map to store a set of ids with the minimum number of bits */

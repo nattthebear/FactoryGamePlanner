@@ -1,35 +1,38 @@
 import { immerable } from "../immer";
 
-export function gcd(a: bigint, b: bigint) {
-	while (b !== 0n) {
+export function gcd(a: number, b: number) {
+	while (b !== 0) {
 		const t = b;
 		b = a % b;
 		a = t;
 	}
 	return a;
 }
-export const abs = (value: bigint) => (value < 0n ? -value : value);
 
 const BIGRAT_REGEX = /^-?\d+(\.\d+)?$/;
+
+let goingToCheck = false;
 
 // Privates are public so that Draft<BigRat> and BigRat are compatible.
 // At runtime, BigRats will not be drafted as they're not immerable, so it only matters in types.
 export class BigRat {
 	readonly [immerable] = false;
-	private p: bigint;
-	private q: bigint;
-	/** Create a BigRat from numerator and denominator */
-	constructor(p: bigint, q: bigint) {
-		if (q === 0n) {
-			throw new RangeError("BigRat divide by zero");
-		}
+	private p: number;
+	private q: number;
+	/** Create a BigRat from numerator and denominator.  No checking. */
+	private constructor(p: number, q: number) {
 		this.p = p;
 		this.q = q;
-		this.reduce();
+		if (!goingToCheck) {
+			const checked = gcd(p, q);
+			if (checked !== 1 && checked !== -1) {
+				debugger;
+			}
+		}
 	}
-	private reduce() {
+	private checkAndReduce() {
 		const d = gcd(this.p, this.q);
-		if (d !== 1n) {
+		if (d !== 1) {
 			this.p /= d;
 			this.q /= d;
 		}
@@ -38,11 +41,65 @@ export class BigRat {
 			this.q = -this.q;
 		}
 	}
+	private static createWithCheck(p: number, q: number) {
+		if (q === 0) {
+			throw new RangeError("BigRat divide by zero");
+		}
+		let ret: BigRat;
+		try {
+			goingToCheck = true;
+			ret = new BigRat(p, q);
+		} finally {
+			goingToCheck = false;
+		}
+		ret.checkAndReduce();
+		return ret;
+	}
+	static tryParse(s: string) {
+		const match = s.match(BIGRAT_REGEX);
+		if (!match) {
+			return null;
+		}
+		const decimalPart = match[1];
+		if (decimalPart) {
+			return BigRat.createWithCheck(Number(s.replace(".", "")), Number("1".padEnd(decimalPart.length, "0")));
+		} else {
+			return BigRat.createWithCheck(Number(s), 1);
+		}
+	}
+	static parse(s: string) {
+		const res = BigRat.tryParse(s);
+		if (!res) {
+			throw new TypeError("BigRat parse error");
+		}
+		return res;
+	}
+	static fromInteger(n: number) {
+		if ((n | 0) !== n) {
+			throw new TypeError("Number is not an integer");
+		}
+		return new BigRat(n, 1);
+	}
+	static create(p: number, q: number) {
+		if (Math.round(p) !== p || Math.round(q) !== q) {
+			throw new TypeError("Numbers must be integers");
+		}
+		return BigRat.createWithCheck(p, q);
+	}
+	static fromRatioString(s: string) {
+		const match = s.match(/^(\d+):(\d+)$/);
+		if (!match) {
+			throw new TypeError("BigRat parse error");
+		}
+		const [, p, q] = match;
+		return BigRat.createWithCheck(Number(p), Number(q));
+	}
+
 	terms() {
 		return { p: this.p, q: this.q };
 	}
 	toNumberApprox() {
-		return Number(this.p) / Number(this.q);
+		return this.p / this.q;
 	}
 	toRatioString() {
 		return `${this.p}:${this.q}`;
@@ -76,17 +133,70 @@ export class BigRat {
 		}
 		return 0;
 	}
+
 	static add(x: BigRat, y: BigRat) {
-		return new BigRat(x.p * y.q + x.q * y.p, x.q * y.q);
+		const g = gcd(x.q, y.q);
+		const xq = x.q / g;
+		const yq = y.q / g;
+		const xp = yq * x.p;
+		const yp = xq * y.p;
+		const p = xp + yp;
+		const q = xq * y.q;
+		return BigRat.createWithCheck(p, q);
 	}
 	static sub(x: BigRat, y: BigRat) {
-		return new BigRat(x.p * y.q - x.q * y.p, x.q * y.q);
+		const g = gcd(x.q, y.q);
+		const xq = x.q / g;
+		const yq = y.q / g;
+		const xp = yq * x.p;
+		const yp = xq * y.p;
+		const p = xp - yp;
+		const q = xq * y.q;
+		return BigRat.createWithCheck(p, q);
 	}
 	static mul(x: BigRat, y: BigRat) {
-		return new BigRat(x.p * y.p, x.q * y.q);
+		let a = x.p;
+		let b = x.q;
+		let c = y.p;
+		let d = y.q;
+
+		if (a === 0 || c === 0) {
+			return BigRat.ZERO;
+		}
+
+		const g1 = gcd(a, d);
+		const g2 = gcd(b, c);
+		let p = (a / g1) * (c / g2);
+		let q = (b / g2) * (d / g1);
+		if (q < 0) {
+			q = -q;
+			p = -p;
+		}
+
+		return new BigRat(p, q);
 	}
 	static div(x: BigRat, y: BigRat) {
-		return new BigRat(x.p * y.q, x.q * y.p);
+		let a = x.p;
+		let b = x.q;
+		let c = y.p;
+		let d = y.q;
+		if (c === 0) {
+			throw new RangeError("BigRat divide by zero");
+		}
+		if (a === 0) {
+			return BigRat.ZERO;
+		}
+
+		const g1 = gcd(a, c);
+		const g2 = gcd(b, d);
+		let p = (a / g1) * (d / g2);
+		let q = (b / g2) * (c / g1);
+		if (q < 0) {
+			q = -q;
+			p = -p;
+		}
+
+		return new BigRat(p, q);
 	}
 	eq(y: BigRat) {
 		return this.p * y.q === this.q * y.p;
@@ -107,84 +217,48 @@ export class BigRat {
 		return this.p * y.q !== this.q * y.p;
 	}
 	add(y: BigRat) {
-		if (this.p === 0n) {
+		if (this.p === 0) {
 			return y;
 		}
-		if (y.p === 0n) {
+		if (y.p === 0) {
 			return this;
 		}
-		return new BigRat(this.p * y.q + this.q * y.p, this.q * y.q);
+		return BigRat.add(this, y);
 	}
 	sub(y: BigRat) {
-		return new BigRat(this.p * y.q - this.q * y.p, this.q * y.q);
+		return BigRat.sub(this, y);
 	}
 	mul(y: BigRat) {
-		if (this.p === 0n || y.p === 0n) {
+		if (this.p === 0 || y.p === 0) {
 			return BigRat.ZERO;
 		}
-		return new BigRat(this.p * y.p, this.q * y.q);
+		return BigRat.mul(this, y);
 	}
 	div(y: BigRat) {
-		if (this.p === 0n) {
+		if (this.p === 0) {
 			return this;
 		}
-		return new BigRat(this.p * y.q, this.q * y.p);
+		return BigRat.div(this, y);
 	}
 	fma(x: BigRat, y: BigRat) {
-		if (x.p === 0n || y.p === 0n) {
+		if (x.p === 0 || y.p === 0) {
 			return this;
 		}
-		const rp = x.p * y.p;
-		const rq = x.q * y.q;
-		return new BigRat(this.p * rq + this.q * rp, this.q * rq);
+		return BigRat.add(this, BigRat.mul(x, y));
 	}
 	abs() {
-		return new BigRat(abs(this.p), this.q);
+		return new BigRat(Math.abs(this.p), this.q);
 	}
 	neg() {
 		return new BigRat(-this.p, this.q);
 	}
 	sign() {
-		const { p } = this;
-		return p > 0n ? 1 : p < 0n ? -1 : 0;
+		return Math.sign(this.p) + 0;
 	}
 	debug() {
 		return `${this.p}:${this.q}`;
 	}
-	static tryParse(s: string) {
-		const match = s.match(BIGRAT_REGEX);
-		if (!match) {
-			return null;
-		}
-		const decimalPart = match[1];
-		if (decimalPart) {
-			return new BigRat(BigInt(s.replace(".", "")), BigInt("1".padEnd(decimalPart.length, "0")));
-		} else {
-			return new BigRat(BigInt(s), 1n);
-		}
-	}
-	static parse(s: string) {
-		const res = BigRat.tryParse(s);
-		if (!res) {
-			throw new TypeError("BigRat parse error");
-		}
-		return res;
-	}
-	static fromInteger(n: number) {
-		if ((n | 0) !== n) {
-			throw new TypeError("Number is not an integer");
-		}
-		return new BigRat(BigInt(n), 1n);
-	}
-	static fromRatioString(s: string) {
-		const match = s.match(/^(\d+):(\d+)$/);
-		if (!match) {
-			throw new TypeError("BigRat parse error");
-		}
-		const [, p, q] = match;
-		return new BigRat(BigInt(p), BigInt(q));
-	}
-	static ZERO = new BigRat(0n, 1n);
-	static ONE = new BigRat(1n, 1n);
-	static MINUS_ONE = new BigRat(-1n, 1n);
+	static ZERO = new BigRat(0, 1);
+	static ONE = new BigRat(1, 1);
+	static MINUS_ONE = new BigRat(-1, 1);
 }

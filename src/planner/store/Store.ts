@@ -5,7 +5,6 @@ import { Item } from "../../../data/types";
 import { getEncodedDataForTab, TAB_PLANNER } from "../../base64";
 import { makeStore } from "../../MakeStore";
 import { BigRat } from "../../math/BigRat";
-import { Problem } from "../../solver/Solution";
 import { Problem } from "../../solver/Solver";
 import { Flow } from "../../util";
 import { deserialize } from "./Serializer";

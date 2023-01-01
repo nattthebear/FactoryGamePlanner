@@ -90,7 +90,7 @@ export function parse(s: string): Dictionary | null {
 	const nonBasic = parsePart(parts[1], /^\d+$/, (v) => parseInt(v, 10));
 	const coefficients = parsePart(parts[2], /^-?\d+(:-?\d+)?$/, (v) => {
 		const split = v.split(":");
-		return new BigRat(BigInt(split[0]), BigInt(split[1] ?? "1"));
+		return BigRat.create(Number(split[0]), Number(split[1] ?? "1"));
 	});
 	if (!basic || !nonBasic || !coefficients) {
 		return null;

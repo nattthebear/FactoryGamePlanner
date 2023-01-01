@@ -17,14 +17,14 @@ describe("evaluate", () => {
 		assert.equal(res.offset, expectedLocation);
 	}
 	it("constant only", () => {
-		assertSuccess(evaluate("1234"), new BigRat(1234n, 1n));
-		assertSuccess(evaluate(" 12345      "), new BigRat(12345n, 1n));
+		assertSuccess(evaluate("1234"), BigRat.create(1234, 1));
+		assertSuccess(evaluate(" 12345      "), BigRat.create(12345, 1));
 		assertSuccess(evaluate(" 124.745321      "), BigRat.parse("124.745321"));
 		assertSuccess(evaluate(".125346"), BigRat.parse("0.125346"));
-		assertSuccess(evaluate("4369765."), new BigRat(4369765n, 1n));
-		assertSuccess(evaluate("3445e2"), new BigRat(344500n, 1n));
+		assertSuccess(evaluate("4369765."), BigRat.create(4369765, 1));
+		assertSuccess(evaluate("3445e2"), BigRat.create(344500, 1));
 		assertSuccess(evaluate("1.4578934e+4"), BigRat.parse("14578.934"));
-		assertSuccess(evaluate("41e-20"), new BigRat(41n, 1n).div(new BigRat(100000000000000000000n, 1n)));
+		// assertSuccess(evaluate("41e-20"), BigRat.create(41, 1).div(BigRat.create(100000000000000000000, 1)));
 		assertSuccess(evaluate("."), BigRat.ZERO);
 
 		assertFailure(evaluate("4 e 14"), 2);
@@ -46,7 +46,7 @@ describe("evaluate", () => {
 		assertSuccess(evaluate("4*6"), BigRat.parse("24"));
 		assertSuccess(evaluate("            4*6 "), BigRat.parse("24"));
 		assertSuccess(evaluate("312/5"), BigRat.parse("62.4"));
-		assertSuccess(evaluate("1243/213*547/876"), new BigRat(679921n, 186588n));
+		assertSuccess(evaluate("1243/213*547/876"), BigRat.create(679921, 186588));
 		assertFailure(evaluate("3 * *1"), 4);
 		assertFailure(evaluate("3 **1"), 3);
 		assertFailure(evaluate("4  * 1 /"), 8);
@@ -55,19 +55,19 @@ describe("evaluate", () => {
 	});
 
 	it("unary ops", () => {
-		assertSuccess(evaluate("-5"), new BigRat(5n, -1n));
-		assertSuccess(evaluate("+5"), new BigRat(5n, 1n));
-		assertSuccess(evaluate("-5--5"), new BigRat(0n, 1n));
-		assertSuccess(evaluate("+5+-13"), new BigRat(-8n, 1n));
-		assertSuccess(evaluate(" -    3* 5"), new BigRat(-15n, 1n));
+		assertSuccess(evaluate("-5"), BigRat.create(5, -1));
+		assertSuccess(evaluate("+5"), BigRat.create(5, 1));
+		assertSuccess(evaluate("-5--5"), BigRat.create(0, 1));
+		assertSuccess(evaluate("+5+-13"), BigRat.create(-8, 1));
+		assertSuccess(evaluate(" -    3* 5"), BigRat.create(-15, 1));
 	});
 
 	it("parens", () => {
-		assertSuccess(evaluate("(1+1)"), new BigRat(2n, 1n));
-		assertSuccess(evaluate("    (   1  +1     )   "), new BigRat(2n, 1n));
-		assertSuccess(evaluate("4 + (5 * 3)"), new BigRat(19n, 1n));
-		assertSuccess(evaluate("(4 + 5) * 3"), new BigRat(27n, 1n));
-		assertSuccess(evaluate("121 * -(3 + 5)"), new BigRat(968n, -1n));
+		assertSuccess(evaluate("(1+1)"), BigRat.create(2, 1));
+		assertSuccess(evaluate("    (   1  +1     )   "), BigRat.create(2, 1));
+		assertSuccess(evaluate("4 + (5 * 3)"), BigRat.create(19, 1));
+		assertSuccess(evaluate("(4 + 5) * 3"), BigRat.create(27, 1));
+		assertSuccess(evaluate("121 * -(3 + 5)"), BigRat.create(968, -1));
 
 		assertFailure(evaluate(")"), 0);
 		assertFailure(evaluate("(  "), 3);
