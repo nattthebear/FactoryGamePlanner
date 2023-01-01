@@ -6,7 +6,7 @@ import { getEncodedDataForTab, TAB_PLANNER } from "../../base64";
 import { makeStore } from "../../MakeStore";
 import { BigRat } from "../../math/BigRat";
 import { Problem } from "../../solver/Solution";
-import { ProblemV2 } from "../../solver/SolverV2";
+import { ProblemV2 } from "../../solver/Solver";
 import { Flow } from "../../util";
 import { deserialize } from "./Serializer";
 

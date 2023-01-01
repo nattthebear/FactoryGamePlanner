@@ -1,7 +1,7 @@
 import { Item } from "../../../data/types";
 import { Draft } from "../../immer";
 import { BigRat } from "../../math/BigRat";
-import { ProblemV2, SolutionV2 } from "../../solver/SolverV2";
+import { ProblemV2, SolutionV2 } from "../../solver/Solver";
 import { Flow } from "../../util";
 import { NodeId } from "./Common";
 import { Connector } from "./Connectors";

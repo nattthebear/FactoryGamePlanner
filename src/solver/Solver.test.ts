@@ -5,7 +5,7 @@ import { Recipes } from "../../data/generated/recipes";
 import { Items } from "../../data/generated/items";
 import { Item } from "../../data/types";
 import { BigRat } from "../math/BigRat";
-import { ConstraintV2, ProblemV2, setupDictionary, SolutionV2, solveV2, unstringifyProblem } from "./SolverV2";
+import { ConstraintV2, ProblemV2, setupDictionary, SolutionV2, solveV2, unstringifyProblem } from "./Solver";
 import { stringify } from "./Dictionary";
 
 const defaultMapResources: Record<string, number> = {

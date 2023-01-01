@@ -1,7 +1,7 @@
 import { connectSolution } from "../editor/store/ConnectSolution";
 import { update as updateEditor } from "../editor/store/Store";
 import { generateNetResults } from "../solver/GenerateNetResults";
-import { solveV2 } from "../solver/SolverV2";
+import { solveV2 } from "../solver/Solver";
 import { makeProblem, useSelector } from "./store/Store";
 
 export function Results() {

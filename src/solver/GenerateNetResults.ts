@@ -1,7 +1,7 @@
 import { Building, Item } from "../../data/types";
 import { SIXTY } from "../editor/store/Common";
 import { BigRat } from "../math/BigRat";
-import { ProblemV2, SolutionV2 } from "./SolverV2";
+import { ProblemV2, SolutionV2 } from "./Solver";
 
 /** Negative consumed, positive produced */
 export interface NetResults {

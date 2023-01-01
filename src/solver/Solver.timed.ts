@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { ProblemV2, SolutionV2, solveV2, unstringifyProblem } from "./SolverV2";
+import { ProblemV2, SolutionV2, solveV2, unstringifyProblem } from "./Solver";
 
 function debugPrint(p: ProblemV2, s: SolutionV2) {
 	let str = `wp: ${s.wp.toRatioString()}`;
