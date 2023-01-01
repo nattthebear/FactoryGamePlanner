@@ -4,7 +4,7 @@ import { Item, Recipe } from "../../data/types";
 import { SIXTY } from "../editor/store/Common";
 import { produce } from "../immer";
 import { BigRat } from "../math/BigRat";
-import { Dictionary, solveStandardForm, stringify } from "./Dictionary";
+import { Dictionary, solveStandardFormMutate } from "./Dictionary";
 import { calculateOverclockedPowerRatio, generateNetResults } from "./GenerateNetResults";
 
 const WP_RATES = new Map<Item, BigRat>(
@@ -190,7 +190,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 	const coefficients = Array<BigRat>(nRows * pitch).fill(BigRat.ZERO);
 
 	{
-		let a = 0;
+		let a = pitch - 1;
 		for (const { constraint, rate } of constraints.values()) {
 			if (rate != null) {
 				let adjustedRate = rate;
@@ -208,7 +208,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 		if (constraint === "produced") {
 			rate = rate.neg();
 		}
-		coefficients[powerRow * pitch] = rate;
+		coefficients[powerRow * pitch + pitch - 1] = rate;
 	}
 
 	const objectiveCoefficients = new Map<Item, BigRat>();
@@ -236,7 +236,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 	}
 
 	{
-		let i = 1;
+		let i = 0;
 		for (const recipe of availableRecipes) {
 			let z = BigRat.ZERO;
 			for (const { Item, Quantity } of recipe.Inputs) {
@@ -292,11 +292,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 	const basic = makeRangeArray(nRows - 1, pitch);
 
 	return {
-		dictionary: {
-			basic,
-			nonBasic,
-			coefficients,
-		},
+		dictionary: new Dictionary(basic, nonBasic, coefficients),
 		isDualObjective,
 	};
 }
@@ -309,7 +305,7 @@ function buildSolution(problem: Problem, dictionary: Dictionary): Solution {
 	let wp: BigRat;
 
 	{
-		let aRow = 0;
+		let aRow = pitch - 1;
 		for (const name of dictionary.basic) {
 			if (name < pitch) {
 				const coeff = dictionary.coefficients[aRow];
@@ -326,7 +322,7 @@ function buildSolution(problem: Problem, dictionary: Dictionary): Solution {
 export function solve(problem: Problem): Solution | null {
 	let { dictionary, isDualObjective } = setupDictionary(problem);
 	if (isDualObjective) {
-		const objectiveOneDict = solveStandardForm(dictionary);
+		const objectiveOneDict = solveStandardFormMutate(dictionary);
 		if (!objectiveOneDict) {
 			return null;
 		}
@@ -348,13 +344,13 @@ export function solve(problem: Problem): Solution | null {
 
 		const objectiveTwoSetup = setupDictionary(objectiveTwoProblem);
 		if (objectiveTwoSetup.isDualObjective) {
-			throw new Error("Internal Error");
+			throw new Error("Dual Objective Error");
 		}
 
 		dictionary = objectiveTwoSetup.dictionary;
 	}
 
-	const outputDict = solveStandardForm(dictionary);
+	const outputDict = solveStandardFormMutate(dictionary);
 	if (!outputDict) {
 		return null;
 	}
