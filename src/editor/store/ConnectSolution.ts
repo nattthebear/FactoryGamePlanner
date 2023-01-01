@@ -1,7 +1,7 @@
 import { Item } from "../../../data/types";
 import { Draft } from "../../immer";
 import { BigRat } from "../../math/BigRat";
-import { ProblemV2, SolutionV2 } from "../../solver/Solver";
+import { Problem, Solution } from "../../solver/Solver";
 import { Flow } from "../../util";
 import { NodeId } from "./Common";
 import { Connector } from "./Connectors";
@@ -120,7 +120,7 @@ function arrangePositions(producers: Map<NodeId, Producer>, connectors: Map<Node
 	setCoords(roots);
 }
 
-export function connectSolution(problem: ProblemV2, solution: SolutionV2): State {
+export function connectSolution(problem: Problem, solution: Solution): State {
 	const producers = new Map<NodeId, Producer>();
 	const connectors = new Map<NodeId, Connector>();
 

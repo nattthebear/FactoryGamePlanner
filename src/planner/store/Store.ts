@@ -6,7 +6,7 @@ import { getEncodedDataForTab, TAB_PLANNER } from "../../base64";
 import { makeStore } from "../../MakeStore";
 import { BigRat } from "../../math/BigRat";
 import { Problem } from "../../solver/Solution";
-import { ProblemV2 } from "../../solver/Solver";
+import { Problem } from "../../solver/Solver";
 import { Flow } from "../../util";
 import { deserialize } from "./Serializer";
 
@@ -86,8 +86,8 @@ const initialState = (() => {
 
 export const { useSelector, update, getStateRaw } = makeStore(initialState, "_PlannerStore");
 
-export function makeProblem(state: State): ProblemV2 {
-	const res: ProblemV2 = {
+export function makeProblem(state: State): Problem {
+	const res: Problem = {
 		constraints: new Map(),
 		power: null,
 		clockFactor: BigRat.ONE,

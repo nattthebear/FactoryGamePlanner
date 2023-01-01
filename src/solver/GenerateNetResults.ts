@@ -1,7 +1,7 @@
 import { Building, Item } from "../../data/types";
 import { SIXTY } from "../editor/store/Common";
 import { BigRat } from "../math/BigRat";
-import { ProblemV2, SolutionV2 } from "./Solver";
+import { Problem, Solution } from "./Solver";
 
 /** Negative consumed, positive produced */
 export interface NetResults {
@@ -17,7 +17,7 @@ export function calculateOverclockedPowerRatio(building: Building, clockFactor: 
 	return BigRat.parse(factor.toFixed(2));
 }
 
-export function generateNetResults(problem: ProblemV2, solution: SolutionV2): NetResults {
+export function generateNetResults(problem: Problem, solution: Solution): NetResults {
 	let i = 0;
 	const items = new Map<Item, BigRat>();
 	let power = BigRat.ZERO;

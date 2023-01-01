@@ -5,7 +5,7 @@ import { Recipes } from "../../data/generated/recipes";
 import { Items } from "../../data/generated/items";
 import { Item } from "../../data/types";
 import { BigRat } from "../math/BigRat";
-import { ConstraintV2, ProblemV2, setupDictionary, SolutionV2, solveV2, unstringifyProblem } from "./Solver";
+import { Constraint, Problem, setupDictionary, Solution, solve, unstringifyProblem } from "./Solver";
 import { stringify } from "./Dictionary";
 
 const defaultMapResources: Record<string, number> = {
@@ -24,7 +24,7 @@ const defaultMapResources: Record<string, number> = {
 
 describe("setupDictionary", () => {
 	it("test 1", () => {
-		const problem: ProblemV2 = {
+		const problem: Problem = {
 			constraints: new Map([
 				[
 					Items.find((i) => i.ClassName === "Desc_OreIron_C")!,
@@ -46,9 +46,9 @@ describe("setupDictionary", () => {
 	});
 
 	it("test 2", () => {
-		const problem: ProblemV2 = {
+		const problem: Problem = {
 			constraints: new Map([
-				...Object.entries(defaultMapResources).map(([k, v]): [Item, ConstraintV2] => [
+				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
 					Items.find((i) => i.ClassName === k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
@@ -78,7 +78,7 @@ describe("setupDictionary", () => {
 	});
 
 	describe("power tests", () => {
-		const makeProblem = (power: ConstraintV2 | null): ProblemV2 => ({
+		const makeProblem = (power: Constraint | null): Problem => ({
 			constraints: new Map([
 				[
 					Items.find((i) => i.ClassName === "Desc_OreIron_C")!,
@@ -111,7 +111,7 @@ describe("setupDictionary", () => {
 		});
 
 		it("limited power available, intermediate item", () => {
-			const problem: ProblemV2 = {
+			const problem: Problem = {
 				constraints: new Map([
 					[
 						Items.find((i) => i.ClassName === "Desc_OreIron_C")!,
@@ -158,7 +158,7 @@ describe("setupDictionary", () => {
 	});
 });
 
-function debugPrint(p: ProblemV2, s: SolutionV2) {
+function debugPrint(p: Problem, s: Solution) {
 	let str = `wp: ${s.wp.toRatioString()}`;
 	let i = 0;
 	for (const recipe of p.availableRecipes) {
@@ -171,11 +171,11 @@ function debugPrint(p: ProblemV2, s: SolutionV2) {
 	return str;
 }
 
-describe("solveV2", () => {
+describe("solve", () => {
 	it("mod frames", () => {
-		const problem: ProblemV2 = {
+		const problem: Problem = {
 			constraints: new Map([
-				...Object.entries(defaultMapResources).map(([k, v]): [Item, ConstraintV2] => [
+				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
 					Items.find((i) => i.ClassName === k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
@@ -195,7 +195,7 @@ describe("solveV2", () => {
 				Recipes.find((r) => r.ClassName === "Recipe_ModularFrame_C")!,
 			]),
 		};
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(
 			debugPrint(problem, solution),
@@ -204,9 +204,9 @@ describe("solveV2", () => {
 	});
 
 	it("hi tech mod frames", () => {
-		const problem: ProblemV2 = {
+		const problem: Problem = {
 			constraints: new Map([
-				...Object.entries(defaultMapResources).map(([k, v]): [Item, ConstraintV2] => [
+				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
 					Items.find((i) => i.ClassName === k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
@@ -220,7 +220,7 @@ describe("solveV2", () => {
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set(Recipes),
 		};
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(
 			debugPrint(problem, solution),
@@ -229,9 +229,9 @@ describe("solveV2", () => {
 	});
 
 	it("ADS", () => {
-		const problem: ProblemV2 = {
+		const problem: Problem = {
 			constraints: new Map([
-				...Object.entries(defaultMapResources).map(([k, v]): [Item, ConstraintV2] => [
+				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
 					Items.find((i) => i.ClassName === k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
@@ -245,7 +245,7 @@ describe("solveV2", () => {
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set(Recipes),
 		};
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(
 			debugPrint(problem, solution),
@@ -254,7 +254,7 @@ describe("solveV2", () => {
 	});
 
 	it("making plastic and stuff", () => {
-		const problem: ProblemV2 = {
+		const problem: Problem = {
 			constraints: new Map([
 				[
 					Items.find((i) => i.ClassName === "Desc_LiquidOil_C")!,
@@ -276,7 +276,7 @@ describe("solveV2", () => {
 				Recipes.find((r) => r.ClassName === "Recipe_Alternate_Plastic_1_C")!,
 			]),
 		};
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(
 			debugPrint(problem, solution),
@@ -285,9 +285,9 @@ describe("solveV2", () => {
 	});
 
 	it("aluminium", () => {
-		const problem: ProblemV2 = {
+		const problem: Problem = {
 			constraints: new Map([
-				...Object.entries(defaultMapResources).map(([k, v]): [Item, ConstraintV2] => [
+				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
 					Items.find((i) => i.ClassName === k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
@@ -306,7 +306,7 @@ describe("solveV2", () => {
 				Recipes.find((r) => r.DisplayName === "Aluminum Ingot")!,
 			]),
 		};
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(
 			debugPrint(problem, solution),
@@ -318,7 +318,7 @@ describe("solveV2", () => {
 		const problem = unstringifyProblem(
 			"Desc_OreIron_C,available,43:1;Desc_OreCopper_C,available,79:1;Desc_IronIngot_C,produced,null;Desc_CopperIngot_C,produced,null@@available,null@@1:1@@Recipe_IngotCopper_C;Recipe_IngotIron_C"
 		);
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(debugPrint(problem, solution), "wp: 3367:100 Copper Ingot: 79:30 Iron Ingot: 43:30");
 	});
@@ -327,7 +327,7 @@ describe("solveV2", () => {
 		const problem = unstringifyProblem(
 			"Desc_Coal_C,available,600:1;Desc_Water_C,available,null@@produced,60:1@@1:1@@$GENERATED_POWER$Build_GeneratorCoal_C$Desc_Coal_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_CompactedCoal_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_PetroleumCoke_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidFuel_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidTurboFuel_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidBiofuel_C;$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_NuclearFuelRod_C;$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_PlutoniumFuelRod_C"
 		);
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(debugPrint(problem, solution), "wp: 96:25 Power from Coal: 4:5");
 	});
@@ -336,7 +336,7 @@ describe("solveV2", () => {
 		const problem = unstringifyProblem(
 			"Desc_Coal_C,available,10:1;Desc_Water_C,available,null;Desc_LiquidOil_C,available,600:1@@produced,60:1@@1:1@@Recipe_LiquidFuel_C;Recipe_ResidualFuel_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_Coal_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_CompactedCoal_C;$GENERATED_POWER$Build_GeneratorCoal_C$Desc_PetroleumCoke_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidFuel_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidTurboFuel_C;$GENERATED_POWER$Build_GeneratorFuel_C$Desc_LiquidBiofuel_C;$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_NuclearFuelRod_C;$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_PlutoniumFuelRod_C;Recipe_Alternate_HeavyOilResidue_C"
 		);
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(
 			debugPrint(problem, solution),
@@ -348,7 +348,7 @@ describe("solveV2", () => {
 		const problem = unstringifyProblem(
 			"Desc_Coal_C,available,10:1;Desc_Water_C,available,null@@produced,null@@1:1@@$GENERATED_POWER$Build_GeneratorCoal_C$Desc_Coal_C"
 		);
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		assert(solution);
 		assert.equal(debugPrint(problem, solution), "wp: 16:5 Power from Coal: 2:3");
 	});

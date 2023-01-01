@@ -1,4 +1,3 @@
-import { defaultResourceData } from "../../data/defaultResources";
 import { Items } from "../../data/generated/items";
 import { Recipes } from "../../data/generated/recipes";
 import { Item, Recipe } from "../../data/types";
@@ -48,26 +47,26 @@ export interface ProducedConstraint {
 	rate: BigRat | null;
 }
 
-export type ConstraintV2 = AvailableConstraint | ProducedConstraint;
+export type Constraint = AvailableConstraint | ProducedConstraint;
 
-export interface ProblemV2 {
-	constraints: Map<Item, ConstraintV2>;
+export interface Problem {
+	constraints: Map<Item, Constraint>;
 	/** Similar to the item constraints, but for power and in MW */
-	power: ConstraintV2 | null;
+	power: Constraint | null;
 	/** Average overclock rate (0.01x - 2.5x) of all buildings */
 	clockFactor: BigRat;
 	/** What recipes are allowed. */
 	availableRecipes: Set<Recipe>;
 }
 
-export interface SolutionV2 {
+export interface Solution {
 	/** Usage of each recipe, in the order they're specified in availableRecipes */
 	recipes: BigRat[];
 	/** Net WP of the solution */
 	wp: BigRat;
 }
 
-export function stringifyProblem(problem: ProblemV2) {
+export function stringifyProblem(problem: Problem) {
 	return [
 		[...problem.constraints.entries()]
 			.map(([k, v]) => `${k.ClassName},${v.constraint},${v.rate?.toRatioString() ?? "null"}`)
@@ -80,7 +79,7 @@ export function stringifyProblem(problem: ProblemV2) {
 const itemClassLookup = new Map(Items.map((i) => [i.ClassName, i]));
 const recipeClassLookup = new Map(Recipes.map((r) => [r.ClassName, r]));
 /** Doesn't do much error checking! */
-export function unstringifyProblem(s: string): ProblemV2 {
+export function unstringifyProblem(s: string): Problem {
 	const [constraintData, powerData, clockFactorData, availableRecipeData] = s.split("@@");
 
 	return {
@@ -130,7 +129,7 @@ function makeRangeArray(n: number, first: number) {
 	return ret;
 }
 
-export function setupDictionary({ constraints, power, clockFactor, availableRecipes }: ProblemV2): {
+export function setupDictionary({ constraints, power, clockFactor, availableRecipes }: Problem): {
 	dictionary: Dictionary;
 	isTwoPhase: boolean;
 } {
@@ -302,7 +301,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 	};
 }
 
-function buildSolution(problem: ProblemV2, dictionary: Dictionary): SolutionV2 {
+function buildSolution(problem: Problem, dictionary: Dictionary): Solution {
 	const numRecipes = problem.availableRecipes.size;
 	const pitch = numRecipes + 1;
 
@@ -324,7 +323,7 @@ function buildSolution(problem: ProblemV2, dictionary: Dictionary): SolutionV2 {
 	return { recipes: recipeUsages, wp };
 }
 
-export function solveV2(problem: ProblemV2): SolutionV2 | null {
+export function solve(problem: Problem): Solution | null {
 	let { dictionary, isTwoPhase } = setupDictionary(problem);
 	if (isTwoPhase) {
 		const phaseOneDict = solveStandardForm(dictionary);

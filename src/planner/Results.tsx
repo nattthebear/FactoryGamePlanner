@@ -1,14 +1,14 @@
 import { connectSolution } from "../editor/store/ConnectSolution";
 import { update as updateEditor } from "../editor/store/Store";
 import { generateNetResults } from "../solver/GenerateNetResults";
-import { solveV2 } from "../solver/Solver";
+import { solve } from "../solver/Solver";
 import { makeProblem, useSelector } from "./store/Store";
 
 export function Results() {
 	const state = useSelector((s) => s);
 
 	const problem = makeProblem(state);
-	const solution = solveV2(problem);
+	const solution = solve(problem);
 
 	if (!solution) {
 		return <div>No solution found. Check your inputs and recipes.</div>;

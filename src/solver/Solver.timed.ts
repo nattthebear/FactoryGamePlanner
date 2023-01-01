@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { ProblemV2, SolutionV2, solveV2, unstringifyProblem } from "./Solver";
+import { Problem, Solution, solve, unstringifyProblem } from "./Solver";
 
-function debugPrint(p: ProblemV2, s: SolutionV2) {
+function debugPrint(p: Problem, s: Solution) {
 	let str = `wp: ${s.wp.toRatioString()}`;
 	let i = 0;
 	for (const recipe of p.availableRecipes) {
@@ -20,7 +20,7 @@ function doPerfTest(name: string, solutionStr: string, problemStr: string) {
 		const problem = unstringifyProblem(problemStr);
 
 		const from = performance.now();
-		const solution = solveV2(problem);
+		const solution = solve(problem);
 		const end = performance.now() - from;
 		assert(solution);
 		assert.equal(debugPrint(problem, solution), solutionStr);
