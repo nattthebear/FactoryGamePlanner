@@ -449,11 +449,63 @@ export class BigRat {
 		if (x.pb === 0n || x.ps === 0 || y.pb === 0n || y.ps === 0) {
 			return this;
 		}
-		// TODO: reoptimize this
-		return this.add(x.mul(y));
-		// const rp = x.p * y.p;
-		// const rq = x.q * y.q;
-		// return new BigRat(this.p * rq + this.q * rp, this.q * rq);
+		const zpb = this.pb;
+		const xpb = x.pb;
+		const ypb = y.pb;
+		if (zpb != null || xpb != null || ypb != null) {
+			const e = zpb ?? BigInt(this.ps!);
+			const f = this.qb ?? BigInt(this.qs!);
+			const a = xpb ?? BigInt(x.ps!);
+			const b = x.qb ?? BigInt(x.qs!);
+			const c = ypb ?? BigInt(y.ps!);
+			const d = y.qb ?? BigInt(y.qs!);
+
+			const rp = a * c;
+			const rq = b * d;
+			return BigRat.fromBigInts(e * rq + f * rp, f * rq);
+		} else {
+			const e = this.ps!;
+			const f = this.qs!;
+			const a = x.ps!;
+			const b = x.qs!;
+			const c = y.ps!;
+			const d = y.qs!;
+
+			const rp = a * c;
+			const rq = b * d;
+
+			const p1 = e * rq;
+			const p2 = f * rp;
+
+			const p = p1 + p2;
+			const q = f * rq;
+
+			if (
+				rp >= MIN_SAFE_INTEGER &&
+				rp <= MAX_SAFE_INTEGER &&
+				rq <= MAX_SAFE_INTEGER &&
+				p1 >= MIN_SAFE_INTEGER &&
+				p1 <= MAX_SAFE_INTEGER &&
+				p2 >= MIN_SAFE_INTEGER &&
+				p2 <= MAX_SAFE_INTEGER &&
+				p >= MIN_SAFE_INTEGER &&
+				p <= MAX_SAFE_INTEGER &&
+				q <= MAX_SAFE_INTEGER
+			) {
+				return BigRat.fromIntegers(p, q);
+			} else {
+				const e = zpb ?? BigInt(this.ps!);
+				const f = this.qb ?? BigInt(this.qs!);
+				const a = xpb ?? BigInt(x.ps!);
+				const b = x.qb ?? BigInt(x.qs!);
+				const c = ypb ?? BigInt(y.ps!);
+				const d = y.qb ?? BigInt(y.qs!);
+
+				const rp = a * c;
+				const rq = b * d;
+				return BigRat.fromBigInts(e * rq + f * rp, f * rq);
+			}
+		}
 	}
 
 	abs() {
