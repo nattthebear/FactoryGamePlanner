@@ -40,8 +40,9 @@ describe("setupDictionary", () => {
 			availableRecipes: new Set([Recipes.find((r) => r.ClassName === "Recipe_IngotIron_C")!]),
 		};
 
-		const { dictionary, isDualObjective } = setupDictionary(problem);
-		assert(!isDualObjective);
+		const dictionary = setupDictionary(problem);
+		assert(!dictionary.isDualObjective);
+
 		assert(Dictionary.equal(dictionary, Dictionary.parse("2,3;1;10000:1,-30:1,-500:1,30:1,0:1,-21:5")));
 	});
 
@@ -69,8 +70,9 @@ describe("setupDictionary", () => {
 			]),
 		};
 
-		const { dictionary, isDualObjective } = setupDictionary(problem);
-		assert(!isDualObjective);
+		const dictionary = setupDictionary(problem);
+		assert(!dictionary.isDualObjective);
+
 		assert(
 			Dictionary.equal(
 				dictionary,
@@ -100,8 +102,8 @@ describe("setupDictionary", () => {
 
 		it("no power available", () => {
 			const problem = makeProblem(null);
-			const { dictionary, isDualObjective } = setupDictionary(problem);
-			assert(!isDualObjective);
+			const dictionary = setupDictionary(problem);
+			assert(!dictionary.isDualObjective);
 
 			assert(
 				Dictionary.equal(dictionary, Dictionary.parse("2,3,4;1;10000:1,-30:1,-500:1,30:1,0:1,-4:1,0:1,-21:5"))
@@ -110,8 +112,8 @@ describe("setupDictionary", () => {
 
 		it("limited power available", () => {
 			const problem = makeProblem({ constraint: "available", rate: BigRat.fromIntegers(20, 1) });
-			const { dictionary, isDualObjective } = setupDictionary(problem);
-			assert(!isDualObjective);
+			const dictionary = setupDictionary(problem);
+			assert(!dictionary.isDualObjective);
 
 			assert(
 				Dictionary.equal(
@@ -140,8 +142,8 @@ describe("setupDictionary", () => {
 					Recipes.find((r) => r.ClassName === "Recipe_IronPlate_C")!,
 				]),
 			};
-			const { dictionary, isDualObjective } = setupDictionary(problem);
-			assert(!isDualObjective);
+			const dictionary = setupDictionary(problem);
+			assert(!dictionary.isDualObjective);
 
 			assert(
 				Dictionary.equal(
@@ -157,8 +159,8 @@ describe("setupDictionary", () => {
 			const problem = makeProblem({ constraint: "available", rate: BigRat.fromIntegers(20, 1) });
 			problem.clockFactor = BigRat.fromInteger(2);
 			// A building at 2x uses 2.5x the power, so 1.25x the power cost per unit
-			const { dictionary, isDualObjective } = setupDictionary(problem);
-			assert(!isDualObjective);
+			const dictionary = setupDictionary(problem);
+			assert(!dictionary.isDualObjective);
 
 			assert(
 				Dictionary.equal(dictionary, Dictionary.parse("2,3,4;1;10000:1,-30:1,-500:1,30:1,20:1,-5:1,0:1,-87:20"))
@@ -167,10 +169,11 @@ describe("setupDictionary", () => {
 
 		it("make maximized power", () => {
 			const problem = makeProblem({ constraint: "produced", rate: null });
-			const { dictionary, isDualObjective } = setupDictionary(problem);
-			assert(isDualObjective);
-
-			assert(Dictionary.equal(dictionary, Dictionary.parse("2,3;1;10000:1,-30:1,-500:1,30:1,0:1,-4:1")));
+			const dictionary = setupDictionary(problem);
+			assert(dictionary.isDualObjective);
+			assert(
+				Dictionary.equal(dictionary, Dictionary.parse("2,3;1;10000:1,-30:1,-500:1,30:1,0:1,-4:1,0:1,-21:5"))
+			);
 		});
 	});
 });

@@ -129,17 +129,20 @@ function makeRangeArray(n: number, first: number) {
 	return ret;
 }
 
-export function setupDictionary({ constraints, power, clockFactor, availableRecipes }: Problem): {
-	dictionary: Dictionary;
-	isDualObjective: boolean;
-} {
+export function setupDictionary({ constraints, power, clockFactor, availableRecipes }: Problem) {
 	const itemsToConstraintRows = new Map<Item, number>();
-	const objectives = new Set<Item>();
+	const normalObjectives = new Set<Item>();
+	const maxiObjectives = new Set<Item>();
 	const plentiful = new Set<Item>();
-	let isDualObjective = false;
 	let powerRow = -1;
-	let powerCoeff: BigRat | null = null;
 	let nRows: number;
+	const pitch = availableRecipes.size + 1;
+	let isDualObjective = false;
+	let constraintCount: number;
+	let objectiveStart: number;
+
+	let primPowerCoeff: BigRat | undefined;
+	let secPowerCoeff: BigRat | undefined;
 
 	{
 		let a = 0;
@@ -149,13 +152,10 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 			} else {
 				plentiful.add(item);
 				if (constraint === "produced") {
-					if (!isDualObjective) {
-						objectives.clear();
-						isDualObjective = true;
-					}
-					objectives.add(item);
-				} else if (!isDualObjective) {
-					objectives.add(item);
+					maxiObjectives.add(item);
+					isDualObjective = true;
+				} else {
+					normalObjectives.add(item);
 				}
 			}
 		}
@@ -175,17 +175,13 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 		if (power == null || power.rate != null) {
 			powerRow = a++;
 		} else if (power.constraint === "produced" && power.rate == null) {
-			if (!isDualObjective) {
-				isDualObjective = true;
-				objectives.clear();
-			}
+			isDualObjective = true;
 		}
 
-		nRows = a + 1; // +1 for objective row at the bottom
+		constraintCount = a;
+		nRows = constraintCount + (isDualObjective ? 2 : 1);
+		objectiveStart = a * pitch;
 	}
-
-	const pitch = availableRecipes.size + 1;
-	const objectiveStart = (nRows - 1) * pitch;
 
 	const coefficients = Array<BigRat>(nRows * pitch).fill(BigRat.ZERO);
 
@@ -211,61 +207,73 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 		coefficients[powerRow * pitch + pitch - 1] = rate;
 	}
 
-	const objectiveCoefficients = new Map<Item, BigRat>();
+	const primaryObjectiveCoefficients = new Map<Item, BigRat>();
+	const secondaryObjectiveCoefficients = new Map<Item, BigRat>();
 	if (isDualObjective) {
 		for (const [item, { constraint, rate }] of constraints.entries()) {
 			if (constraint === "produced" && rate == null) {
-				objectiveCoefficients.set(item, BigRat.MINUS_ONE);
+				primaryObjectiveCoefficients.set(item, BigRat.MINUS_ONE);
 			}
 		}
 		if (power?.constraint === "produced" && power.rate == null) {
-			powerCoeff = BigRat.MINUS_ONE;
+			primPowerCoeff = BigRat.MINUS_ONE;
 		}
-	} else {
+	}
+
+	{
+		const destMap = isDualObjective ? secondaryObjectiveCoefficients : primaryObjectiveCoefficients;
 		for (const [item, { constraint, rate }] of constraints.entries()) {
 			if (constraint === "available" && rate != null) {
 				const wp = WP_RATES.get(item);
 				if (wp) {
-					objectiveCoefficients.set(item, wp);
+					destMap.set(item, wp);
 				}
 			}
 		}
 		if (power?.constraint === "available" && power.rate != null) {
-			powerCoeff = POWER_WP;
+			if (isDualObjective) {
+				secPowerCoeff = POWER_WP;
+			} else {
+				primPowerCoeff = POWER_WP;
+			}
 		}
 	}
 
 	{
 		let i = 0;
 		for (const recipe of availableRecipes) {
-			let z = BigRat.ZERO;
+			let zPrim = BigRat.ZERO;
+			let zSec = BigRat.ZERO;
 			for (const { Item, Quantity } of recipe.Inputs) {
+				const itemsPerMinute = Quantity.div(recipe.Duration).mul(SIXTY);
 				const row = itemsToConstraintRows.get(Item);
-				const zFactor = objectiveCoefficients.get(Item);
-				if (row != null || zFactor != null) {
-					const itemsPerMinute = Quantity.div(recipe.Duration).mul(SIXTY);
-					if (row != null) {
-						const pos = row * pitch + i;
-						coefficients[pos] = coefficients[pos].sub(itemsPerMinute);
-					}
-					if (zFactor != null) {
-						z = z.add(zFactor.mul(itemsPerMinute));
-					}
+				if (row != null) {
+					const pos = row * pitch + i;
+					coefficients[pos] = coefficients[pos].sub(itemsPerMinute);
+				}
+				const zPrimFac = primaryObjectiveCoefficients.get(Item);
+				if (zPrimFac != null) {
+					zPrim = zPrim.add(zPrimFac.mul(itemsPerMinute));
+				}
+				const zSecFac = secondaryObjectiveCoefficients.get(Item);
+				if (zSecFac != null) {
+					zSec = zSec.add(zSecFac.mul(itemsPerMinute));
 				}
 			}
 			for (const { Item, Quantity } of recipe.Outputs) {
+				const itemsPerMinute = Quantity.div(recipe.Duration).mul(SIXTY);
 				const row = itemsToConstraintRows.get(Item);
-				const zFactor = objectiveCoefficients.get(Item);
-				if (row != null || zFactor != null) {
-					const itemsPerMinute = Quantity.div(recipe.Duration).mul(SIXTY);
-					if (row != null) {
-						const pos = row * pitch + i;
-						coefficients[pos] = coefficients[pos].add(itemsPerMinute);
-					}
-					if (zFactor != null) {
-						// TODO: This might not make sense
-						z = z.sub(zFactor.mul(itemsPerMinute));
-					}
+				if (row != null) {
+					const pos = row * pitch + i;
+					coefficients[pos] = coefficients[pos].add(itemsPerMinute);
+				}
+				const zPrimFac = primaryObjectiveCoefficients.get(Item);
+				if (zPrimFac != null) {
+					zPrim = zPrim.sub(zPrimFac.mul(itemsPerMinute));
+				}
+				const zSecFac = secondaryObjectiveCoefficients.get(Item);
+				if (zSecFac != null) {
+					zSec = zSec.sub(zSecFac.mul(itemsPerMinute));
 				}
 			}
 			{
@@ -279,22 +287,25 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 					const pos = row * pitch + i;
 					coefficients[pos] = recipePowerMod.neg();
 				}
-				if (powerCoeff != null) {
-					z = z.add(powerCoeff.mul(recipePowerMod));
+				if (primPowerCoeff != null) {
+					zPrim = zPrim.add(primPowerCoeff.mul(recipePowerMod));
+				}
+				if (secPowerCoeff != null) {
+					zSec = zSec.add(secPowerCoeff.mul(recipePowerMod));
 				}
 			}
-			coefficients[objectiveStart + i] = z;
+			coefficients[objectiveStart + i] = zPrim;
+			if (isDualObjective) {
+				coefficients[objectiveStart + pitch + i] = zSec;
+			}
 			i++;
 		}
 	}
 
 	const nonBasic = makeRangeArray(availableRecipes.size, 1);
-	const basic = makeRangeArray(nRows - 1, pitch);
+	const basic = makeRangeArray(constraintCount, pitch);
 
-	return {
-		dictionary: new Dictionary(basic, nonBasic, coefficients),
-		isDualObjective,
-	};
+	return new Dictionary(basic, nonBasic, isDualObjective, coefficients);
 }
 
 function buildSolution(problem: Problem, dictionary: Dictionary): Solution {
@@ -313,47 +324,17 @@ function buildSolution(problem: Problem, dictionary: Dictionary): Solution {
 			}
 			aRow += pitch;
 		}
-		wp = dictionary.coefficients[aRow].neg();
+		wp = dictionary.coefficients[aRow + (dictionary.isDualObjective ? pitch : 0)].neg();
 	}
 
 	return { recipes: recipeUsages, wp };
 }
 
 export function solve(problem: Problem): Solution | null {
-	let { dictionary, isDualObjective } = setupDictionary(problem);
-	if (isDualObjective) {
-		const objectiveOneDict = solveStandardFormMutate(dictionary);
-		if (!objectiveOneDict) {
-			return null;
-		}
-
-		const objectiveOneSolution = buildSolution(problem, objectiveOneDict);
-		const net = generateNetResults(problem, objectiveOneSolution);
-
-		const objectiveTwoProblem = produce(problem, (draft) => {
-			for (const [item, { constraint, rate }] of problem.constraints) {
-				if (constraint === "produced" && rate == null) {
-					draft.constraints.set(item, { constraint: "produced", rate: net.items.get(item)! });
-				}
-			}
-
-			if (problem.power?.constraint === "produced" && problem.power.rate == null) {
-				draft.power = { constraint: "produced", rate: net.power };
-			}
-		});
-
-		const objectiveTwoSetup = setupDictionary(objectiveTwoProblem);
-		if (objectiveTwoSetup.isDualObjective) {
-			throw new Error("Dual Objective Error");
-		}
-
-		dictionary = objectiveTwoSetup.dictionary;
-	}
-
+	const dictionary = setupDictionary(problem);
 	const outputDict = solveStandardFormMutate(dictionary);
 	if (!outputDict) {
 		return null;
 	}
-
 	return buildSolution(problem, outputDict);
 }
