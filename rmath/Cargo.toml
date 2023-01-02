@@ -1,0 +1,21 @@
+[package]
+name = "rmath"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+wee_alloc = "0.4.5"
+
+[dependencies.num-rational]
+version = "0.4"
+default-features = false
+features = ["num-bigint"]
+
+[dependencies.num-bigint]
+version = "0.4"
+default-features = false
+
+[lib]
+crate-type = ["cdylib"]

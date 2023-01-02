@@ -17,3 +17,5 @@ if (!window.requestIdleCallback) {
 	}
 	await import("./App");
 })();
+
+import "./WasmTest";
