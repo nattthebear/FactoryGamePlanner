@@ -228,7 +228,7 @@ describe("dictionary", () => {
 				[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "plentiful", rate: BigRat.ZERO }],
 				[
 					Items.find((i) => i.ClassName === "Desc_Plastic_C")!,
-					{ constraint: "produced", rate: new BigRat(600n, 1n) },
+					{ constraint: "produced", rate: BigRat.fromIntegers(600, 1) },
 				],
 			]),
 			availableRecipes: new Set([

@@ -51,9 +51,9 @@ function evaluateNode(node: ExpressionRoot): BigRat {
 			const exponent = Number(node.value);
 			let factor = BigRat.ONE;
 			if (exponent > 0) {
-				factor = new BigRat(BigInt("1".padEnd(exponent + 1, "0")), 1n);
+				factor = BigRat.fromBigInts(BigInt("1".padEnd(exponent + 1, "0")), 1n);
 			} else if (exponent < 0) {
-				factor = new BigRat(1n, BigInt("1".padEnd(-exponent + 1, "0")));
+				factor = BigRat.fromBigInts(1n, BigInt("1".padEnd(-exponent + 1, "0")));
 			}
 			return evaluateNode(node.child).mul(factor);
 		}

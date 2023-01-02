@@ -9,11 +9,6 @@ import { fileURLToPath } from "node:url";
 import { parseObject } from "./objectParser";
 import { BigRat } from "../src/math/BigRat";
 
-function unevalBigRat(r: BigRat) {
-	const { p, q } = r.terms();
-	return `new BigRat(${p}n, ${q}n)`;
-}
-
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 mustache.escape = (s) => JSON.stringify(s, null, "\t");
@@ -685,7 +680,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		DurationExpr:
 			typeof x.mManufactoringDuration === "number"
 				? `BigRat.fromInteger(${x.mManufactoringDuration})`
-				: unevalBigRat(x.mManufactoringDuration),
+				: x.mManufactoringDuration.uneval(),
 	}));
 
 	const itemsView = items.map((x) => ({
