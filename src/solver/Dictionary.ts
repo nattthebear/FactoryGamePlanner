@@ -70,25 +70,35 @@ export class Dictionary {
 	basic: number[];
 	/** names of the entering variables, left to right. */
 	nonBasic: number[];
-	/** All coefficients, left to right then top to bottom.  The last column contains constants, and the last row is the objective. */
+	/** If true, there is a second objective row below the first one. */
+	isDualObjective: boolean;
+	/** All coefficients, left to right then top to bottom.  The last column contains constants, and the last rows are objective rows. */
 	coefficients: BigRat[];
 
 	private nCols: number;
 	private nRows: number;
+	private objectiveStartIndex: number;
 
 	/**
 	 * Create a new Dictionary.  All passed parameters will be owned by the dictionary.
 	 */
-	constructor(basic: number[], nonBasic: number[], coefficients?: BigRat[]) {
+	constructor(basic: number[], nonBasic: number[], isDualObjective: boolean, coefficients?: BigRat[]) {
 		this.basic = basic;
 		this.nonBasic = nonBasic;
+		this.isDualObjective = isDualObjective;
 		this.nCols = this.nonBasic.length + 1;
-		this.nRows = this.basic.length + 1;
+		this.nRows = this.basic.length + (isDualObjective ? 2 : 1);
+		this.objectiveStartIndex = this.nCols * this.basic.length;
 		this.coefficients = coefficients ?? Array<BigRat>(this.nCols * this.nRows).fill(BigRat.ZERO);
 	}
 
 	clone() {
-		return new Dictionary(this.basic.slice(), this.nonBasic.slice(), this.coefficients.slice());
+		return new Dictionary(
+			this.basic.slice(),
+			this.nonBasic.slice(),
+			this.isDualObjective,
+			this.coefficients.slice()
+		);
 	}
 
 	stringify() {
@@ -136,15 +146,23 @@ export class Dictionary {
 		if (!basic || !nonBasic || !coefficients) {
 			return null;
 		}
-		const nRows = basic.length + 1;
+		let nRows = basic.length + 1;
 		const nCols = nonBasic.length + 1;
+		let isDualObjective = false;
+		if (nRows * nCols !== coefficients.length) {
+			nRows += 1;
+			isDualObjective = true;
+			if (nRows * nCols !== coefficients.length) {
+				return null;
+			}
+		}
 		// flip the coefficients to match the change made in stringify above
 		for (let j = 0; j < nRows; j++) {
 			const [constantTerm] = coefficients.splice(j * nCols, 1);
 			coefficients.splice((j + 1) * nCols - 1, 0, constantTerm);
 		}
 
-		return new Dictionary(basic, nonBasic, coefficients);
+		return new Dictionary(basic, nonBasic, isDualObjective, coefficients);
 	}
 
 	static equal(x: Dictionary | null, y: Dictionary | null) {
@@ -154,6 +172,7 @@ export class Dictionary {
 		if (
 			x.basic.length !== y.basic.length ||
 			x.nonBasic.length !== y.nonBasic.length ||
+			x.isDualObjective !== y.isDualObjective ||
 			x.coefficients.length !== y.coefficients.length
 		) {
 			return false;
@@ -171,7 +190,7 @@ export class Dictionary {
 		for (let j = 0; j < nRows; j++) {
 			for (let i = 0; i < pitch; i++) {
 				const yi = i === pitch - 1 ? i : nonBasicMap[i];
-				const yj = j === nRows - 1 ? j : basicMap[j];
+				const yj = j >= x.basic.length ? j : basicMap[j];
 
 				const xv = x.coefficients[j * pitch + i];
 				const yv = y.coefficients[yj * pitch + yi];
@@ -185,9 +204,9 @@ export class Dictionary {
 
 	needsTwoPhase() {
 		const pitch = this.nCols;
-		const max = pitch * this.nRows;
-		const { coefficients } = this;
-		for (let a = pitch - 1; a < max; a += pitch) {
+		const max = pitch * this.basic.length;
+		const { objectiveStartIndex, coefficients } = this;
+		for (let a = pitch - 1; a < objectiveStartIndex; a += pitch) {
 			if (coefficients[a].sign() < 0) {
 				return true;
 			}
@@ -198,19 +217,20 @@ export class Dictionary {
 	/** Make a special dictionary out of a normal one that needs it (negative constraints). */
 	makeSpecial() {
 		const pitch = this.nCols;
-		const { nRows } = this;
+		const oldNRows = this.nRows;
+		const newNRows = oldNRows - (this.isDualObjective ? 1 : 0);
 		const { basic, nonBasic, coefficients } = this;
 		const newBasic = basic.slice();
 		const newNonBasic = nonBasic.slice();
 		newNonBasic.push(0);
 		const newPitch = pitch + 1;
-		const newMax = newPitch * nRows;
+		const newMax = newPitch * newNRows;
 
 		const newCoefficients = Array<BigRat>(newMax);
 
 		let aFrom = 0;
 		let aTo = 0;
-		for (let j = 0; j < nRows - 1; j++) {
+		for (let j = 0; j < newNRows - 1; j++) {
 			for (let i = 0; i < pitch; i++) {
 				newCoefficients[aTo++] = coefficients[aFrom++];
 				if (i === pitch - 2) {
@@ -225,17 +245,18 @@ export class Dictionary {
 			}
 		}
 
-		return new Dictionary(newBasic, newNonBasic, newCoefficients);
+		return new Dictionary(newBasic, newNonBasic, false, newCoefficients);
 	}
 
 	/** Slice off the x0 to turn a solved special dictionary back into a regular one. */
 	makeRegular(original: Dictionary) {
 		const oldPitch = this.nCols;
-		const { nRows } = this;
+		const oldNRows = this.nRows;
+		const newNRows = original.nRows;
 		const { basic, nonBasic, coefficients } = this;
 		const newPitch = oldPitch - 1;
-		const oldMax = nRows * oldPitch;
-		const newMax = nRows * newPitch;
+		const oldMax = oldNRows * oldPitch;
+		const newMax = newNRows * newPitch;
 
 		const newBasic = basic.slice();
 		const newNonBasic = nonBasic.slice();
@@ -249,7 +270,7 @@ export class Dictionary {
 
 		let aTo = 0;
 		{
-			const stop = newMax - newPitch;
+			const stop = newPitch * original.basic.length;
 			for (let aFrom = 0, r = 0; aTo < stop; aFrom++, r++) {
 				if (r === oldPitch) {
 					r = 0;
@@ -262,29 +283,33 @@ export class Dictionary {
 
 		const oldCoefficients = original.coefficients;
 		// Old objective function is in oldCoefficients[oStart..oStart + newPitch - 1]
+		// If present, second objective function is in oldCoefficients[oStart + newPitch..oStart + newPitch * 2 - 1]
 		// Assume that the nonBasics were 1, 2, ..., pitch in order
-		const oStart = aTo;
-		const oEnd = oStart + newPitch;
-		for (let i = oStart; i < oEnd; i++) {
-			newCoefficients[i] = BigRat.ZERO;
-		}
-		for (let i = oStart, name = 1; i < oEnd; i++, name++) {
-			const nonBasicIndex = name < newPitch ? newNonBasic.indexOf(name) : name - 1;
-			const oldCoeff = oldCoefficients[i];
-			if (nonBasicIndex >= 0) {
-				const toIndex = oStart + nonBasicIndex;
-				newCoefficients[toIndex] = newCoefficients[toIndex].add(oldCoeff);
-				continue;
-			}
 
-			const basicStart = newBasic.indexOf(name) * newPitch;
-			const basicEnd = basicStart + newPitch;
-			for (let jFrom = basicStart, jTo = oStart; jFrom < basicEnd; jFrom++, jTo++) {
-				newCoefficients[jTo] = newCoefficients[jTo].add(oldCoeff.mul(newCoefficients[jFrom]));
+		// iterate through objective rows
+		for (let oStart = aTo; oStart < newMax; oStart += newPitch) {
+			const oEnd = oStart + newPitch;
+			for (let i = oStart; i < oEnd; i++) {
+				newCoefficients[i] = BigRat.ZERO;
+			}
+			for (let i = oStart, name = 1; i < oEnd; i++, name++) {
+				const nonBasicIndex = name < newPitch ? newNonBasic.indexOf(name) : name - 1;
+				const oldCoeff = oldCoefficients[i];
+				if (nonBasicIndex >= 0) {
+					const toIndex = oStart + nonBasicIndex;
+					newCoefficients[toIndex] = newCoefficients[toIndex].add(oldCoeff);
+					continue;
+				}
+
+				const basicStart = newBasic.indexOf(name) * newPitch;
+				const basicEnd = basicStart + newPitch;
+				for (let jFrom = basicStart, jTo = oStart; jFrom < basicEnd; jFrom++, jTo++) {
+					newCoefficients[jTo] = newCoefficients[jTo].add(oldCoeff.mul(newCoefficients[jFrom]));
+				}
 			}
 		}
 
-		return new Dictionary(newBasic, newNonBasic, newCoefficients);
+		return new Dictionary(newBasic, newNonBasic, original.isDualObjective, newCoefficients);
 	}
 
 	/** Pivot this dictonary in place. */
@@ -293,41 +318,65 @@ export class Dictionary {
 		const rowCount = this.nRows;
 		const coord = (i: number, j: number) => i + j * pitch;
 		const max = pitch * rowCount;
-		const { basic, nonBasic, coefficients } = this;
+		const { basic, nonBasic, isDualObjective, objectiveStartIndex, coefficients } = this;
 
 		let enterCol = -1;
 		let enterName = -1;
 		if (!special) {
-			let enterCoeff: BigRat | undefined;
-			for (let a = coord(0, rowCount - 1), idx = 0; a < max - 1; a++, idx++) {
-				const coeff = coefficients[a];
-				if (coeff.sign() <= 0) {
-					continue;
+			if (!isDualObjective) {
+				let enterCoeff: BigRat | undefined;
+				for (let a = objectiveStartIndex, idx = 0; a < max - 1; a++, idx++) {
+					const coeff = coefficients[a];
+					if (coeff.sign() <= 0) {
+						continue;
+					}
+					const varName = nonBasic[idx];
+					const cmp = enterCoeff && BigRat.compare(enterCoeff, coeff);
+
+					if (cmp == null || cmp === -1 || (cmp === 0 && varName > enterName)) {
+						enterCol = idx;
+						enterName = varName;
+						enterCoeff = coeff;
+					}
 				}
-				const varName = nonBasic[idx];
-				const cmp = enterCoeff && BigRat.compare(enterCoeff, coeff);
-				// == "Standard" rule ==
-				if (cmp == null || cmp === -1 || (cmp === 0 && varName > enterName)) {
-					enterCol = idx;
-					enterName = varName;
-					enterCoeff = coeff;
+				if (!enterCoeff) {
+					return false;
 				}
-				// == Bland's rule ==
-				// if (cmp == null || varName < enterName) {
-				// 	enterCol = idx;
-				// 	enterName = varName;
-				// 	enterCoeff = coeff;
-				// }
-				// == Take first possible pivot ==
-				// if (cmp == null) {
-				// 	enterCol = idx;
-				// 	enterName = varName;
-				// 	enterCoeff = coeff;
-				//	break;
-				// }
-			}
-			if (!enterCoeff) {
-				return false;
+			} else {
+				let primaryEnterCoeff: BigRat | undefined;
+				let secondaryEnterCoeff: BigRat | undefined;
+				for (
+					let a = objectiveStartIndex, b = objectiveStartIndex + pitch, idx = 0;
+					b < max - 1;
+					a++, b++, idx++
+				) {
+					const primaryCoeff = coefficients[a];
+					const secondaryCoeff = coefficients[b];
+					const primarySign = primaryCoeff.sign();
+					const secondarySign = secondaryCoeff.sign();
+					if (primarySign < 0 || (primarySign === 0 && secondarySign <= 0)) {
+						continue;
+					}
+					const varName = nonBasic[idx];
+					const cmpPrim = primaryEnterCoeff && BigRat.compare(primaryEnterCoeff, primaryCoeff);
+					const cmpSec = secondaryEnterCoeff && BigRat.compare(secondaryEnterCoeff, secondaryCoeff);
+
+					if (
+						cmpPrim == null ||
+						cmpSec == null ||
+						cmpPrim === -1 ||
+						(cmpPrim === 0 && cmpSec === -1) ||
+						(cmpPrim === 0 && cmpSec === 0 && varName > enterName)
+					) {
+						enterCol = idx;
+						enterName = varName;
+						primaryEnterCoeff = primaryCoeff;
+						secondaryEnterCoeff = secondaryCoeff;
+					}
+				}
+				if (!primaryEnterCoeff) {
+					return false;
+				}
 			}
 		} else {
 			enterCol = pitch - 2;
@@ -338,7 +387,11 @@ export class Dictionary {
 		let exitName = -1;
 		if (!special) {
 			let exitCoeff: BigRat | undefined;
-			for (let a = coord(enterCol, 0), b = pitch - 1, idx = 0; a < max - pitch; a += pitch, b += pitch, idx++) {
+			for (
+				let a = coord(enterCol, 0), b = pitch - 1, idx = 0;
+				a < objectiveStartIndex;
+				a += pitch, b += pitch, idx++
+			) {
 				const den = coefficients[a];
 				if (den.sign() >= 0) {
 					continue;
@@ -359,9 +412,8 @@ export class Dictionary {
 				return false;
 			}
 		} else {
-			const stop = max - pitch;
 			let exitCoeff: BigRat | undefined;
-			for (let a = pitch - 1, idx = 0; a < stop; a += pitch, idx++) {
+			for (let a = pitch - 1, idx = 0; a < objectiveStartIndex; a += pitch, idx++) {
 				const coeff = coefficients[a];
 				const varName = basic[idx];
 				if (coeff.sign() > 0) {
@@ -453,38 +505,48 @@ export function solveStandardFormMutate(dict: Dictionary) {
 	return dict;
 }
 
-/*
 // Basic junk display widget for a Dictionary
+/*
 function MatrixDisplay() {
 	const [s, cs] = useState("");
-  let otherDom = null;
-  try {
-  	const [rows, cols, coeffs] = s.split(";").map(z => z.split(","));
-    const nodes = [];
-    const idx = (i, j, v) => nodes[j * (cols.length +  2) + i] = <div>{v}</div>;
-    
-    for (let j = 0; j < rows.length; j++) {
-    idx(0, j, <strong>x{rows[j]}</strong>);
-    }
-    idx(0, rows.length, "wp=");
-    let c = 0;
-    for (let j = 0; j <= rows.length; j++) {
-      for (let i = 1; i <= cols.length + 1; i++) {
-	    	let name = i > 1 ? <b> x{cols[i - 2]}</b> : null;
-        idx(i, j, <React.Fragment>{coeffs[c++]}{name}</React.Fragment>);
-      }
-    }
-    otherDom = <div style={{ display: "grid", gridTemplate: `1fr / ${"1fr ".repeat(cols.length + 2)}` }}>{nodes}</div>;
-  } catch (e) {
-  	otherDom = e && e.message;
-  }
-  return (
-  	<div>
-  	  <input type="text" value={s} onChange={ev => cs(ev.currentTarget.value)} />
-      <div>
-        {otherDom}
-      </div>
-  	</div>
-  );
+	let otherDom = null;
+	try {
+		const [rows, cols, coeffs] = s.split(";").map((z) => z.split(","));
+		const nodes = [];
+		const idx = (i, j, v) => (nodes[j * (cols.length + 2) + i] = <div>{v}</div>);
+
+		for (let j = 0; j < rows.length; j++) {
+			idx(0, j, <strong>x{rows[j]}</strong>);
+		}
+		idx(0, rows.length, "z1=");
+		if (coeffs.length > (cols.length + 1) * (rows.length + 1)) {
+			idx(0, rows.length + 1, "z2=");
+		}
+		let c = 0;
+		for (let j = 0; c < coeffs.length; j++) {
+			for (let i = 1; i <= cols.length + 1; i++) {
+				let name = i > 1 ? <b> x{cols[i - 2]}</b> : null;
+				idx(
+					i,
+					j,
+					<React.Fragment>
+						{coeffs[c++]}
+						{name}
+					</React.Fragment>
+				);
+			}
+		}
+		otherDom = (
+			<div style={{ display: "grid", gridTemplate: `1fr / ${"1fr ".repeat(cols.length + 2)}` }}>{nodes}</div>
+		);
+	} catch (e) {
+		otherDom = e && e.message;
+	}
+	return (
+		<div>
+			<input type="text" value={s} onChange={(ev) => cs(ev.currentTarget.value)} />
+			<div>{otherDom}</div>
+		</div>
+	);
 }
 */
