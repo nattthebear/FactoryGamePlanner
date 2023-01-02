@@ -8,7 +8,7 @@ describe("evaluate", () => {
 		if (!res.ok) {
 			assert.fail(`Not OK: ${res.message} [${res.offset}]`);
 		}
-		assert.equal(BigRat.eq(res.value, expected), true);
+		assert.equal(res.value.eq(expected), true);
 	}
 	function assertFailure(res: EvalResult, expectedLocation: number) {
 		if (res.ok) {

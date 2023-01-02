@@ -45,24 +45,7 @@ export class BigRat {
 	toRatioString() {
 		return `${this.p}:${this.q}`;
 	}
-	static eq(x: BigRat, y: BigRat) {
-		return x.p * y.q === x.q * y.p;
-	}
-	static gt(x: BigRat, y: BigRat) {
-		return x.p * y.q > x.q * y.p;
-	}
-	static lt(x: BigRat, y: BigRat) {
-		return x.p * y.q < x.q * y.p;
-	}
-	static gte(x: BigRat, y: BigRat) {
-		return x.p * y.q >= x.q * y.p;
-	}
-	static lte(x: BigRat, y: BigRat) {
-		return x.p * y.q <= x.q * y.p;
-	}
-	static neq(x: BigRat, y: BigRat) {
-		return x.p * y.q !== x.q * y.p;
-	}
+
 	static compare(x: BigRat, y: BigRat) {
 		const xa = x.p * y.q;
 		const ya = x.q * y.p;
@@ -74,18 +57,7 @@ export class BigRat {
 		}
 		return 0;
 	}
-	static add(x: BigRat, y: BigRat) {
-		return new BigRat(x.p * y.q + x.q * y.p, x.q * y.q);
-	}
-	static sub(x: BigRat, y: BigRat) {
-		return new BigRat(x.p * y.q - x.q * y.p, x.q * y.q);
-	}
-	static mul(x: BigRat, y: BigRat) {
-		return new BigRat(x.p * y.p, x.q * y.q);
-	}
-	static div(x: BigRat, y: BigRat) {
-		return new BigRat(x.p * y.q, x.q * y.p);
-	}
+
 	eq(y: BigRat) {
 		return this.p * y.q === this.q * y.p;
 	}
