@@ -66,8 +66,11 @@ function makeMapping<T>(x: T[], y: T[]) {
 }
 
 export class Dictionary {
+	/** names of the exiting variables, top to bottom. */
 	basic: number[];
+	/** names of the entering variables, left to right. */
 	nonBasic: number[];
+	/** All coefficients, left to right then top to bottom.  The last column contains constants, and the last row is the objective. */
 	coefficients: BigRat[];
 
 	private nCols: number;

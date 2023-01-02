@@ -39,7 +39,6 @@ export function Results() {
 	}
 
 	function renderNet() {
-		console.log(net);
 		const consumed = Array<preact.ComponentChild>();
 		const produced = Array<preact.ComponentChild>();
 		for (let [item, rate] of net.items) {
