@@ -12,8 +12,6 @@ export const abs = (value: bigint) => (value < 0n ? -value : value);
 
 const BIGRAT_REGEX = /^-?\d+(\.\d+)?$/;
 
-// Privates are public so that Draft<BigRat> and BigRat are compatible.
-// At runtime, BigRats will not be drafted as they're not immerable, so it only matters in types.
 export class BigRat {
 	readonly [immerable] = false;
 	private p: bigint;
