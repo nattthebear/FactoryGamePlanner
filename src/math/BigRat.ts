@@ -151,6 +151,19 @@ export class BigRat {
 		}
 		const xa = x.ps! * y.qs!;
 		const ya = x.qs! * y.ps!;
+		if (xa < MIN_SAFE_INTEGER || xa > MAX_SAFE_INTEGER || ya < MIN_SAFE_INTEGER || ya > MAX_SAFE_INTEGER) {
+			// TODO: Is this situation meaningful?  Assuming x and y are both in lowest terms, it seems like floats
+			// are good enough to get the right cmp value, even if some precision was lost.
+			const xa = (xpb ?? BigInt(x.ps!)) * (y.qb ?? BigInt(y.qs!));
+			const ya = (x.qb ?? BigInt(x.qs!)) * (ypb ?? BigInt(y.ps!));
+			if (xa < ya) {
+				return -1;
+			}
+			if (xa > ya) {
+				return 1;
+			}
+			return 0;
+		}
 		if (xa < ya) {
 			return -1;
 		}
@@ -170,6 +183,13 @@ export class BigRat {
 		}
 		const xa = this.ps! * y.qs!;
 		const ya = this.qs! * y.ps!;
+		if (xa < MIN_SAFE_INTEGER || xa > MAX_SAFE_INTEGER || ya < MIN_SAFE_INTEGER || ya > MAX_SAFE_INTEGER) {
+			// TODO: Is this situation meaningful?  Assuming x and y are both in lowest terms, it seems like floats
+			// are good enough to get the right cmp value, even if some precision was lost.
+			const xa = (xpb ?? BigInt(this.ps!)) * (y.qb ?? BigInt(y.qs!));
+			const ya = (this.qb ?? BigInt(this.qs!)) * (ypb ?? BigInt(y.ps!));
+			return xa === ya;
+		}
 		return xa === ya;
 	}
 	gt(y: BigRat) {
@@ -182,6 +202,13 @@ export class BigRat {
 		}
 		const xa = this.ps! * y.qs!;
 		const ya = this.qs! * y.ps!;
+		if (xa < MIN_SAFE_INTEGER || xa > MAX_SAFE_INTEGER || ya < MIN_SAFE_INTEGER || ya > MAX_SAFE_INTEGER) {
+			// TODO: Is this situation meaningful?  Assuming x and y are both in lowest terms, it seems like floats
+			// are good enough to get the right cmp value, even if some precision was lost.
+			const xa = (xpb ?? BigInt(this.ps!)) * (y.qb ?? BigInt(y.qs!));
+			const ya = (this.qb ?? BigInt(this.qs!)) * (ypb ?? BigInt(y.ps!));
+			return xa > ya;
+		}
 		return xa > ya;
 	}
 	lt(y: BigRat) {
@@ -194,6 +221,13 @@ export class BigRat {
 		}
 		const xa = this.ps! * y.qs!;
 		const ya = this.qs! * y.ps!;
+		if (xa < MIN_SAFE_INTEGER || xa > MAX_SAFE_INTEGER || ya < MIN_SAFE_INTEGER || ya > MAX_SAFE_INTEGER) {
+			// TODO: Is this situation meaningful?  Assuming x and y are both in lowest terms, it seems like floats
+			// are good enough to get the right cmp value, even if some precision was lost.
+			const xa = (xpb ?? BigInt(this.ps!)) * (y.qb ?? BigInt(y.qs!));
+			const ya = (this.qb ?? BigInt(this.qs!)) * (ypb ?? BigInt(y.ps!));
+			return xa < ya;
+		}
 		return xa < ya;
 	}
 	gte(y: BigRat) {
@@ -206,6 +240,13 @@ export class BigRat {
 		}
 		const xa = this.ps! * y.qs!;
 		const ya = this.qs! * y.ps!;
+		if (xa < MIN_SAFE_INTEGER || xa > MAX_SAFE_INTEGER || ya < MIN_SAFE_INTEGER || ya > MAX_SAFE_INTEGER) {
+			// TODO: Is this situation meaningful?  Assuming x and y are both in lowest terms, it seems like floats
+			// are good enough to get the right cmp value, even if some precision was lost.
+			const xa = (xpb ?? BigInt(this.ps!)) * (y.qb ?? BigInt(y.qs!));
+			const ya = (this.qb ?? BigInt(this.qs!)) * (ypb ?? BigInt(y.ps!));
+			return xa >= ya;
+		}
 		return xa >= ya;
 	}
 	lte(y: BigRat) {
@@ -218,6 +259,13 @@ export class BigRat {
 		}
 		const xa = this.ps! * y.qs!;
 		const ya = this.qs! * y.ps!;
+		if (xa < MIN_SAFE_INTEGER || xa > MAX_SAFE_INTEGER || ya < MIN_SAFE_INTEGER || ya > MAX_SAFE_INTEGER) {
+			// TODO: Is this situation meaningful?  Assuming x and y are both in lowest terms, it seems like floats
+			// are good enough to get the right cmp value, even if some precision was lost.
+			const xa = (xpb ?? BigInt(this.ps!)) * (y.qb ?? BigInt(y.qs!));
+			const ya = (this.qb ?? BigInt(this.qs!)) * (ypb ?? BigInt(y.ps!));
+			return xa <= ya;
+		}
 		return xa <= ya;
 	}
 	neq(y: BigRat) {
@@ -230,6 +278,13 @@ export class BigRat {
 		}
 		const xa = this.ps! * y.qs!;
 		const ya = this.qs! * y.ps!;
+		if (xa < MIN_SAFE_INTEGER || xa > MAX_SAFE_INTEGER || ya < MIN_SAFE_INTEGER || ya > MAX_SAFE_INTEGER) {
+			// TODO: Is this situation meaningful?  Assuming x and y are both in lowest terms, it seems like floats
+			// are good enough to get the right cmp value, even if some precision was lost.
+			const xa = (xpb ?? BigInt(this.ps!)) * (y.qb ?? BigInt(y.qs!));
+			const ya = (this.qb ?? BigInt(this.qs!)) * (ypb ?? BigInt(y.ps!));
+			return xa !== ya;
+		}
 		return xa !== ya;
 	}
 
@@ -255,9 +310,19 @@ export class BigRat {
 			const b = this.qs!;
 			const c = y.ps!;
 			const d = y.qs!;
-			const p = a * d + b * c;
+			const p1 = a * d;
+			const p2 = b * c;
+			const p = p1 + p2;
 			const q = b * d;
-			if (q <= MAX_SAFE_INTEGER && p >= MIN_SAFE_INTEGER && p <= MAX_SAFE_INTEGER) {
+			if (
+				q <= MAX_SAFE_INTEGER &&
+				p >= MIN_SAFE_INTEGER &&
+				p <= MAX_SAFE_INTEGER &&
+				p1 >= MIN_SAFE_INTEGER &&
+				p1 <= MAX_SAFE_INTEGER &&
+				p2 >= MIN_SAFE_INTEGER &&
+				p2 <= MAX_SAFE_INTEGER
+			) {
 				return BigRat.fromIntegers(p, q);
 			} else {
 				const a = xpb ?? BigInt(this.ps!);
@@ -286,9 +351,19 @@ export class BigRat {
 			const b = this.qs!;
 			const c = y.ps!;
 			const d = y.qs!;
-			const p = a * d - b * c;
+			const p1 = a * d;
+			const p2 = b * c;
+			const p = p1 - p2;
 			const q = b * d;
-			if (q <= MAX_SAFE_INTEGER && p >= MIN_SAFE_INTEGER && p <= MAX_SAFE_INTEGER) {
+			if (
+				q <= MAX_SAFE_INTEGER &&
+				p >= MIN_SAFE_INTEGER &&
+				p <= MAX_SAFE_INTEGER &&
+				p1 >= MIN_SAFE_INTEGER &&
+				p1 <= MAX_SAFE_INTEGER &&
+				p2 >= MIN_SAFE_INTEGER &&
+				p2 <= MAX_SAFE_INTEGER
+			) {
 				return BigRat.fromIntegers(p, q);
 			} else {
 				const a = xpb ?? BigInt(this.ps!);
@@ -423,6 +498,30 @@ export class BigRat {
 			return ret;
 		} else {
 			return this;
+		}
+	}
+	inv() {
+		let { pb } = this;
+		if (pb != null) {
+			let { qb } = this;
+			if (pb < 0n) {
+				pb = -pb;
+				qb = -qb!;
+			}
+			const ret = new BigRat();
+			ret.pb = qb;
+			ret.qb = pb;
+			return ret;
+		} else {
+			let { ps, qs } = this;
+			if (ps! < 0) {
+				ps = -ps!;
+				qs = -qs!;
+			}
+			const ret = new BigRat();
+			ret.ps = qs;
+			ret.qs = ps;
+			return ret;
 		}
 	}
 	sign() {
