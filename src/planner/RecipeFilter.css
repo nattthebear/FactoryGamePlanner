@@ -1,0 +1,21 @@
+.recipe-filter {
+	display: flex;
+	flex-direction: column;
+
+	& input[type="text"] {
+		width: 100%;
+	}
+
+	& .scrollable {
+		flex: 1 0 0;
+		overflow-y: scroll;
+
+		background-color: #f8f8ff;
+	}
+
+	& .entry {
+		& input {
+			margin-right: 5px;
+		}
+	}
+}

@@ -1,7 +1,4 @@
 .rate-setter {
 	& .pane {
-		& .title {
-			font-size: 24px;
-		}
 	}
 }

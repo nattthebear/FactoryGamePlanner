@@ -3,6 +3,8 @@ import { Recipe } from "../../data/types";
 import { escapeTextForRegExp, highlightText } from "../util";
 import { AlternateRecipes, BasicRecipes, update, useSelector } from "./store/Store";
 
+import "./RecipeFilter.css";
+
 const toggleBasic = (index: number) =>
 	update((draft) => {
 		draft.basicRecipes[index] = !draft.basicRecipes[index];
@@ -24,7 +26,8 @@ const makeRecipeFilter = (
 	useActive: () => boolean[],
 	list: Recipe[],
 	toggle: (index: number) => void,
-	setAll: (newValue: boolean) => void
+	setAll: (newValue: boolean) => void,
+	titleText: string
 ) =>
 	function RecipeFilter() {
 		const active = useActive();
@@ -36,33 +39,40 @@ const makeRecipeFilter = (
 
 		return (
 			<div class="recipe-filter">
+				<div class="title">{titleText}</div>
 				<input
 					type="text"
 					value={search}
 					placeholder="Filter recipes"
 					onInput={(ev) => changeSearch(ev.currentTarget.value)}
 				/>
-				<div>
-					<input
-						type="checkbox"
-						checked={someChecked}
-						// @ts-ignore https://github.com/preactjs/preact/issues/3836
-						indeterminate={someChecked && someUnchecked}
-						onClick={() => {
-							const newValue = someUnchecked && !someChecked;
-							setAll(newValue);
-						}}
-					/>
-					Select all
+				<div class="entry">
+					<label>
+						<input
+							type="checkbox"
+							checked={someChecked}
+							// @ts-ignore https://github.com/preactjs/preact/issues/3836
+							indeterminate={someChecked && someUnchecked}
+							onClick={() => {
+								const newValue = someUnchecked && !someChecked;
+								setAll(newValue);
+							}}
+						/>
+						Select all
+					</label>
 				</div>
-				{list.map((recipe, index) =>
-					!regex || regex.test(recipe.DisplayName) ? (
-						<div class="entry">
-							<input type="checkbox" checked={active[index]} onChange={() => toggle(index)} />
-							{regex ? highlightText(recipe.DisplayName, regex) : recipe.DisplayName}
-						</div>
-					) : null
-				)}
+				<div class="scrollable">
+					{list.map((recipe, index) =>
+						!regex || regex.test(recipe.DisplayName) ? (
+							<div class="entry">
+								<label>
+									<input type="checkbox" checked={active[index]} onChange={() => toggle(index)} />
+									{regex ? highlightText(recipe.DisplayName, regex) : recipe.DisplayName}
+								</label>
+							</div>
+						) : null
+					)}
+				</div>
 			</div>
 		);
 	};
@@ -71,11 +81,13 @@ export const RecipeFilterBasic = makeRecipeFilter(
 	() => useSelector((state) => state.basicRecipes),
 	BasicRecipes,
 	toggleBasic,
-	setAllBasic
+	setAllBasic,
+	"Basic Recipes"
 );
 export const RecipeFilterAlternate = makeRecipeFilter(
 	() => useSelector((state) => state.alternateRecipes),
 	AlternateRecipes,
 	toggleAlternate,
-	setAllAlternate
+	setAllAlternate,
+	"Alternate Recipes"
 );
