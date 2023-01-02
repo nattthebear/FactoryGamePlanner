@@ -45,7 +45,7 @@ function foobazJs(seed: number, rounds: number) {
 (async () => {
 	const url = new URL("../rmath/target/wasm32-unknown-unknown/release/rmath.wasm", import.meta.url);
 	const { instance, module } = await WebAssembly.instantiateStreaming(fetch(url), {});
-	const { foobaz } = instance.exports;
+	const { test_num_bigint, test_ibig, test_num_ratio_i128 } = instance.exports;
 
 	window.testFn = function testFn(seed: number, rounds: number) {
 		let ms = performance.now();
@@ -55,8 +55,14 @@ function foobazJs(seed: number, rounds: number) {
 			console.log(`Marked time: ${delta}ms`);
 			ms = nextMs;
 		}
-		console.log("Wasm:");
-		console.log((foobaz as any)(seed, rounds));
+		console.log("Wasm (BigInt)");
+		console.log((test_num_bigint as any)(seed, rounds));
+		mark();
+		console.log("Wasm (IBig)");
+		console.log((test_ibig as any)(seed, rounds));
+		mark();
+		console.log("Wasm (Ratio<i128>)");
+		console.log((test_num_ratio_i128 as any)(seed, rounds));
 		mark();
 		console.log("JS:");
 		console.log(foobazJs(seed, rounds));
