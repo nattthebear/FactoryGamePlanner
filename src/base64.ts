@@ -119,7 +119,7 @@ export function readBigRat(r: RStream) {
 	if (neg) {
 		p = -p;
 	}
-	return new BigRat(p, q);
+	return BigRat.fromBigInts(p, q);
 }
 
 /** Makes a compressing map to store a set of ids with the minimum number of bits */

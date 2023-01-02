@@ -8,8 +8,8 @@ export const Recipes: Recipe[] = [
 	{
 		ClassName: {{ClassName}},
 		DisplayName: {{mDisplayName}},
-		Inputs: [{{#Inputs}}{ Item: Items[{{Item}}], Quantity: new BigRat({{{QuantityP}}}n, {{{QuantityQ}}}n) }, {{/Inputs}}],
-		Outputs: [{{#Outputs}}{ Item: Items[{{Item}}], Quantity: new BigRat({{{QuantityP}}}n, {{{QuantityQ}}}n) }, {{/Outputs}}],
+		Inputs: [{{#Inputs}}{ Item: Items[{{Item}}], Quantity: BigRat.fromIntegers({{{QuantityP}}}, {{{QuantityQ}}}) }, {{/Inputs}}],
+		Outputs: [{{#Outputs}}{ Item: Items[{{Item}}], Quantity: BigRat.fromIntegers({{{QuantityP}}}, {{{QuantityQ}}}) }, {{/Outputs}}],
 		Duration: {{{DurationExpr}}},
 		Building: Buildings[{{Building}}],
 		Alternate: {{Alternate}},
