@@ -25,6 +25,12 @@ const tabs: { type: TabType; name: string; content: preact.ComponentChild }[] = 
 	},
 ];
 
+const resultsArea = (
+	<div class="results-area">
+		<Results />
+	</div>
+);
+
 export function FactoryPlanner() {
 	const [activeTab, changeTab] = useState<TabType>("constraints");
 
@@ -45,9 +51,7 @@ export function FactoryPlanner() {
 				</div>
 				<div class="tab-content">{tabs.find((tab) => tab.type === activeTab)!.content}</div>
 			</div>
-			<div class="results-area">
-				<Results />
-			</div>
+			{resultsArea}
 		</div>
 	);
 }

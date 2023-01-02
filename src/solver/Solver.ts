@@ -331,6 +331,9 @@ function buildSolution(problem: Problem, dictionary: Dictionary): Solution {
 }
 
 export function solve(problem: Problem): Solution | null {
+	if (problem.availableRecipes.size === 0) {
+		return null;
+	}
 	const dictionary = setupDictionary(problem);
 	const outputDict = solveStandardFormMutate(dictionary);
 	if (!outputDict) {
