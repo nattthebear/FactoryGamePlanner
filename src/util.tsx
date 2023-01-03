@@ -43,6 +43,27 @@ export function escapeTextForRegExp(s: string) {
 	return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+const SEARCH_ALL_REGEX = /.?/;
+const HIGHLIGHT_NONE_REGEX = /(?!)/g;
+
+/** Return a pair of regexes:  One to search for the term, and one to highlight search matches. */
+export function makeSearchRegexes(searchTerm: string) {
+	searchTerm = searchTerm.trim();
+	if (!searchTerm) {
+		return {
+			testRegex: SEARCH_ALL_REGEX,
+			highlightRegex: HIGHLIGHT_NONE_REGEX,
+		};
+	}
+
+	const escaped = escapeTextForRegExp(searchTerm);
+
+	return {
+		testRegex: new RegExp(escaped, "i"),
+		highlightRegex: new RegExp(escaped, "ig"),
+	};
+}
+
 /** Highlights portions of text that match the given regex with <strong> */
 export function highlightText(text: string, regex: RegExp) {
 	const textNodes: preact.ComponentChild[] = [];

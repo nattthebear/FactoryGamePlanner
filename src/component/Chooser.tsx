@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import scrollIntoView from "scroll-into-view-if-needed";
 import { useStateWithPrev } from "../hook/useStateWithPrev";
-import { escapeTextForRegExp, highlightText } from "../util";
+import { highlightText, makeSearchRegexes } from "../util";
 import "./Chooser.css";
 
 export interface ChooserItem {
@@ -36,7 +36,7 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue, onTe
 		}
 	}, [tentative, oldTentative]);
 
-	const regex = search ? new RegExp(escapeTextForRegExp(search), "ig") : null;
+	const { testRegex, highlightRegex } = makeSearchRegexes(search);
 
 	function renderItem(item: T) {
 		const { adornment, name } = item;
@@ -44,12 +44,12 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue, onTe
 		return (
 			<div class={className} onClick={() => changeValue(item)}>
 				<div>{adornment}</div>
-				<div class="text">{regex ? highlightText(name, regex) : name}</div>
+				<div class="text">{highlightText(name, highlightRegex)}</div>
 			</div>
 		);
 	}
 
-	const relevantItems = items.filter((item) => !regex || ((regex.lastIndex = 0), regex.test(item.name)));
+	const relevantItems = items.filter((item) => testRegex.test(item.name));
 	const exactMatch = relevantItems.find((item) => item.name.length === search.length);
 
 	return (
@@ -73,8 +73,8 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue, onTe
 					onInput={(ev) => {
 						const newSearch = ev.currentTarget.value;
 						changeSearch(newSearch);
-						const newRegex = newSearch ? new RegExp(escapeTextForRegExp(newSearch), "ig") : null;
-						if (tentative && newRegex && !newRegex.test(newSearch)) {
+						const { testRegex: newTestRegex } = makeSearchRegexes(newSearch);
+						if (tentative && !newTestRegex.test(newSearch)) {
 							changeTentative(null);
 							onTentative?.(null);
 						}

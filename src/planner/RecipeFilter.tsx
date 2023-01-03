@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { Recipe } from "../../data/types";
-import { escapeTextForRegExp, highlightText } from "../util";
+import { highlightText, makeSearchRegexes } from "../util";
 import { AlternateRecipes, BasicRecipes, update, useSelector } from "./store/Store";
 
 import "./RecipeFilter.css";
@@ -33,7 +33,7 @@ const makeRecipeFilter = (
 		const active = useActive();
 		const [search, changeSearch] = useState("");
 
-		const regex = search ? new RegExp(escapeTextForRegExp(search), "ig") : null;
+		const { testRegex, highlightRegex } = makeSearchRegexes(search);
 		const someChecked = active.some((b) => b);
 		const someUnchecked = active.some((b) => !b);
 
@@ -62,15 +62,16 @@ const makeRecipeFilter = (
 					</label>
 				</div>
 				<div class="scrollable">
-					{list.map((recipe, index) =>
-						!regex || regex.test(recipe.DisplayName) ? (
-							<div class="entry">
-								<label>
-									<input type="checkbox" checked={active[index]} onChange={() => toggle(index)} />
-									{regex ? highlightText(recipe.DisplayName, regex) : recipe.DisplayName}
-								</label>
-							</div>
-						) : null
+					{list.map(
+						(recipe, index) =>
+							testRegex.test(recipe.DisplayName) && (
+								<div class="entry">
+									<label>
+										<input type="checkbox" checked={active[index]} onChange={() => toggle(index)} />
+										{highlightText(recipe.DisplayName, highlightRegex)}
+									</label>
+								</div>
+							)
 					)}
 				</div>
 			</div>
