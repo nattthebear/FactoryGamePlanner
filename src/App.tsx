@@ -5,6 +5,7 @@ import { getActiveTabFromSearch, TAB_EDITOR, TAB_PLANNER } from "./base64";
 import { useState } from "preact/hooks";
 import { AppActions } from "./AppActions";
 import { Planner } from "./planner";
+import { installTooltip } from "./component/Tooltip";
 
 import "./App.css";
 
@@ -20,4 +21,5 @@ function App() {
 	);
 }
 
+installTooltip();
 render(<App />, document.getElementById("root")!);
