@@ -77,8 +77,7 @@ const makeRateList = (
 							}}
 						>
 							{d.rate
-								? d.rate.toNumberApprox().toFixed(2).toString() +
-								  (d.item === FakePower ? " MW" : "/min")
+								? d.rate.toFixed(2).toString() + (d.item === FakePower ? " MW" : "/min")
 								: unlimitedText}
 						</button>
 						<button

@@ -37,9 +37,9 @@ export function Producer({ id }: { id: NodeId }) {
 
 	const rateText =
 		producer instanceof ProductionBuilding ? (
-			<text class="multiplier">{producer.rate.toNumberApprox().toFixed(2)}x</text>
+			<text class="multiplier">{producer.rate.toFixed(2)}x</text>
 		) : (
-			<text class="rate">{producer.rate.toNumberApprox().toFixed(2)}/min</text>
+			<text class="rate">{producer.rate.toFixed(2)}/min</text>
 		);
 
 	return (

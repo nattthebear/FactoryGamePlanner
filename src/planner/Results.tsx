@@ -1,7 +1,7 @@
 import { connectSolution } from "../editor/store/ConnectSolution";
 import { update as updateEditor } from "../editor/store/Store";
 import { generateNetResults } from "../solver/GenerateNetResults";
-import { solve, stringifyProblem } from "../solver/Solver";
+import { solve } from "../solver/Solver";
 import { makeProblem, useSelector } from "./store/Store";
 import { Recipe } from "../../data/types";
 import { FakePower } from "../../data/power";
@@ -20,7 +20,6 @@ export function Results() {
 
 	const problem = makeProblem(state);
 	const solution = solve(problem);
-	console.log(stringifyProblem(problem));
 
 	if (!solution) {
 		return <div>No solution found. Check your inputs and recipes.</div>;
@@ -36,7 +35,7 @@ export function Results() {
 			if (rate.sign() > 0) {
 				nodes.push(
 					<tr>
-						<th data-tooltip={rate.toRatioString()}>{rate.toNumberApprox().toFixed(2)}x</th>
+						<th data-tooltip={rate.toRatioString()}>{rate.toFixed(2)}x</th>
 						<td>
 							<img class="icon" src={imageForRecipe(recipe)} />
 						</td>
@@ -68,7 +67,7 @@ export function Results() {
 
 			dest.push(
 				<tr>
-					<th data-tooltip={rate.toRatioString()}>{rate.toNumberApprox().toFixed(2)}/min</th>
+					<th data-tooltip={rate.toRatioString()}>{rate.toFixed(2)}/min</th>
 					<td>
 						<img class="icon" src={item.Icon} />
 					</td>
@@ -96,7 +95,7 @@ export function Results() {
 		const rate = sign < 0 ? net.power.neg() : net.power;
 		return (
 			<div>
-				Power: <strong data-tooltip={rate.toRatioString()}>{rate.toNumberApprox().toFixed(2)} MW</strong> {text}
+				Power: <strong data-tooltip={rate.toRatioString()}>{rate.toFixed(2)} MW</strong> {text}
 			</div>
 		);
 	}
@@ -108,10 +107,7 @@ export function Results() {
 					<div class="pane">
 						<div class="title">Overview</div>
 						<div>
-							WP:{" "}
-							<strong data-tooltip={solution.wp.toRatioString()}>
-								{solution.wp.toNumberApprox().toFixed(2)}
-							</strong>
+							WP: <strong data-tooltip={solution.wp.toRatioString()}>{solution.wp.toFixed(2)}</strong>
 						</div>
 						{renderPower()}
 					</div>

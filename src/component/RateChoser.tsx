@@ -32,7 +32,7 @@ function evaluateAndVerify(text: string) {
 		return {
 			value: null,
 			error: true,
-			message: `${res.value.toNumberApprox().toFixed(1)} is negative.`,
+			message: `${res.value.toFixed(1)} is negative.`,
 			offset: null,
 		};
 	}
@@ -99,7 +99,7 @@ function BuildingRateChooser({
 	const renderFlow = (flow: Flow) => (
 		<div class="flow">
 			<img src={flow.item.Icon} />
-			<span>{flow.rate.toNumberApprox().toFixed(2)}/min</span>
+			<span>{flow.rate.toFixed(2)}/min</span>
 		</div>
 	);
 
@@ -116,7 +116,7 @@ function BuildingRateChooser({
 			<div class="display">
 				<div class="flows">{newProducer.inputFlows().map(renderFlow)}</div>
 				<div class="rate">
-					<span class="num">{value.toNumberApprox().toFixed(2)}x</span>
+					<span class="num">{value.toFixed(2)}x</span>
 					<span class="ratio">{value.toRatioString()}</span>
 				</div>
 				<div class="flows">{newProducer.outputFlows().map(renderFlow)}</div>
@@ -157,7 +157,7 @@ function SourceSinkRateChooser({
 			<div class="display">
 				{renderFlows(newProducer.inputFlows())}
 				<div class="rate">
-					<div class="num">{value.toNumberApprox().toFixed(2)}/min</div>
+					<div class="num">{value.toFixed(2)}/min</div>
 					<div class="ratio">{value.toRatioString()}</div>
 				</div>
 				{renderFlows(newProducer.outputFlows())}
@@ -200,7 +200,7 @@ function ConstraintRateChooser({
 			return isOutput ? "Maximize" : "Unlimited";
 		}
 		const suffix = item === FakePower ? " MW" : "/min";
-		return value.toNumberApprox().toFixed(2) + suffix;
+		return value.toFixed(2) + suffix;
 	}
 
 	return (

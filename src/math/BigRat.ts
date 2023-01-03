@@ -131,6 +131,10 @@ export class BigRat {
 		return this.pb != null ? Number(this.pb) / Number(this.qb!) : this.ps! / this.qs!;
 	}
 
+	toFixed(fractionDigits?: number) {
+		return this.toNumberApprox().toFixed(fractionDigits);
+	}
+
 	toRatioString() {
 		return `${this.pb ?? this.ps}:${this.qb ?? this.qs}`;
 	}

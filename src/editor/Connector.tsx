@@ -45,7 +45,7 @@ export function Connector({ id }: { id: NodeId }) {
 				}
 			/>
 			<text class="connector-text" x={(op.x + ip.x) / 2} y={(op.y + ip.y) / 2}>
-				{connector.rate.toNumberApprox().toFixed(2)}/min
+				{connector.rate.toFixed(2)}/min
 			</text>
 		</>
 	);

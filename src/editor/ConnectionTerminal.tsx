@@ -83,7 +83,7 @@ export function ConnectionTerminal({
 			{cmp !== 0 && (
 				<text>
 					{cmp > 0 && "+"}
-					{diff.toNumberApprox().toFixed(0)}/min
+					{diff.toFixed(0)}/min
 				</text>
 			)}
 		</g>
