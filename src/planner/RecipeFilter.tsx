@@ -47,7 +47,7 @@ const makeRecipeFilter = (
 					onInput={(ev) => changeSearch(ev.currentTarget.value)}
 				/>
 				<div class="entry">
-					<label>
+					<label data-has-checkbox>
 						<input
 							type="checkbox"
 							checked={someChecked}
@@ -66,7 +66,7 @@ const makeRecipeFilter = (
 						(recipe, index) =>
 							testRegex.test(recipe.DisplayName) && (
 								<div class="entry">
-									<label>
+									<label data-has-checkbox>
 										<input type="checkbox" checked={active[index]} onChange={() => toggle(index)} />
 										{highlightText(recipe.DisplayName, highlightRegex)}
 									</label>

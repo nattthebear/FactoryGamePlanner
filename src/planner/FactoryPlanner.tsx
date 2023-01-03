@@ -39,17 +39,21 @@ export function FactoryPlanner() {
 			<div class="tabs-holder">
 				<div class="tabs">
 					{tabs.map(({ type, name }) => (
-						<div
-							class={type === activeTab ? "tab active" : "tab"}
+						<button
+							class="tab"
+							role="tab"
+							aria-selected={type === activeTab}
 							onClick={() => {
 								changeTab(type);
 							}}
 						>
 							{name}
-						</div>
+						</button>
 					))}
 				</div>
-				<div class="tab-content">{tabs.find((tab) => tab.type === activeTab)!.content}</div>
+				<div class="tab-content" role="tabpanel">
+					{tabs.find((tab) => tab.type === activeTab)!.content}
+				</div>
 			</div>
 			{resultsArea}
 		</div>

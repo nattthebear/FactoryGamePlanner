@@ -16,9 +16,16 @@
 
 			& .tab {
 				flex: 1 0 0;
-				background-color: #fff;
-				margin: 4px 4px 0 4px;
+				background-color: #ddd;
+				border: 0;
+				margin: 0 4px;
 				padding: 2px;
+				border-top-left-radius: 2px;
+				border-top-right-radius: 2px;
+
+				&[aria-selected="true"] {
+					background-color: #fff;
+				}
 			}
 		}
 

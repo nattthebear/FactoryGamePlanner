@@ -1,3 +1,13 @@
 body {
 	overflow: hidden;
 }
+
+button,
+input[type="checkbox"],
+label[data-has-checkbox] {
+	cursor: pointer;
+
+	&:disabled {
+		cursor: not-allowed;
+	}
+}
