@@ -3,6 +3,17 @@
 	height: 24px;
 }
 
+.recipe-chooser-image {
+	display: flex;
+
+	.arrow {
+		display: inline-block;
+		font-size: 20px;
+		height: 24px;
+		line-height: 24px;
+	}
+}
+
 .recipe-chooser-divider {
 	height: 10px;
 }

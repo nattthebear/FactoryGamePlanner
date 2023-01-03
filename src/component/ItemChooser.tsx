@@ -6,7 +6,6 @@ import { Chooser } from "./Chooser";
 import { prompt } from "../component/Prompt";
 import { BigRat } from "../math/BigRat";
 
-import SchematicIcon_Factory from "url:../../data/generated/images/SchematicIcon_Factory.png";
 import "./ItemChooser.css";
 import { FakePower, ItemsWithFakePower } from "../../data/power";
 
@@ -35,7 +34,7 @@ const formatRecipe = (recipe: Recipe) => ({
 	adornment: (
 		<div class="recipe-chooser-image">
 			{recipe.Inputs.map((flow) => itemImage(flow.Item))}
-			<span>→</span>
+			<span class="arrow">🡆</span>
 			{recipe.Outputs.map((flow) => itemImage(flow.Item))}
 		</div>
 	),

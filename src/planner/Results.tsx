@@ -1,14 +1,26 @@
 import { connectSolution } from "../editor/store/ConnectSolution";
 import { update as updateEditor } from "../editor/store/Store";
 import { generateNetResults } from "../solver/GenerateNetResults";
-import { solve } from "../solver/Solver";
+import { solve, stringifyProblem } from "../solver/Solver";
 import { makeProblem, useSelector } from "./store/Store";
+import { Recipe } from "../../data/types";
+import { FakePower } from "../../data/power";
+
+import "./Results.css";
+
+function imageForRecipe(recipe: Recipe) {
+	if (recipe.Building.PowerConsumption.sign() < 0) {
+		return FakePower.Icon;
+	}
+	return recipe.Outputs[0].Item.Icon;
+}
 
 export function Results() {
 	const state = useSelector((s) => s);
 
 	const problem = makeProblem(state);
 	const solution = solve(problem);
+	console.log(stringifyProblem(problem));
 
 	if (!solution) {
 		return <div>No solution found. Check your inputs and recipes.</div>;
@@ -23,17 +35,20 @@ export function Results() {
 			let rate = solution!.recipes[index++];
 			if (rate.sign() > 0) {
 				nodes.push(
-					<div>
-						<strong>{rate.toNumberApprox().toFixed(2)}x</strong> {recipe.DisplayName}{" "}
-						<em>{rate.toRatioString()}</em>
-					</div>
+					<tr>
+						<th data-tooltip={rate.toRatioString()}>{rate.toNumberApprox().toFixed(2)}x</th>
+						<td>
+							<img class="icon" src={imageForRecipe(recipe)} />
+						</td>
+						<td>{recipe.DisplayName}</td>
+					</tr>
 				);
 			}
 		}
 		return (
 			<div class="pane">
 				<div class="title">Recipes used</div>
-				{nodes}
+				<table>{nodes}</table>
 			</div>
 		);
 	}
@@ -52,21 +67,24 @@ export function Results() {
 			}
 
 			dest.push(
-				<div>
-					<strong>{rate.toNumberApprox().toFixed(2)}/min</strong> {item.DisplayName}{" "}
-					<em>{rate.toRatioString()}</em>
-				</div>
+				<tr>
+					<th data-tooltip={rate.toRatioString()}>{rate.toNumberApprox().toFixed(2)}/min</th>
+					<td>
+						<img class="icon" src={item.Icon} />
+					</td>
+					<td>{item.DisplayName}</td>
+				</tr>
 			);
 		}
 		return (
 			<>
 				<div class="pane">
 					<div class="title">Items produced</div>
-					{produced}
+					<table>{produced}</table>
 				</div>
 				<div class="pane">
 					<div class="title">Items used</div>
-					{consumed}
+					<table>{consumed}</table>
 				</div>
 			</>
 		);
@@ -78,32 +96,41 @@ export function Results() {
 		const rate = sign < 0 ? net.power.neg() : net.power;
 		return (
 			<div>
-				Power: {rate.toNumberApprox().toFixed(2)} MW {text}
+				Power: <strong data-tooltip={rate.toRatioString()}>{rate.toNumberApprox().toFixed(2)} MW</strong> {text}
 			</div>
 		);
 	}
 
 	return (
-		<div>
-			<div class="pane">
-				<div class="title">Overview</div>
-				<div>WP: {solution.wp.toRatioString()}</div>
-				{renderPower()}
-			</div>
+		<div class="results">
+			<div class="inner">
+				<div class="scroll">
+					<div class="pane">
+						<div class="title">Overview</div>
+						<div>
+							WP:{" "}
+							<strong data-tooltip={solution.wp.toRatioString()}>
+								{solution.wp.toNumberApprox().toFixed(2)}
+							</strong>
+						</div>
+						{renderPower()}
+					</div>
 
-			<br />
-			<button
-				onClick={() => {
-					updateEditor((draft) => {
-						Object.assign(draft, connectSolution(problem, solution));
-					});
-				}}
-			>
-				TEMP - Copy to Editor
-			</button>
-			<br />
-			{renderNet()}
-			{renderRecipes()}
+					<br />
+					<button
+						onClick={() => {
+							updateEditor((draft) => {
+								Object.assign(draft, connectSolution(problem, solution));
+							});
+						}}
+					>
+						TEMP - Copy to Editor
+					</button>
+					<br />
+					{renderNet()}
+					{renderRecipes()}
+				</div>
+			</div>
 		</div>
 	);
 }

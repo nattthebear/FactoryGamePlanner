@@ -43,7 +43,7 @@ export function Chooser<T extends ChooserItem>({ items, value, changeValue, onTe
 		const className = item === value ? "item selected" : item === tentative ? "item tentative" : "item";
 		return (
 			<div class={className} onClick={() => changeValue(item)}>
-				<div>{adornment}</div>
+				<div class="adornment">{adornment}</div>
 				<div class="text">{highlightText(name, highlightRegex)}</div>
 			</div>
 		);
