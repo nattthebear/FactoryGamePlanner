@@ -467,17 +467,30 @@ export class Dictionary {
 	}
 }
 
+/** Convenience wrapper around `solveStandardFormMutate` when yielding is not needed */
+export function solveStandardFormMutate(dict: Dictionary) {
+	const iter = solveStandardFormMutateCoop(dict);
+	while (true) {
+		const { done, value } = iter.next();
+		if (done) {
+			return value;
+		}
+	}
+}
+
 /**
  * Solves an LP, returning the dictionary or `null` if infeasible.
  * May or may not mutate the input dictionary, even if it returns `null`.
  * May or may not return the same dictionary as passed.  If it does, it will be mutated with the solution.
  */
-export function solveStandardFormMutate(dict: Dictionary) {
+export function* solveStandardFormMutateCoop(dict: Dictionary) {
 	if (dict.needsTwoPhase()) {
 		let phase1 = dict.makeSpecial();
+		yield;
 		if (!phase1.pivotMutate(true)) {
 			return null;
 		}
+		yield;
 		for (let loop = 0; ; loop++) {
 			if (loop === 200) {
 				console.error("Possible cycle detected");
@@ -486,12 +499,14 @@ export function solveStandardFormMutate(dict: Dictionary) {
 			if (!phase1.pivotMutate(false)) {
 				break;
 			}
+			yield;
 		}
 		if (phase1.coefficients[phase1.coefficients.length - 1].sign() < 0) {
 			return null;
 		}
 		// TODO: Could/should makeRegular be a mutation to save?
 		dict = phase1.makeRegular(dict);
+		yield;
 	}
 	for (let loop = 0; ; loop++) {
 		if (loop === 200) {
@@ -501,6 +516,7 @@ export function solveStandardFormMutate(dict: Dictionary) {
 		if (!dict.pivotMutate(false)) {
 			break;
 		}
+		yield;
 	}
 	return dict;
 }

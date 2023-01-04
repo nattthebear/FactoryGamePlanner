@@ -1,4 +1,5 @@
-import { useEffect, useReducer, useRef } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
+import { useForceUpdate } from "./hook/useForceUpdate";
 import { produce, Draft } from "./immer";
 
 export type BasicSelector<S, V> = (state: S) => V;
@@ -18,7 +19,7 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 			const equal = typeof selector === "function" ? Object.is : selector.equal;
 			const select = typeof selector === "function" ? selector : selector.select;
 
-			const updateSignal = useReducer<number, void>((i) => i + 1, 0)[1];
+			const forceUpdate = useForceUpdate();
 			const ref = useRef<{ select: BasicSelector<S, V>; selected: V }>();
 			const newSelected = select(state);
 			const oldSelected = ref.current?.selected;
@@ -34,16 +35,16 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 					} catch {
 						// This can be hit in various scenarios when removing components.
 						// https://react-redux.js.org/api/hooks#stale-props-and-zombie-children
-						updateSignal();
+						forceUpdate();
 						return;
 					}
 					if (!equal(newSelected, ref.current!.selected)) {
-						updateSignal();
+						forceUpdate();
 					}
 				}
 				subs.add(subscription);
 				return () => {
-					subs.delete(updateSignal);
+					subs.delete(forceUpdate);
 				};
 			}, []);
 			return selected;

@@ -1,12 +1,14 @@
 import { connectSolution } from "../editor/store/ConnectSolution";
 import { update as updateEditor } from "../editor/store/Store";
 import { generateNetResults } from "../solver/GenerateNetResults";
-import { solve } from "../solver/Solver";
-import { makeProblem, useSelector } from "./store/Store";
+import { solve, solveCoop } from "../solver/Solver";
+import { makeProblem, State, useSelector } from "./store/Store";
 import { Recipe } from "../../data/types";
 import { FakePower } from "../../data/power";
 
 import "./Results.css";
+import { makeAbortablePromise, useAbortableAsynchronousMemo } from "../hook/usePromise";
+import { Spinner } from "../component/Spinner";
 
 function imageForRecipe(recipe: Recipe) {
 	if (recipe.Building.PowerConsumption.sign() < 0) {
@@ -15,17 +17,21 @@ function imageForRecipe(recipe: Recipe) {
 	return recipe.Outputs[0].Item.Icon;
 }
 
-export function Results() {
-	const state = useSelector((s) => s);
-
+function* solveAndRender(state: State) {
 	const problem = makeProblem(state);
-	const solution = solve(problem);
-
+	yield;
+	const solution = yield* solveCoop(problem);
 	if (!solution) {
-		return <div>No solution found. Check your inputs and recipes.</div>;
+		return (
+			<div class="pane">
+				<div class="title">Overview</div>
+				<div>No solution found. Check your inputs and recipes.</div>
+			</div>
+		);
 	}
-
+	yield;
 	const net = generateNetResults(problem, solution);
+	yield;
 
 	function renderRecipes() {
 		const nodes = Array<preact.ComponentChild>(problem.availableRecipes.size);
@@ -101,31 +107,48 @@ export function Results() {
 	}
 
 	return (
+		<>
+			<div class="pane">
+				<div class="title">Overview</div>
+				<div>
+					WP: <strong data-tooltip={solution.wp.toRatioString()}>{solution.wp.toFixed(2)}</strong>
+				</div>
+				{renderPower()}
+			</div>
+
+			<br />
+			<button
+				onClick={() => {
+					updateEditor((draft) => {
+						Object.assign(draft, connectSolution(problem, solution));
+					});
+				}}
+			>
+				TEMP - Copy to Editor
+			</button>
+			<br />
+			{renderNet()}
+			{renderRecipes()}
+		</>
+	);
+}
+
+const solvePromisify = (state: State) => makeAbortablePromise(solveAndRender(state), 100);
+
+export function Results() {
+	const state = useSelector((s) => s);
+
+	const { value: content, stale } = useAbortableAsynchronousMemo(solvePromisify, [state]);
+
+	return (
 		<div class="results">
 			<div class="inner">
-				<div class="scroll">
-					<div class="pane">
-						<div class="title">Overview</div>
-						<div>
-							WP: <strong data-tooltip={solution.wp.toRatioString()}>{solution.wp.toFixed(2)}</strong>
-						</div>
-						{renderPower()}
+				{stale && (
+					<div class="loader">
+						<Spinner />
 					</div>
-
-					<br />
-					<button
-						onClick={() => {
-							updateEditor((draft) => {
-								Object.assign(draft, connectSolution(problem, solution));
-							});
-						}}
-					>
-						TEMP - Copy to Editor
-					</button>
-					<br />
-					{renderNet()}
-					{renderRecipes()}
-				</div>
+				)}
+				<div class="scroll">{content}</div>
 			</div>
 		</div>
 	);

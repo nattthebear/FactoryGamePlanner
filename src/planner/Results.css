@@ -8,6 +8,16 @@
 		height: 100%;
 		background-color: #fff;
 		padding: 2px;
+		position: relative;
+
+		.loader {
+			position: absolute;
+			inset: 0;
+			background-color: #fffa;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
 
 		.scroll {
 			width: 100%;

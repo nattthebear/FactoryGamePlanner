@@ -4,7 +4,7 @@ import { Item, Recipe } from "../../data/types";
 import { SIXTY } from "../editor/store/Common";
 import { produce } from "../immer";
 import { BigRat } from "../math/BigRat";
-import { Dictionary, solveStandardFormMutate } from "./Dictionary";
+import { Dictionary, solveStandardFormMutate, solveStandardFormMutateCoop } from "./Dictionary";
 import { calculateOverclockedPowerRatio, generateNetResults } from "./GenerateNetResults";
 
 const WP_RATES = new Map<Item, BigRat>(
@@ -336,6 +336,19 @@ export function solve(problem: Problem): Solution | null {
 	}
 	const dictionary = setupDictionary(problem);
 	const outputDict = solveStandardFormMutate(dictionary);
+	if (!outputDict) {
+		return null;
+	}
+	return buildSolution(problem, outputDict);
+}
+
+export function* solveCoop(problem: Problem) {
+	if (problem.availableRecipes.size === 0) {
+		return null;
+	}
+	const dictionary = setupDictionary(problem);
+	yield;
+	const outputDict = yield* solveStandardFormMutateCoop(dictionary);
 	if (!outputDict) {
 		return null;
 	}
