@@ -2,8 +2,16 @@ import { useState } from "preact/hooks";
 import { Recipe } from "../../data/types";
 import { highlightText, makeSearchRegexes } from "../util";
 import { AlternateRecipes, BasicRecipes, update, useSelector } from "./store/Store";
+import { FakePower } from "../../data/power";
 
 import "./RecipeFilter.css";
+
+function imageForRecipe(recipe: Recipe) {
+	if (recipe.Building.PowerConsumption.sign() < 0) {
+		return FakePower.Icon;
+	}
+	return recipe.Outputs[0].Item.Icon;
+}
 
 const toggleBasic = (index: number) =>
 	update((draft) => {
@@ -68,6 +76,7 @@ const makeRecipeFilter = (
 								<div class="entry">
 									<label data-has-checkbox>
 										<input type="checkbox" checked={active[index]} onChange={() => toggle(index)} />
+										<img class="icon" src={imageForRecipe(recipe)} />
 										{highlightText(recipe.DisplayName, highlightRegex)}
 									</label>
 								</div>

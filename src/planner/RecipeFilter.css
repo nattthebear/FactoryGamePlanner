@@ -14,10 +14,16 @@
 	}
 
 	& .entry {
-		height: 24px;
+		height: 28px;
 
-		& input {
-			margin-right: 5px;
+		& label {
+			display: inline-flex;
+			gap: 6px;
+		}
+
+		& .icon {
+			width: 24px;
+			height: 24px;
 		}
 	}
 }
