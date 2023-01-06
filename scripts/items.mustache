@@ -19,3 +19,5 @@ export const Items: Item[] = [
 	},
 	{{/.}}
 ];
+
+export const ItemsByClassName = new Map(Items.map(i => [i.ClassName, i]));

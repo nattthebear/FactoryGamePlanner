@@ -34,7 +34,7 @@ const formatRecipe = (recipe: Recipe) => ({
 	adornment: (
 		<div class="recipe-chooser-image">
 			{recipe.Inputs.map((flow) => itemImage(flow.Item))}
-			<span class="arrow">🡆</span>
+			<span class="arrow">▶&#xfe0e;</span>
 			{recipe.Outputs.map((flow) => itemImage(flow.Item))}
 		</div>
 	),

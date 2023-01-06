@@ -1841,3 +1841,5 @@ export const Recipes: Recipe[] = [
 		PowerConsumption: null,
 	},
 ];
+
+export const RecipesByClassName = new Map(Recipes.map(r => [r.ClassName, r]));

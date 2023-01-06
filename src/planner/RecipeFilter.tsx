@@ -74,7 +74,7 @@ const makeRecipeFilter = (
 						(recipe, index) =>
 							testRegex.test(recipe.DisplayName) && (
 								<div class="entry">
-									<label data-has-checkbox>
+									<label data-has-checkbox data-tooltip={recipe.ClassName}>
 										<input type="checkbox" checked={active[index]} onChange={() => toggle(index)} />
 										<img class="icon" src={imageForRecipe(recipe)} />
 										{highlightText(recipe.DisplayName, highlightRegex)}

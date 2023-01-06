@@ -41,11 +41,11 @@ function* solveAndRender(state: State) {
 			if (rate.sign() > 0) {
 				nodes.push(
 					<tr>
-						<th data-tooltip={rate.toRatioString()}>{rate.toFixed(2)}x</th>
+						<th data-tooltip={rate.toRatioString() + "/min"}>{rate.toFixed(2)}x</th>
 						<td>
 							<img class="icon" src={imageForRecipe(recipe)} />
 						</td>
-						<td>{recipe.DisplayName}</td>
+						<td data-tooltip={recipe.ClassName}>{recipe.DisplayName}</td>
 					</tr>
 				);
 			}
@@ -73,7 +73,7 @@ function* solveAndRender(state: State) {
 
 			dest.push(
 				<tr>
-					<th data-tooltip={rate.toRatioString()}>{rate.toFixed(2)}/min</th>
+					<th data-tooltip={rate.toRatioString() + "/min"}>{rate.toFixed(2)}/min</th>
 					<td>
 						<img class="icon" src={item.Icon} />
 					</td>
@@ -101,7 +101,7 @@ function* solveAndRender(state: State) {
 		const rate = sign < 0 ? net.power.neg() : net.power;
 		return (
 			<div>
-				Power: <strong data-tooltip={rate.toRatioString()}>{rate.toFixed(2)} MW</strong> {text}
+				Power: <strong data-tooltip={rate.toRatioString() + " MW"}>{rate.toFixed(2)} MW</strong> {text}
 			</div>
 		);
 	}

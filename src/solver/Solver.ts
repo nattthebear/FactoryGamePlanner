@@ -1,5 +1,5 @@
-import { Items } from "../../data/generated/items";
-import { Recipes } from "../../data/generated/recipes";
+import { Items, ItemsByClassName } from "../../data/generated/items";
+import { Recipes, RecipesByClassName } from "../../data/generated/recipes";
 import { Item, Recipe } from "../../data/types";
 import { SIXTY } from "../editor/store/Common";
 import { produce } from "../immer";
@@ -76,8 +76,6 @@ export function stringifyProblem(problem: Problem) {
 		[...problem.availableRecipes].map((r) => r.ClassName).join(";"),
 	].join("@@");
 }
-const itemClassLookup = new Map(Items.map((i) => [i.ClassName, i]));
-const recipeClassLookup = new Map(Recipes.map((r) => [r.ClassName, r]));
 /** Doesn't do much error checking! */
 export function unstringifyProblem(s: string): Problem {
 	const [constraintData, powerData, clockFactorData, availableRecipeData] = s.split("@@");
@@ -87,7 +85,7 @@ export function unstringifyProblem(s: string): Problem {
 			constraintData.split(";").map((t) => {
 				const [clazz, constraint, rate] = t.split(",");
 				return [
-					itemClassLookup.get(clazz)!,
+					ItemsByClassName.get(clazz)!,
 					{
 						constraint: constraint as "produced" | "available",
 						rate: rate === "null" ? null : BigRat.fromRatioString(rate),
@@ -106,7 +104,7 @@ export function unstringifyProblem(s: string): Problem {
 			};
 		})(),
 		clockFactor: BigRat.fromRatioString(clockFactorData),
-		availableRecipes: new Set(availableRecipeData.split(";").map((clazz) => recipeClassLookup.get(clazz)!)),
+		availableRecipes: new Set(availableRecipeData.split(";").map((clazz) => RecipesByClassName.get(clazz)!)),
 	};
 }
 

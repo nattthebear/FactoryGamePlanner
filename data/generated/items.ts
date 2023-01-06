@@ -1280,3 +1280,5 @@ export const Items: Item[] = [
 		SinkPoints: BigRat.fromInteger(56),
 	},
 ];
+
+export const ItemsByClassName = new Map(Items.map(i => [i.ClassName, i]));

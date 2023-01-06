@@ -16,3 +16,5 @@ export const Recipes: Recipe[] = [
 	},
 	{{/.}}
 ];
+
+export const RecipesByClassName = new Map(Recipes.map(r => [r.ClassName, r]));
