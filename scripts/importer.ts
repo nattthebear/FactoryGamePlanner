@@ -13,14 +13,8 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 mustache.escape = (s) => JSON.stringify(s, null, "\t");
 
-async function mapAsync<I, O>(source: I[], project: (item: I, index: number) => Promise<O>) {
-	const ret: O[] = [];
-	for (let i = 0; i < source.length; i++) {
-		const item = source[i];
-		ret.push(await project(item, i));
-	}
-	return ret;
-}
+const SIXTY = BigRat.fromInteger(60);
+const ONE_THOUSAND = BigRat.fromInteger(1000);
 
 const Config = t.type({
 	GameDir: t.string,
@@ -645,43 +639,51 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			.map((s) => s.split(".")[1])
 	);
 
-	const mapIngredients = (input: { ItemClass: string; Amount: number | BigRat }[]) =>
+	const mapIngredients = (input: { ItemClass: string; Amount: number | BigRat }[], duration: BigRat) =>
 		input.map((x) => {
 			const index = itemsLookup.get(x.ItemClass);
 			if (index == null) {
 				throw new Error("MISSING Recipe item: " + x.ItemClass);
 			}
 			const item = items[index];
+			let amount = typeof x.Amount === "number" ? BigRat.fromInteger(x.Amount) : x.Amount;
+			if (item.mForm !== "RF_SOLID") {
+				amount = amount.div(ONE_THOUSAND);
+			}
+			const amountPerSecond = amount.div(duration);
+			const amountPerMinute = amountPerSecond.mul(SIXTY);
 			return {
 				Item: itemsLookup.get(x.ItemClass),
-				QuantityP: typeof x.Amount === "number" ? x.Amount : x.Amount.terms().p,
-				QuantityQ: typeof x.Amount === "number" ? (item.mForm !== "RF_SOLID" ? 1000 : 1) : x.Amount.terms().q,
+				RateExpr: amountPerMinute.uneval(),
 			};
 		});
 
-	const recipeView = recipes.map((x) => ({
-		...x,
-		Inputs: mapIngredients(x.mIngredients),
-		Outputs: mapIngredients(x.mProduct),
-		Building: (() => {
-			const results = (x.mProducedIn as string[])
-				.map((clazz) => buildingClazzes.get(clazz))
-				.filter((n) => n != null);
-			if (results.length !== 1) {
-				console.log("MORE THAN ONE BUILDING?");
-				throw new Error();
-			}
-			return results[0];
-		})(),
-		Alternate: alternateUnlockData.has(x.ClassName),
-		PowerConsumptionExpr: x.mVariablePowerConsumptionConstant
-			? `BigRat.fromInteger(${x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2})`
-			: "null",
-		DurationExpr:
+	const recipeView = recipes.map((x) => {
+		const duration =
 			typeof x.mManufactoringDuration === "number"
-				? `BigRat.fromInteger(${x.mManufactoringDuration})`
-				: x.mManufactoringDuration.uneval(),
-	}));
+				? BigRat.fromInteger(x.mManufactoringDuration)
+				: x.mManufactoringDuration;
+
+		return {
+			...x,
+			Inputs: mapIngredients(x.mIngredients, duration),
+			Outputs: mapIngredients(x.mProduct, duration),
+			Building: (() => {
+				const results = (x.mProducedIn as string[])
+					.map((clazz) => buildingClazzes.get(clazz))
+					.filter((n) => n != null);
+				if (results.length !== 1) {
+					console.log("MORE THAN ONE BUILDING?");
+					throw new Error();
+				}
+				return results[0];
+			})(),
+			Alternate: alternateUnlockData.has(x.ClassName),
+			PowerConsumptionExpr: x.mVariablePowerConsumptionConstant
+				? `BigRat.fromInteger(${x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2})`
+				: "null",
+		};
+	});
 
 	const itemsView = items.map((x) => ({
 		...x,

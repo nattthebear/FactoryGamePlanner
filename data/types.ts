@@ -13,7 +13,8 @@ export interface Item {
 
 export interface RecipeFlow {
 	Item: Item;
-	Quantity: BigRat;
+	/** Items per minute */
+	Rate: BigRat;
 }
 
 export interface Recipe {
@@ -21,8 +22,6 @@ export interface Recipe {
 	DisplayName: string;
 	Inputs: RecipeFlow[];
 	Outputs: RecipeFlow[];
-	/** Crafting time in seconds */
-	Duration: BigRat;
 	Building: Building;
 	Alternate: boolean;
 	/** If set, overrides the building power consumption */

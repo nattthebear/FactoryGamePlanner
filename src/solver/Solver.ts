@@ -244,8 +244,8 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 		for (const recipe of availableRecipes) {
 			let zPrim = BigRat.ZERO;
 			let zSec = BigRat.ZERO;
-			for (const { Item, Quantity } of recipe.Inputs) {
-				const itemsPerMinute = Quantity.div(recipe.Duration).mul(SIXTY);
+			for (const { Item, Rate } of recipe.Inputs) {
+				const itemsPerMinute = Rate;
 				const row = itemsToConstraintRows.get(Item);
 				if (row != null) {
 					const pos = row * pitch + i;
@@ -260,8 +260,8 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 					zSec = zSec.add(zSecFac.mul(itemsPerMinute));
 				}
 			}
-			for (const { Item, Quantity } of recipe.Outputs) {
-				const itemsPerMinute = Quantity.div(recipe.Duration).mul(SIXTY);
+			for (const { Item, Rate } of recipe.Outputs) {
+				const itemsPerMinute = Rate;
 				const row = itemsToConstraintRows.get(Item);
 				if (row != null) {
 					const pos = row * pitch + i;

@@ -71,8 +71,7 @@ export class ProductionBuilding extends Producer {
 	}
 
 	private toFlow(flow: RecipeFlow): Flow {
-		const itemsPerSecond = this.rate.div(this.recipe.Duration).mul(flow.Quantity);
-		const itemsPerMinute = itemsPerSecond.mul(SIXTY);
+		const itemsPerMinute = flow.Rate;
 		return { rate: itemsPerMinute, item: flow.Item };
 	}
 

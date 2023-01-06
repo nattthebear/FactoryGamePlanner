@@ -28,18 +28,14 @@ export function generateNetResults(problem: Problem, solution: Solution): NetRes
 			continue;
 		}
 
-		const rFactor = buildingRate.div(recipe.Duration);
-
-		for (const { Item, Quantity } of recipe.Inputs) {
-			const itemsPerSecond = rFactor.mul(Quantity);
-			const itemsPerMinute = itemsPerSecond.mul(SIXTY);
+		for (const { Item, Rate } of recipe.Inputs) {
+			const itemsPerMinute = Rate.mul(buildingRate);
 			let existingRate = items.get(Item) ?? BigRat.ZERO;
 			existingRate = existingRate.sub(itemsPerMinute);
 			items.set(Item, existingRate);
 		}
-		for (const { Item, Quantity } of recipe.Outputs) {
-			const itemsPerSecond = rFactor.mul(Quantity);
-			const itemsPerMinute = itemsPerSecond.mul(SIXTY);
+		for (const { Item, Rate } of recipe.Outputs) {
+			const itemsPerMinute = Rate.mul(buildingRate);
 			let existingRate = items.get(Item) ?? BigRat.ZERO;
 			existingRate = existingRate.add(itemsPerMinute);
 			items.set(Item, existingRate);

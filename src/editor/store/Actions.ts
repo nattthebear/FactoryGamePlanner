@@ -122,8 +122,7 @@ export const emptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: R
 	}
 
 	const inputIndex = recipe.Inputs.findIndex((i) => i.Item.ClassName === flow.item.ClassName);
-	const baseItemsPerSecond = recipe.Inputs[inputIndex].Quantity.div(recipe.Duration);
-	const baseItemsPerMinute = baseItemsPerSecond.mul(SIXTY);
+	const baseItemsPerMinute = recipe.Inputs[inputIndex].Rate;
 	const desiredRate = excess.div(baseItemsPerMinute);
 
 	const referencePoint = pointAdd(producer, producer.outputAttachPoints[outputIndex]);
@@ -172,8 +171,7 @@ export const fillFromRecipe = (producerId: NodeId, inputIndex: number, recipe: R
 	}
 
 	const outputIndex = recipe.Outputs.findIndex((i) => i.Item.ClassName === flow.item.ClassName);
-	const baseItemsPerSecond = recipe.Outputs[outputIndex].Quantity.div(recipe.Duration);
-	const baseItemsPerMinute = baseItemsPerSecond.mul(SIXTY);
+	const baseItemsPerMinute = recipe.Outputs[outputIndex].Rate;
 	const desiredRate = shortfall.div(baseItemsPerMinute);
 
 	const referencePoint = pointAdd(producer, producer.inputAttachPoints[inputIndex]);
