@@ -159,21 +159,3 @@ export const writeRecipe = makeWMap(Recipes);
 export const writeItem = makeWMap(ItemsWithFakePower);
 export const readRecipe = makeRMap(Recipes);
 export const readItem = makeRMap(ItemsWithFakePower);
-
-export const TAB_PLANNER = "p";
-export const TAB_EDITOR = "e";
-
-export function getActiveTabFromSearch() {
-	return window.location.search.slice(1, 2);
-}
-export function getEncodedDataForTab(tabName: string) {
-	if (tabName !== getActiveTabFromSearch()) {
-		return null;
-	}
-	return window.location.search.slice(2);
-}
-export function setEncodedDataForTab(tabName: string, data: string) {
-	const urlBase = window.location.href.split("?")[0];
-	const urlSuffix = "?" + tabName + data;
-	window.history.replaceState(null, "", urlBase + urlSuffix);
-}

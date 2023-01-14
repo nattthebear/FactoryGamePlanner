@@ -2,12 +2,11 @@ import { Items } from "../../../data/generated/items";
 import { Recipes } from "../../../data/generated/recipes";
 import { FakePower } from "../../../data/power";
 import { Item } from "../../../data/types";
-import { getEncodedDataForTab, TAB_PLANNER } from "../../base64";
-import { makeStore } from "../../MakeStore";
+import { makeStore, makeStoreWithHashRouter, ROUTER_PLANNER_STORE } from "../../MakeStore";
 import { BigRat } from "../../math/BigRat";
 import { Problem } from "../../solver/Solver";
 import { Flow } from "../../util";
-import { deserialize } from "./Serializer";
+import { deserialize, serialize } from "./Serializer";
 
 export const BasicRecipes = Recipes.filter((r) => !r.Alternate);
 export const AlternateRecipes = Recipes.filter((r) => r.Alternate);
@@ -66,24 +65,19 @@ export function buildDefaultInputs() {
 	return ret;
 }
 
-const initialState = (() => {
-	const search = getEncodedDataForTab(TAB_PLANNER);
-	if (search) {
-		try {
-			const reconstructed = deserialize(search);
-			if (reconstructed) {
-				return reconstructed;
-			}
-		} catch (e) {
-			console.error(e);
-		}
-	}
-	const ret = makeEmptyState();
-	ret.inputs = buildDefaultInputs();
-	return ret;
-})();
-
-export const { useSelector, update, getStateRaw } = makeStore(initialState, "_PlannerStore");
+export const { useSelector, update, getStateRaw } = makeStoreWithHashRouter(
+	{
+		serialize,
+		deserialize,
+		makeDefault() {
+			const ret = makeEmptyState();
+			ret.inputs = buildDefaultInputs();
+			return ret;
+		},
+	},
+	ROUTER_PLANNER_STORE,
+	"_PlannerStore"
+);
 
 export function makeProblem(state: State): Problem {
 	const res: Problem = {

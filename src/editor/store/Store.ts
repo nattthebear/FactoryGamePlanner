@@ -3,10 +3,9 @@ import { BigRat } from "../../math/BigRat";
 import { Flow, Point } from "../../util";
 import { NodeId, pointEqual } from "./Common";
 import { Connector } from "./Connectors";
-import { makeStore, Selector } from "../../MakeStore";
+import { makeStore, makeStoreWithHashRouter, ROUTER_EDITOR_STORE, Selector } from "../../MakeStore";
 import { Producer, Sink, Source } from "./Producers";
-import { deserialize } from "./Serializer";
-import { getEncodedDataForTab, TAB_EDITOR } from "../../base64";
+import { deserialize, serialize } from "./Serializer";
 import { Item } from "../../../data/types";
 
 export type MouseOverInfo =
@@ -36,39 +35,31 @@ export interface State {
 	connectors: Map<NodeId, Connector>;
 }
 
+const initialMouseOver: MouseOverInfo = { type: "none" };
+
 export const makeEmptyState = (): State => ({
 	viewport: {
 		center: { x: 0, y: 0 },
 		zoom: 1,
 	},
-	mouseOver: { type: "none" },
+	mouseOver: initialMouseOver,
 	wip: { type: "none" },
 	producers: new Map(),
 	connectors: new Map(),
 });
-const initialState = (() => {
-	const search = getEncodedDataForTab(TAB_EDITOR);
-	if (search) {
-		try {
-			const reconstructed = deserialize(search);
-			if (reconstructed) {
-				return reconstructed;
-			}
-		} catch (e) {
-			console.error(e);
-		}
-	}
-	return makeEmptyState();
-})();
 
-const { useSelector, update, getStateRaw } = makeStore(initialState, "_EditorStore");
+const { useSelector, update, getStateRaw } = makeStoreWithHashRouter(
+	{ serialize, deserialize, makeDefault: makeEmptyState },
+	ROUTER_EDITOR_STORE,
+	"_EditorStore"
+);
 export { useSelector, update, getStateRaw };
 
 document.documentElement.addEventListener(
 	"mouseleave",
 	() => {
 		update((draft) => {
-			draft.mouseOver = initialState.mouseOver;
+			draft.mouseOver = initialMouseOver;
 		});
 	},
 	{ passive: true }
