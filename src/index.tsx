@@ -15,5 +15,7 @@ if (!window.requestIdleCallback) {
 	if (process.env.NODE_ENV === "development") {
 		await import("preact/debug" as any);
 	}
+	const { options } = await import("preact");
+	options.debounceRendering = Promise.prototype.then.bind(Promise.resolve());
 	await import("./App");
 })();
