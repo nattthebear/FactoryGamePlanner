@@ -7,6 +7,7 @@ import { makeStore, makeStoreWithHashRouter, ROUTER_EDITOR_STORE, Selector } fro
 import { Producer, Sink, Source } from "./Producers";
 import { deserialize, serialize } from "./Serializer";
 import { Item } from "../../../data/types";
+import { Bus } from "./Bus";
 
 export type MouseOverInfo =
 	| { type: "none" }
@@ -32,6 +33,7 @@ export interface State {
 	mouseOver: MouseOverInfo;
 	wip: WipInfo;
 	producers: Map<NodeId, Producer>;
+	buses: Map<NodeId, Bus>;
 	connectors: Map<NodeId, Connector>;
 }
 
@@ -45,6 +47,7 @@ export const makeEmptyState = (): State => ({
 	mouseOver: initialMouseOver,
 	wip: { type: "none" },
 	producers: new Map(),
+	buses: new Map(),
 	connectors: new Map(),
 });
 
@@ -79,6 +82,10 @@ function arrayEqual<T>(x: T[], y: T[]) {
 
 export const selectProducerIds: Selector<State, NodeId[]> = {
 	select: (state) => [...state.producers.keys()],
+	equal: arrayEqual,
+};
+export const selectBusIds: Selector<State, NodeId[]> = {
+	select: (state) => [...state.buses.keys()],
 	equal: arrayEqual,
 };
 export const selectConnectorIds: Selector<State, NodeId[]> = {

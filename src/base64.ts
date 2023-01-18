@@ -122,6 +122,10 @@ export function readBigRat(r: RStream) {
 	return BigRat.fromBigInts(p, q);
 }
 
+export function mapBits(size: number) {
+	return size > 0 ? bitsNeeded(size - 1) : 0;
+}
+
 /** Makes a compressing map to store a set of ids with the minimum number of bits */
 export function makeWMap<T>(keys: Iterable<T>) {
 	const map = new Map<T, number>();
@@ -129,7 +133,7 @@ export function makeWMap<T>(keys: Iterable<T>) {
 	for (const k of keys) {
 		map.set(k, i++);
 	}
-	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
+	const BITS = mapBits(i);
 	function write(w: WStream, v: T) {
 		const n = map.get(v);
 		if (n == null) {
@@ -138,12 +142,13 @@ export function makeWMap<T>(keys: Iterable<T>) {
 		w.write(BITS, n);
 	}
 	write.BITS = BITS;
+	write.size = i;
 	return write;
 }
 /** Make a reading map to reverse `makeWMap` */
 export function makeRMap<T>(data: T[]) {
 	const i = data.length;
-	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
+	const BITS = mapBits(i);
 	function read(r: RStream) {
 		const value = r.read(BITS);
 		if (value < data.length) {
@@ -152,6 +157,7 @@ export function makeRMap<T>(data: T[]) {
 		return null;
 	}
 	read.BITS = BITS;
+	read.size = i;
 	return read;
 }
 
