@@ -173,7 +173,7 @@ export interface IProduce {
 	): Promise<Base>;
 }
 
-import { default as produceImpl, immerable, enableMapSet } from "immer";
+import { produce as produceImpl, immerable, enableMapSet } from "immer";
 
 const produce = produceImpl as IProduce;
 
