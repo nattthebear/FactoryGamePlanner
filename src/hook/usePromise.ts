@@ -12,7 +12,7 @@ function idle() {
 
 export function makeAbortablePromise<T>(
 	iterator: Iterator<unknown, T, undefined>,
-	maxSliceTime: number
+	maxSliceTime: number,
 ): AbortablePromise<T> {
 	let aborted = false;
 	function abort() {
@@ -50,7 +50,7 @@ function arrayEqual<T extends any[]>(a: T, b: T) {
 
 export function useAbortableAsynchronousMemo<A extends any[], T>(
 	factory: (...deps: A) => AbortablePromise<T>,
-	deps: A
+	deps: A,
 ) {
 	const { current } = useRef<{
 		deps: A | undefined;

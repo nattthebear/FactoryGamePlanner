@@ -46,7 +46,7 @@ function* solveAndRender(state: State) {
 							<img class="icon" src={imageForRecipe(recipe)} />
 						</td>
 						<td data-tooltip={recipe.ClassName}>{recipe.DisplayName}</td>
-					</tr>
+					</tr>,
 				);
 			}
 		}
@@ -78,7 +78,7 @@ function* solveAndRender(state: State) {
 						<img class="icon" src={item.Icon} />
 					</td>
 					<td>{item.DisplayName}</td>
-				</tr>
+				</tr>,
 			);
 		}
 		return (

@@ -44,7 +44,7 @@ export const addConnector =
 	(
 		from: { producerId: NodeId; outputIndex: number },
 		to: { producerId: NodeId; inputIndex: number },
-		match: "input" | "output"
+		match: "input" | "output",
 	) =>
 	(draft: Draft<State>) => {
 		const fromProducer = draft.producers.get(from.producerId)!;
@@ -64,7 +64,7 @@ export const addConnector =
 			fromProducer.id,
 			toProducer.id,
 			from.outputIndex,
-			to.inputIndex
+			to.inputIndex,
 		);
 		draft.connectors.set(connector.id, connector);
 		fromProducer.outputs[from.outputIndex].push(connector.id);
@@ -131,7 +131,7 @@ export const emptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: R
 		referencePoint.x + FIXUP_BUILDING_X_OFFSET,
 		referencePoint.y,
 		desiredRate,
-		recipe
+		recipe,
 	);
 	draft.producers.set(sink.id, sink);
 	const connector = new Connector(excess, flow.item, producerId, sink.id, outputIndex, inputIndex);
@@ -180,7 +180,7 @@ export const fillFromRecipe = (producerId: NodeId, inputIndex: number, recipe: R
 		referencePoint.x - FIXUP_BUILDING_X_OFFSET,
 		referencePoint.y,
 		desiredRate,
-		recipe
+		recipe,
 	);
 	draft.producers.set(source.id, source);
 	const connector = new Connector(shortfall, flow.item, source.id, producerId, outputIndex, inputIndex);

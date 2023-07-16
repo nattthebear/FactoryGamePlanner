@@ -6,7 +6,7 @@ export function useStateWithPrev<T>(initialValue: T): [T, (newValue: T) => void,
 			oldValue: value,
 			value: newValue,
 		}),
-		{ oldValue: null, value: initialValue }
+		{ oldValue: null, value: initialValue },
 	);
 	return [value, changeValue, oldValue];
 }

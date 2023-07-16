@@ -25,7 +25,7 @@ export const defaultResourceData = new Map<Item, BigRat>(
 		{ className: "Desc_OreBauxite_C", rate: 9780 },
 		{ className: "Desc_OreUranium_C", rate: 2100 },
 		{ className: "Desc_NitrogenGas_C", rate: 12000 },
-	].map(({ className, rate }) => [Items.find((i) => i.ClassName === className)!, BigRat.fromInteger(rate)])
+	].map(({ className, rate }) => [Items.find((i) => i.ClassName === className)!, BigRat.fromInteger(rate)]),
 );
 const Water = Items.find((i) => i.ClassName === "Desc_Water_C")!;
 
@@ -76,7 +76,7 @@ export const { useSelector, update, getStateRaw } = makeStoreWithHashRouter(
 		},
 	},
 	ROUTER_PLANNER_STORE,
-	"_PlannerStore"
+	"_PlannerStore",
 );
 
 export function makeProblem(state: State): Problem {

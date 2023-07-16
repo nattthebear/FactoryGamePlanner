@@ -97,7 +97,7 @@ export class Dictionary {
 			this.basic.slice(),
 			this.nonBasic.slice(),
 			this.isDualObjective,
-			this.coefficients.slice()
+			this.coefficients.slice(),
 		);
 	}
 

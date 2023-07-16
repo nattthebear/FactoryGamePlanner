@@ -51,7 +51,7 @@ export const makeEmptyState = (): State => ({
 const { useSelector, update, getStateRaw } = makeStoreWithHashRouter(
 	{ serialize, deserialize, makeDefault: makeEmptyState },
 	ROUTER_EDITOR_STORE,
-	"_EditorStore"
+	"_EditorStore",
 );
 export { useSelector, update, getStateRaw };
 
@@ -62,7 +62,7 @@ document.documentElement.addEventListener(
 			draft.mouseOver = initialMouseOver;
 		});
 	},
-	{ passive: true }
+	{ passive: true },
 );
 
 function arrayEqual<T>(x: T[], y: T[]) {

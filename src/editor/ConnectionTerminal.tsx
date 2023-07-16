@@ -18,7 +18,7 @@ export function ConnectionTerminal({
 	const { rate, item } = (isOutput ? producer.outputFlows() : producer.inputFlows())[index];
 	const connectionIds = (isOutput ? producer.outputs : producer.inputs)[index];
 	const connectionSum = useSelector((s) =>
-		connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO)
+		connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO),
 	);
 	const activeConnectionAttempt = useSelector((s) => {
 		if (s.wip.type === "connector:input") {

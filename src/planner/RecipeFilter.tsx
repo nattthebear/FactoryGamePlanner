@@ -35,7 +35,7 @@ const makeRecipeFilter = (
 	list: Recipe[],
 	toggle: (index: number) => void,
 	setAll: (newValue: boolean) => void,
-	titleText: string
+	titleText: string,
 ) =>
 	function RecipeFilter() {
 		const active = useActive();
@@ -80,7 +80,7 @@ const makeRecipeFilter = (
 										{highlightText(recipe.DisplayName, highlightRegex)}
 									</label>
 								</div>
-							)
+							),
 					)}
 				</div>
 			</div>
@@ -92,12 +92,12 @@ export const RecipeFilterBasic = makeRecipeFilter(
 	BasicRecipes,
 	toggleBasic,
 	setAllBasic,
-	"Basic Recipes"
+	"Basic Recipes",
 );
 export const RecipeFilterAlternate = makeRecipeFilter(
 	() => useSelector((state) => state.alternateRecipes),
 	AlternateRecipes,
 	toggleAlternate,
 	setAllAlternate,
-	"Alternate Recipes"
+	"Alternate Recipes",
 );

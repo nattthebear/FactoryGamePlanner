@@ -61,7 +61,7 @@ describe("WStream", () => {
 				BASE64_URL[0b010101] +
 				BASE64_URL[0b111001] +
 				BASE64_URL[0b101010] +
-				BASE64_URL[0b10]
+				BASE64_URL[0b10],
 		);
 	});
 });

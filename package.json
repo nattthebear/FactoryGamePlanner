@@ -25,7 +25,7 @@
 		"mustache": "^4.2.0",
 		"parcel": "^2.8.1",
 		"peggy": "^2.0.1",
-		"prettier": "2.8.1",
+		"prettier": "^3.0.0",
 		"rimraf": "^5.0.1",
 		"ts-node": "^10.9.1",
 		"typescript": "^5.1.6"

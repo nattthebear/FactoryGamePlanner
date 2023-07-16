@@ -219,7 +219,7 @@ export function connectSolution(problem: Problem, solution: Solution): State {
 				source.producer.id,
 				sink.producer.id,
 				source.index,
-				sink.index
+				sink.index,
 			);
 			source.producer.outputs[source.index].push(connector.id);
 			sink.producer.inputs[sink.index].push(connector.id);

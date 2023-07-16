@@ -89,7 +89,7 @@ export const ROUTER_EDITOR_STORE = 2;
 export function makeStoreWithHashRouter<S>(
 	{ serialize, deserialize, makeDefault }: SerializableStore<S>,
 	hashIndex: number,
-	debugName?: string
+	debugName?: string,
 ) {
 	const initialState = (() => {
 		let { hash } = window.location;

@@ -206,7 +206,7 @@ export function deserialize(encoded: string) {
 			console.warn(
 				`Decode: Connection item mismatch ${pout.inputFlows()[c.outputIndex].item.ClassName} !== ${
 					c.item.ClassName
-				}`
+				}`,
 			);
 			return null;
 		}
@@ -215,7 +215,7 @@ export function deserialize(encoded: string) {
 			console.warn(
 				`Decode: Connection item mismatch ${pin.outputFlows()[c.inputIndex].item.ClassName} !== ${
 					c.item.ClassName
-				}`
+				}`,
 			);
 			return null;
 		}
