@@ -13,7 +13,7 @@ const makeRateList = (
 	useData: () => NullableFlow[],
 	updateData: (cb: (draft: Draft<NullableFlow[]>) => void) => void,
 	promptRate: (rate: BigRat | "unlimited", item: Item) => Promise<BigRat | "unlimited" | null>,
-	unlimitedText: string
+	unlimitedText: string,
 ) =>
 	function RateList() {
 		const data = useData();
@@ -54,7 +54,7 @@ const makeRateList = (
 								const possibleItems = ItemsWithFakePower.filter(
 									(i) =>
 										i === d.item ||
-										(!products.find((r) => r.item === i) && !inputs.find((r) => r.item === i))
+										(!products.find((r) => r.item === i) && !inputs.find((r) => r.item === i)),
 								);
 								const newItem = await chooseItem("Select new item:", possibleItems);
 								if (newItem) {
@@ -96,7 +96,7 @@ const makeRateList = (
 					onClick={async () => {
 						const { products, inputs } = getStateRaw();
 						const possibleItems = ItemsWithFakePower.filter(
-							(i) => !products.find((r) => r.item === i) && !inputs.find((r) => r.item === i)
+							(i) => !products.find((r) => r.item === i) && !inputs.find((r) => r.item === i),
 						);
 						const newItem = await chooseItem("Select new item:", possibleItems);
 						if (newItem) {
@@ -119,14 +119,14 @@ const ProductsRateList = makeRateList(
 	() => useSelector((state) => state.products),
 	(cb) => update((draft) => cb(draft.products)),
 	(rate, item) => chooseConstraintRate(rate, item, true),
-	"maximize"
+	"maximize",
 );
 
 const InputsRateList = makeRateList(
 	() => useSelector((state) => state.inputs),
 	(cb) => update((draft) => cb(draft.inputs)),
 	(rate, item) => chooseConstraintRate(rate, item, false),
-	"unlimited"
+	"unlimited",
 );
 
 export function ConstraintEditor() {
@@ -157,7 +157,7 @@ export function ConstraintEditor() {
 							const inputs = buildDefaultInputs();
 							draft.inputs = inputs;
 							draft.products = draft.products.filter(
-								(p) => !inputs.find((i) => i.item.ClassName === p.item.ClassName)
+								(p) => !inputs.find((i) => i.item.ClassName === p.item.ClassName),
 							);
 						})
 					}

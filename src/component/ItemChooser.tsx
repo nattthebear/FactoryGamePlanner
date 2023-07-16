@@ -52,7 +52,7 @@ const DisplayItems = ItemsWithFakePower.map((item) => ({
 		: recipeToOutputs.get(item)
 	)?.map(formatRecipe),
 }));
-type DisplayItem = typeof DisplayItems[number];
+type DisplayItem = (typeof DisplayItems)[number];
 
 /** Hack:  Add a way to choose power for the recipe by outputs chooser */
 const FakePowerItem: DisplayItem = {

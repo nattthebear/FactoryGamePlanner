@@ -20,7 +20,7 @@ const WP_RATES = new Map<Item, BigRat>(
 		{ className: "Desc_OreBauxite_C", wp: "1.02" },
 		{ className: "Desc_OreUranium_C", wp: "4.76" },
 		{ className: "Desc_NitrogenGas_C", wp: "0.83" },
-	].map(({ className, wp }) => [Items.find((i) => i.ClassName === className)!, BigRat.parse(wp).neg()])
+	].map(({ className, wp }) => [Items.find((i) => i.ClassName === className)!, BigRat.parse(wp).neg()]),
 );
 
 /*
@@ -91,7 +91,7 @@ export function unstringifyProblem(s: string): Problem {
 						rate: rate === "null" ? null : BigRat.fromRatioString(rate),
 					},
 				];
-			})
+			}),
 		),
 		power: (() => {
 			if (powerData === "null") {

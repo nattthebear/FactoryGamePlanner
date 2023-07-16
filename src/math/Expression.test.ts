@@ -26,7 +26,7 @@ describe("evaluate", () => {
 		assertSuccess(evaluate("1.4578934e+4"), BigRat.parse("14578.934"));
 		assertSuccess(
 			evaluate("41e-20"),
-			BigRat.fromIntegers(41, 1).div(BigRat.fromBigInts(100000000000000000000n, 1n))
+			BigRat.fromIntegers(41, 1).div(BigRat.fromBigInts(100000000000000000000n, 1n)),
 		);
 		assertSuccess(evaluate("."), BigRat.ZERO);
 

@@ -14,28 +14,28 @@
 		"timed-tests": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs src/solver/Solver.timed.ts"
 	},
 	"devDependencies": {
-		"@parcel/optimizer-data-url": "^2.8.1",
-		"@parcel/transformer-inline-string": "^2.8.1",
+		"@parcel/optimizer-data-url": "^2.9.3",
+		"@parcel/transformer-inline-string": "^2.9.3",
 		"@types/mustache": "^4.2.2",
-		"@types/node": "^18.11.13",
-		"fp-ts": "^2.13.1",
-		"husky": "^8.0.2",
+		"@types/node": "^20.4.2",
+		"fp-ts": "^2.16.0",
+		"husky": "^8.0.3",
 		"io-ts": "^2.2.20",
-		"lint-staged": "^13.1.0",
+		"lint-staged": "^13.2.3",
 		"mustache": "^4.2.0",
-		"parcel": "^2.8.1",
-		"peggy": "^2.0.1",
-		"prettier": "2.8.1",
-		"rimraf": "^3.0.2",
+		"parcel": "^2.9.3",
+		"peggy": "^3.0.2",
+		"prettier": "^3.0.0",
+		"rimraf": "^5.0.1",
 		"ts-node": "^10.9.1",
-		"typescript": "^4.9.4"
+		"typescript": "^5.1.6"
 	},
 	"dependencies": {
-		"@floating-ui/dom": "^1.1.0",
-		"immer": "^9.0.16",
-		"modern-normalize": "^1.1.0",
-		"preact": "^10.11.3",
-		"scroll-into-view-if-needed": "^3.0.3"
+		"@floating-ui/dom": "^1.4.5",
+		"immer": "^10.0.2",
+		"modern-normalize": "^2.0.0",
+		"preact": "^10.16.0",
+		"scroll-into-view-if-needed": "^3.0.10"
 	},
 	"browserslist": {
 		"production": [

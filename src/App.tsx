@@ -32,7 +32,7 @@ const appStore = makeStoreWithHashRouter(
 		},
 	},
 	ROUTER_APP_STORE,
-	"_AppStore"
+	"_AppStore",
 );
 
 const { useSelector, update } = appStore;

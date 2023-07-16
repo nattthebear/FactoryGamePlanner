@@ -54,7 +54,7 @@ export class ProductionBuilding extends Producer {
 			let l = 0;
 			for (const input of this.recipe.Inputs) {
 				this.inputAttachPoints.push(
-					input.Item.IsPiped ? drawing.attach.input.liquid[l++] : drawing.attach.input.solid[s++]
+					input.Item.IsPiped ? drawing.attach.input.liquid[l++] : drawing.attach.input.solid[s++],
 				);
 			}
 		}
@@ -64,7 +64,7 @@ export class ProductionBuilding extends Producer {
 			let l = 0;
 			for (const output of this.recipe.Outputs) {
 				this.outputAttachPoints.push(
-					output.Item.IsPiped ? drawing.attach.output.liquid[l++] : drawing.attach.output.solid[s++]
+					output.Item.IsPiped ? drawing.attach.output.liquid[l++] : drawing.attach.output.solid[s++],
 				);
 			}
 		}

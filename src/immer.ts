@@ -87,7 +87,7 @@ declare type ValidRecipeReturnTypePossiblyPromise<State> =
 declare type PromisifyReturnIfNeeded<
 	State,
 	Recipe extends AnyFunc,
-	UsePatches extends boolean
+	UsePatches extends boolean,
 > = ReturnType<Recipe> extends Promise<any>
 	? Promise<UsePatches extends true ? PatchesTuple<State> : State>
 	: UsePatches extends true
@@ -143,39 +143,37 @@ export interface IProduce {
 	/** Curried producer that infers curried from the recipe  */
 	<Recipe extends AnyFunc>(recipe: Recipe): InferCurriedFromRecipe<Recipe, false>;
 	/** Curried producer that infers curried from the State generic, which is explicitly passed in.  */
-	<State>(recipe: (state: Draft<State>, initialState: State) => ValidRecipeReturnType<State>): (
-		state?: State
-	) => State;
+	<State>(
+		recipe: (state: Draft<State>, initialState: State) => ValidRecipeReturnType<State>,
+	): (state?: State) => State;
 	<State, Args extends any[]>(
 		recipe: (state: Draft<State>, ...args: Args) => ValidRecipeReturnType<State>,
-		initialState: State
+		initialState: State,
 	): (state?: State, ...args: Args) => State;
 	<State>(recipe: (state: Draft<State>) => ValidRecipeReturnType<State>): (state: State) => State;
-	<State, Args extends any[]>(recipe: (state: Draft<State>, ...args: Args) => ValidRecipeReturnType<State>): (
-		state: State,
-		...args: Args
-	) => State;
+	<State, Args extends any[]>(
+		recipe: (state: Draft<State>, ...args: Args) => ValidRecipeReturnType<State>,
+	): (state: State, ...args: Args) => State;
 	/** Curried producer with initial state, infers recipe from initial state */
-	<State, Recipe extends Function>(recipe: Recipe, initialState: State): InferCurriedFromInitialStateAndRecipe<
-		State,
-		Recipe,
-		false
-	>;
+	<State, Recipe extends Function>(
+		recipe: Recipe,
+		initialState: State,
+	): InferCurriedFromInitialStateAndRecipe<State, Recipe, false>;
 	/** Normal producer */
 	<Base, D = Draft<Base>>( // By using a default inferred D, rather than Draft<Base> in the recipe, we can override it.
 		base: Base,
 		recipe: (draft: D) => ValidRecipeReturnType<D>,
-		listener?: PatchListener
+		listener?: PatchListener,
 	): Base;
 	/** Promisified dormal producer */
 	<Base, D = Draft<Base>>(
 		base: Base,
 		recipe: (draft: D) => Promise<ValidRecipeReturnType<D>>,
-		listener?: PatchListener
+		listener?: PatchListener,
 	): Promise<Base>;
 }
 
-import { default as produceImpl, immerable, enableMapSet } from "immer";
+import { produce as produceImpl, immerable, enableMapSet } from "immer";
 
 const produce = produceImpl as IProduce;
 

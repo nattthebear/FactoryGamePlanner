@@ -46,7 +46,7 @@ export const prompt = <T extends any>(item: PromptItem<T>) =>
 	new Promise<T | null>((resolve) =>
 		update((prompts) => {
 			prompts.push({ item, resolve });
-		})
+		}),
 	);
 
 document.addEventListener(
@@ -58,7 +58,7 @@ document.addEventListener(
 			});
 		}
 	},
-	{ capture: true, passive: true }
+	{ capture: true, passive: true },
 );
 
 export const isAnyPromptActive = () => !!getStateRaw()[0];
