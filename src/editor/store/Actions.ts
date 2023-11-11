@@ -28,12 +28,12 @@ export const addProducer = (value: Producer) => (draft: Draft<State>) => {
 export const removeProducer = (producerId: NodeId) => (draft: Draft<State>) => {
 	const producer = draft.producers.get(producerId)!;
 	for (const ids of producer.inputs) {
-		for (const id of ids) {
+		for (const id of ids.slice()) {
 			removeConnector(id)(draft);
 		}
 	}
 	for (const ids of producer.outputs) {
-		for (const id of ids) {
+		for (const id of ids.slice()) {
 			removeConnector(id)(draft);
 		}
 	}
