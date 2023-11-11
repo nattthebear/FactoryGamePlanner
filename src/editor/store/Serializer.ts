@@ -20,6 +20,7 @@ import { FACTORY_MAX, FACTORY_MIN } from "../../util";
 import { generateId, NodeId } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
+import { reflowConnectors } from "./ReflowConnector";
 import { makeEmptyState, State } from "./Store";
 
 const VERSION = 0;
@@ -54,18 +55,13 @@ export function serialize(state: State) {
 	const writePId = makeWMap(state.producers.keys());
 	writeBigPos(w, BigInt(writePId.BITS));
 
+	writeBigPos(w, BigInt(state.connectors.size));
 	for (const c of state.connectors.values()) {
-		if (c.rate.eq(BigRat.ZERO)) {
-			throw new Error();
-		}
-		writeBigRat(w, c.rate);
-		writeItem(w, c.item);
 		writePId(w, c.input);
 		writePId(w, c.output);
 		w.write(2, c.inputIndex);
 		w.write(2, c.outputIndex);
 	}
-	writeBigRat(w, BigRat.ZERO);
 
 	for (const p of state.producers.values()) {
 		if (p instanceof ProductionBuilding) {
@@ -105,35 +101,19 @@ export function deserialize(encoded: string) {
 	const producers: Producer[] = [];
 
 	const tempConnectors: {
-		rate: BigRat;
-		item: Item;
 		inId: number;
 		outId: number;
 		inputIndex: number;
 		outputIndex: number;
 	}[] = [];
 
-	while (true) {
-		const rate = readBigRat(r);
-		if (rate.eq(BigRat.ZERO)) {
-			break;
-		}
-		if (rate.lt(BigRat.ZERO)) {
-			console.warn(`Decode: negative rate`);
-			return null;
-		}
-		const item = readItem(r);
-		if (!item) {
-			console.warn(`Decode: missing item`);
-			return null;
-		}
+	const tempConnectorCount = Number(readBigPos(r));
+	for (let i = 0; i < tempConnectorCount; i++) {
 		const inId = r.read(P_BITS);
 		const outId = r.read(P_BITS);
 		const inputIndex = r.read(2);
 		const outputIndex = r.read(2);
 		tempConnectors.push({
-			rate,
-			item,
 			inId,
 			outId,
 			inputIndex,
@@ -194,35 +174,21 @@ export function deserialize(encoded: string) {
 			console.warn(`Decode: bad producer ref`);
 			return null;
 		}
-		connectors.push(new Connector(temp.rate, temp.item, inputp.id, outputp.id, temp.inputIndex, temp.outputIndex));
+		const inputItem = inputp.outputFlows()[temp.inputIndex].item;
+		const outputItem = outputp.inputFlows()[temp.outputIndex].item;
+		if (inputItem !== outputItem) {
+			console.warn(`Decode: Connection item mismatch ${inputItem.ClassName} !== ${outputItem.ClassName}`);
+			return null;
+		}
+		const c = new Connector(BigRat.ZERO, inputItem, inputp.id, outputp.id, temp.inputIndex, temp.outputIndex);
+		connectors.push(c);
+		inputp.outputs[c.inputIndex].push(c.id);
+		outputp.inputs[c.outputIndex].push(c.id);
 	}
 
 	state.connectors = new Map(connectors.map((c) => [c.id, c]));
 	state.producers = new Map(producers.map((p) => [p.id, p]));
-
-	for (const c of connectors) {
-		const pout = state.producers.get(c.output)!;
-		if (pout.inputFlows()[c.outputIndex].item !== c.item) {
-			console.warn(
-				`Decode: Connection item mismatch ${pout.inputFlows()[c.outputIndex].item.ClassName} !== ${
-					c.item.ClassName
-				}`,
-			);
-			return null;
-		}
-		const pin = state.producers.get(c.input)!;
-		if (pin.outputFlows()[c.inputIndex].item !== c.item) {
-			console.warn(
-				`Decode: Connection item mismatch ${pin.outputFlows()[c.inputIndex].item.ClassName} !== ${
-					c.item.ClassName
-				}`,
-			);
-			return null;
-		}
-
-		pout.inputs[c.outputIndex].push(c.id);
-		pin.outputs[c.inputIndex].push(c.id);
-	}
+	reflowConnectors(state, state.connectors.keys());
 
 	return state;
 }
