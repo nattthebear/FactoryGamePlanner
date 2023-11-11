@@ -245,6 +245,7 @@ export function connectSolution(problem: Problem, solution: Solution): State {
 		mouseOver: { type: "none" },
 		wip: { type: "none" },
 		producers,
+		buses: new Map(),
 		connectors,
 	};
 }
