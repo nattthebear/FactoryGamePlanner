@@ -42,11 +42,7 @@ export const removeProducer = (producerId: NodeId) => (draft: Draft<State>) => {
 };
 
 export const addConnector =
-	(
-		from: { producerId: NodeId; outputIndex: number },
-		to: { producerId: NodeId; inputIndex: number },
-		match: "input" | "output",
-	) =>
+	(from: { producerId: NodeId; outputIndex: number }, to: { producerId: NodeId; inputIndex: number }) =>
 	(draft: Draft<State>) => {
 		const fromProducer = draft.producers.get(from.producerId)!;
 		const toProducer = draft.producers.get(to.producerId)!;
@@ -60,7 +56,7 @@ export const addConnector =
 		}
 
 		const connector = new Connector(
-			BigRat.ONE,
+			BigRat.ZERO,
 			fromProducer.outputFlows()[from.outputIndex].item,
 			fromProducer.id,
 			toProducer.id,
@@ -71,22 +67,18 @@ export const addConnector =
 		fromProducer.outputs[from.outputIndex].push(connector.id);
 		toProducer.inputs[to.inputIndex].push(connector.id);
 
-		if (match === "input") {
-			adjustConnectorInput(connector.id)(draft);
-		} else {
-			adjustConnectorOutput(connector.id)(draft);
-		}
+		reflowConnectors(draft, [connector.id]);
 	};
 
 export const removeConnector = (connectorId: NodeId) => (draft: Draft<State>) => {
 	const connector = draft.connectors.get(connectorId)!;
-	for (const output of draft.producers.get(connector.input)!.outputs) {
-		maybeSpliceValue(output, connectorId);
-	}
-	for (const input of draft.producers.get(connector.output)!.inputs) {
-		maybeSpliceValue(input, connectorId);
-	}
+	const inputSide = draft.producers.get(connector.input)!.outputs[connector.inputIndex];
+	const outputSide = draft.producers.get(connector.output)!.inputs[connector.outputIndex];
+
+	maybeSpliceValue(inputSide, connectorId);
+	maybeSpliceValue(outputSide, connectorId);
 	draft.connectors.delete(connectorId);
+	reflowConnectors(draft, [...inputSide, ...outputSide]);
 };
 
 const FIXUP_BUILDING_X_OFFSET = 300;
@@ -252,37 +244,7 @@ export const matchBuildingToOutput = (producerId: NodeId, outputIndex: number) =
 	}
 };
 
-/** Fix up by adjusting Connector to match its input side */
-export const adjustConnectorInput = (connectorId: NodeId) => (draft: Draft<State>) => {
-	const connector = draft.connectors.get(connectorId)!;
-	const producer = draft.producers.get(connector.input)!;
-	const outputIndex = producer.outputs.findIndex((o) => o.includes(connectorId));
-
-	const excess = buildingOutputExcess(draft, producer, outputIndex);
-	const targetRate = connector.rate.add(excess);
-	if (targetRate.lte(BigRat.ZERO)) {
-		removeConnector(connectorId)(draft);
-	} else {
-		connector.rate = targetRate;
-	}
-};
-
-/** Fix up by adjusting Connector to match its output side */
-export const adjustConnectorOutput = (connectorId: NodeId) => (draft: Draft<State>) => {
-	const connector = draft.connectors.get(connectorId)!;
-	const producer = draft.producers.get(connector.output)!;
-	const inputIndex = producer.inputs.findIndex((o) => o.includes(connectorId));
-
-	const excess = buildingInputExcess(draft, producer, inputIndex);
-	const targetRate = connector.rate.sub(excess);
-	if (targetRate.lte(BigRat.ZERO)) {
-		removeConnector(connectorId)(draft);
-	} else {
-		connector.rate = targetRate;
-	}
-};
-
-/** Either `adjustConnectorInput` or `adjustConnectorOutput` based on distance */
+/** Either `matchBuildingToOutput` or `matchBuildingToInput` based on distance */
 export const adjustConnectorClosest = (connectorId: NodeId, point: Point) => (draft: Draft<State>) => {
 	const connector = draft.connectors.get(connectorId)!;
 	const inputProd = draft.producers.get(connector.input)!;
@@ -297,9 +259,9 @@ export const adjustConnectorClosest = (connectorId: NodeId, point: Point) => (dr
 	const dInput = pointDist(point, ip);
 	const dOutput = pointDist(point, op);
 	if (dInput < dOutput) {
-		adjustConnectorInput(connectorId)(draft);
+		matchBuildingToOutput(inputProd.id, connector.inputIndex)(draft);
 	} else {
-		adjustConnectorOutput(connectorId)(draft);
+		matchBuildingToInput(outputProd.id, connector.outputIndex)(draft);
 	}
 };
 
@@ -410,4 +372,5 @@ export const mergeProducers = (pid1: NodeId, pid2: NodeId) => (draft: Draft<Stat
 	}
 
 	draft.producers.delete(pid2);
+	reflowConnectors(draft, producer.inputsAndOutputs());
 };

@@ -222,7 +222,6 @@ export function HotKeyActions() {
 									addConnector(
 										{ producerId: w.producerId, outputIndex: w.index },
 										{ producerId: o.producer.id, inputIndex: o.index },
-										"input",
 									)(draft);
 									draft.wip = { type: "none" };
 								});
@@ -299,7 +298,6 @@ export function HotKeyActions() {
 									addConnector(
 										{ producerId: o.producer.id, outputIndex: o.index },
 										{ producerId: w.producerId, inputIndex: w.index },
-										"output",
 									)(draft);
 									draft.wip = { type: "none" };
 								});
