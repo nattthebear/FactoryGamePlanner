@@ -31,6 +31,7 @@ import { KeyButton } from "./KeyButton";
 
 import "./HotKeyActions.css";
 import { chooseBuildingRate, chooseSourceSinkRate } from "../component/RateChoser";
+import { reflowConnectors } from "./store/ReflowConnector";
 
 export function HotKeyActions() {
 	const currentScreenCoords = useRef<Point | null>(null);
@@ -181,6 +182,7 @@ export function HotKeyActions() {
 								if (newRate) {
 									update((draft) => {
 										draft.producers.get(producer.id)!.rate = newRate;
+										reflowConnectors(draft, producer.inputsAndOutputs());
 									});
 								}
 							} else if (producer instanceof Source || producer instanceof Sink) {
@@ -188,6 +190,7 @@ export function HotKeyActions() {
 								if (newRate) {
 									update((draft) => {
 										draft.producers.get(producer.id)!.rate = newRate;
+										reflowConnectors(draft, producer.inputsAndOutputs());
 									});
 								}
 							}
@@ -238,7 +241,8 @@ export function HotKeyActions() {
 				<>
 					<KeyButton
 						keyName="f"
-						disabled={totalIn.eq(o.flow.rate) || totalIn.eq(BigRat.ZERO)}
+						// TODO: Is this really needed?
+						// disabled={totalIn.eq(o.flow.rate) || totalIn.eq(BigRat.ZERO)}
 						onAct={() => {
 							update(matchBuildingToInput(o.producer.id, o.index));
 						}}
@@ -314,7 +318,8 @@ export function HotKeyActions() {
 				<>
 					<KeyButton
 						keyName="f"
-						disabled={totalOut.eq(o.flow.rate) || totalOut.eq(BigRat.ZERO)}
+						// TODO: Is this really needed?
+						// disabled={totalOut.eq(o.flow.rate) || totalOut.eq(BigRat.ZERO)}
 						onAct={() => {
 							update(matchBuildingToOutput(o.producer.id, o.index));
 						}}

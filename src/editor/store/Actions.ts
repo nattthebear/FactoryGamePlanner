@@ -6,6 +6,7 @@ import { NodeId, SIXTY, pointAdd, pointDist } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State } from "./Store";
+import { reflowConnectors } from "./ReflowConnector";
 
 function maybeSpliceValue<T>(array: T[], value: T) {
 	const index = array.indexOf(value);
@@ -195,9 +196,28 @@ export const matchBuildingToInput = (producerId: NodeId, inputIndex: number) => 
 	const { rate } = producer.inputFlows()[inputIndex];
 	const desiredRate = sumConnections(draft, producer.inputs[inputIndex]);
 
-	const buildingDesiredRate = producer.rate.div(rate).mul(desiredRate);
-	if (buildingDesiredRate.gt(BigRat.ZERO)) {
+	if (rate.gt(desiredRate)) {
+		const buildingDesiredRate = producer.rate.div(rate).mul(desiredRate);
 		producer.rate = buildingDesiredRate;
+		reflowConnectors(draft, producer.inputsAndOutputs());
+		return;
+	}
+
+	// try to fan-fix from other end
+	const altNet = producer.inputs[inputIndex].reduce((total, connectorId) => {
+		const connector = draft.connectors.get(connectorId)!;
+		const otherProducer = draft.producers.get(connector.input)!;
+		const otherProduction = otherProducer.outputFlows()[connector.inputIndex].rate;
+		const otherConsumption = sumConnections(draft, otherProducer.outputs[connector.inputIndex]);
+		return total.add(otherProduction).sub(otherConsumption);
+	}, BigRat.ZERO);
+
+	if (altNet.sign() > 0) {
+		const altDesiredRate = rate.add(altNet);
+		const buildingDesiredRate = producer.rate.div(rate).mul(altDesiredRate);
+		producer.rate = buildingDesiredRate;
+		reflowConnectors(draft, producer.inputsAndOutputs());
+		return;
 	}
 };
 
@@ -207,9 +227,28 @@ export const matchBuildingToOutput = (producerId: NodeId, outputIndex: number) =
 	const { rate } = producer.outputFlows()[outputIndex];
 	const desiredRate = sumConnections(draft, producer.outputs[outputIndex]);
 
-	const buildingDesiredRate = producer.rate.div(rate).mul(desiredRate);
-	if (buildingDesiredRate.gt(BigRat.ZERO)) {
+	if (rate.gt(desiredRate)) {
+		const buildingDesiredRate = producer.rate.div(rate).mul(desiredRate);
 		producer.rate = buildingDesiredRate;
+		reflowConnectors(draft, producer.inputsAndOutputs());
+		return;
+	}
+
+	// try to fan-fix from other end
+	const altNet = producer.outputs[outputIndex].reduce((total, connectorId) => {
+		const connector = draft.connectors.get(connectorId)!;
+		const otherProducer = draft.producers.get(connector.output)!;
+		const otherConsumption = otherProducer.inputFlows()[connector.outputIndex].rate;
+		const otherProduction = sumConnections(draft, otherProducer.inputs[connector.outputIndex]);
+		return total.add(otherConsumption).sub(otherProduction);
+	}, BigRat.ZERO);
+
+	if (altNet.sign() > 0) {
+		const altDesiredRate = rate.add(altNet);
+		const buildingDesiredRate = producer.rate.div(rate).mul(altDesiredRate);
+		producer.rate = buildingDesiredRate;
+		reflowConnectors(draft, producer.inputsAndOutputs());
+		return;
 	}
 };
 

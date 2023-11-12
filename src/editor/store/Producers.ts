@@ -34,6 +34,15 @@ export abstract class Producer implements Point {
 	abstract getDrawing(): ProducerDrawing;
 
 	abstract canCombineWith(other: Producer): boolean;
+
+	*inputsAndOutputs() {
+		for (const inputList of this.inputs) {
+			yield* inputList;
+		}
+		for (const outputList of this.outputs) {
+			yield* outputList;
+		}
+	}
 }
 
 export class ProductionBuilding extends Producer {
