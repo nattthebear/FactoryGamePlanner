@@ -246,5 +246,6 @@ export function connectSolution(problem: Problem, solution: Solution): State {
 		wip: { type: "none" },
 		producers,
 		connectors,
+		buses: new Map(),
 	};
 }

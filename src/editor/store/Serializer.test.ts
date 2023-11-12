@@ -11,6 +11,7 @@ import { BigRat } from "../../math/BigRat";
 import { Recipes } from "../../../data/generated/recipes";
 import { addProducer, emptyToSink } from "./Actions";
 import { Connector } from "./Connectors";
+import { Bus } from "./Bus";
 
 function assertConnectorEqual(a: Connector, b: Connector) {
 	assert(a.rate.eq(b.rate));
@@ -43,7 +44,14 @@ function assertProducerEqual(a: Producer, b: Producer) {
 	}
 }
 
-function assertMapEqual<V>(a: Map<any, V>, b: Map<any, V>, callback: (a: V, b: V) => void) {
+function assertBusEqual(a: Bus, b: Bus) {
+	assert.equal(a.x1, b.x1);
+	assert.equal(a.x2, b.x2);
+	assert.equal(a.y, b.y);
+	assert.equal(a.terminals.length, b.terminals.length);
+}
+
+function assertMapEqual<V>(a: Map<any, V>, b: Map<any, V>, assertElementEqual: (a: V, b: V) => void) {
 	// Ids will be different.
 	// We always serialize in order and deserialize in order, so we can compare pairwise here
 	assert.equal(a.size, b.size, "Length mismatch");
@@ -58,13 +66,14 @@ function assertMapEqual<V>(a: Map<any, V>, b: Map<any, V>, callback: (a: V, b: V
 		if (va.done || vb.done) {
 			assert.fail("Length mismatch");
 		}
-		callback(va.value, vb.value);
+		assertElementEqual(va.value, vb.value);
 	}
 }
 
 function assertStateEqual(a: State, b: State) {
 	assertMapEqual(a.connectors, b.connectors, assertConnectorEqual);
 	assertMapEqual(a.producers, b.producers, assertProducerEqual);
+	assertMapEqual(a.buses, b.buses, assertBusEqual);
 }
 
 describe("serialize + deserialize", () => {

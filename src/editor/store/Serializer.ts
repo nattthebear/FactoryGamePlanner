@@ -17,6 +17,7 @@ import {
 } from "../../base64";
 import { BigRat } from "../../math/BigRat";
 import { FACTORY_MAX, FACTORY_MIN } from "../../util";
+import { Bus, compareTerminals } from "./Bus";
 import { generateId, NodeId } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
@@ -54,6 +55,8 @@ export function serialize(state: State) {
 
 	const writePId = makeWMap(state.producers.keys());
 	writeBigPos(w, BigInt(writePId.BITS));
+	const writeCId = makeWMap(state.connectors.keys());
+	writeBigPos(w, BigInt(writeCId.BITS));
 
 	writeBigPos(w, BigInt(state.connectors.size));
 	for (const c of state.connectors.values()) {
@@ -82,6 +85,27 @@ export function serialize(state: State) {
 	}
 	w.write(2, 3);
 
+	writeBigPos(w, BigInt(state.buses.size));
+	for (const b of state.buses.values()) {
+		let x = b.x1;
+		saveX(w, x);
+		saveY(w, b.y);
+		const terminals = b.terminals.slice();
+		terminals.sort(compareTerminals);
+		for (let i = 0; i < terminals.length; i++) {
+			const nextx = terminals[i].x;
+			const diff = nextx - x;
+			writeBigPos(w, BigInt(diff));
+			x = nextx;
+		}
+		writeBigPos(w, BigInt(b.x2 - x));
+		writeBigPos(w, 0n);
+
+		for (const { id } of terminals) {
+			writeCId(w, id);
+		}
+	}
+
 	return w.finish();
 }
 
@@ -97,6 +121,7 @@ export function deserialize(encoded: string) {
 	const state = makeEmptyState();
 
 	const P_BITS = Number(readBigPos(r));
+	const C_BITS = Number(readBigPos(r));
 
 	const producers: Producer[] = [];
 
@@ -186,8 +211,41 @@ export function deserialize(encoded: string) {
 		outputp.inputs[c.outputIndex].push(c.id);
 	}
 
+	const buses: Bus[] = [];
+	const busCount = Number(readBigPos(r));
+	for (let i = 0; i < busCount; i++) {
+		let x = loadX(r);
+		const y = loadY(r);
+		const x1 = x;
+		const terminalX: number[] = [];
+		while (true) {
+			const diffx = Number(readBigPos(r));
+			if (diffx === 0) {
+				break;
+			}
+			const nextX = x + diffx;
+			terminalX.push(nextX);
+			x = nextX;
+		}
+		const x2 = terminalX.pop();
+		if (x2 == null) {
+			console.warn(`Decode:  Bus with no x2`);
+			return null;
+		}
+
+		const bus = new Bus(x1, x2, y);
+		for (const x of terminalX) {
+			const terminalIndex = r.read(C_BITS);
+			bus.terminals.push({
+				x,
+				id: connectors[terminalIndex].id,
+			});
+		}
+	}
+
 	state.connectors = new Map(connectors.map((c) => [c.id, c]));
 	state.producers = new Map(producers.map((p) => [p.id, p]));
+	state.buses = new Map(buses.map((b) => [b.id, b]));
 	reflowConnectors(state, state.connectors.keys());
 
 	return state;

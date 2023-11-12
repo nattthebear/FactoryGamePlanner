@@ -7,6 +7,7 @@ import { makeStore, makeStoreWithHashRouter, ROUTER_EDITOR_STORE, Selector } fro
 import { Producer, Sink, Source } from "./Producers";
 import { deserialize, serialize } from "./Serializer";
 import { Item } from "../../../data/types";
+import { Bus } from "./Bus";
 
 export type MouseOverInfo =
 	| { type: "none" }
@@ -33,6 +34,7 @@ export interface State {
 	wip: WipInfo;
 	producers: Map<NodeId, Producer>;
 	connectors: Map<NodeId, Connector>;
+	buses: Map<NodeId, Bus>;
 }
 
 const initialMouseOver: MouseOverInfo = { type: "none" };
@@ -46,6 +48,7 @@ export const makeEmptyState = (): State => ({
 	wip: { type: "none" },
 	producers: new Map(),
 	connectors: new Map(),
+	buses: new Map(),
 });
 
 const { useSelector, update, getStateRaw } = makeStoreWithHashRouter(
