@@ -88,6 +88,10 @@ export const selectConnectorIds: Selector<State, NodeId[]> = {
 	select: (state) => [...state.connectors.keys()],
 	equal: arrayEqual,
 };
+export const selectBusIds: Selector<State, NodeId[]> = {
+	select: (state) => [...state.buses.keys()],
+	equal: arrayEqual,
+};
 
 export const selectProducerLocation = (id: NodeId): Selector<State, Point> => ({
 	select: (state) => {

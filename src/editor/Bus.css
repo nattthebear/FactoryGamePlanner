@@ -1,0 +1,7 @@
+g.bus {
+	& > .outline {
+		stroke: #666;
+		stroke-width: 3px;
+		fill: #eee;
+	}
+}

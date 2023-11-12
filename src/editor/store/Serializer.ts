@@ -95,10 +95,10 @@ export function serialize(state: State) {
 		for (let i = 0; i < terminals.length; i++) {
 			const nextx = terminals[i].x;
 			const diff = nextx - x;
-			writeBigPos(w, BigInt(diff));
+			writeBigPos(w, BigInt(diff >>> 0));
 			x = nextx;
 		}
-		writeBigPos(w, BigInt(b.x2 - x));
+		writeBigPos(w, BigInt((b.x2 - x) >>> 0));
 		writeBigPos(w, 0n);
 
 		for (const { id } of terminals) {
@@ -241,6 +241,7 @@ export function deserialize(encoded: string) {
 				id: connectors[terminalIndex].id,
 			});
 		}
+		buses.push(bus);
 	}
 
 	state.connectors = new Map(connectors.map((c) => [c.id, c]));

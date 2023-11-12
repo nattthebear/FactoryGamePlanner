@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "preact/hooks";
 import { BigRat } from "../math/BigRat";
 import {
+	addBus,
 	addConnector,
 	addProducer,
 	adjustConnectorClosest,
@@ -32,6 +33,7 @@ import { KeyButton } from "./KeyButton";
 import "./HotKeyActions.css";
 import { chooseBuildingRate, chooseSourceSinkRate } from "../component/RateChoser";
 import { reflowConnectors } from "./store/ReflowConnector";
+import { Bus } from "./store/Bus";
 
 export function HotKeyActions() {
 	const currentScreenCoords = useRef<Point | null>(null);
@@ -136,6 +138,17 @@ export function HotKeyActions() {
 						}}
 					>
 						Add Sink
+					</KeyButton>
+					<KeyButton
+						keyName="s"
+						onAct={(wasClick) => {
+							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const INITIAL_WIDTH = 200;
+							const bus = new Bus(p.x, p.x + INITIAL_WIDTH, p.y);
+							update(addBus(bus));
+						}}
+					>
+						Add Bus
 					</KeyButton>
 				</>
 			);

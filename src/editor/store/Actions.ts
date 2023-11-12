@@ -7,6 +7,7 @@ import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State } from "./Store";
 import { reflowConnectors } from "./ReflowConnector";
+import { Bus } from "./Bus";
 
 function maybeSpliceValue<T>(array: T[], value: T) {
 	const index = array.indexOf(value);
@@ -79,6 +80,10 @@ export const removeConnector = (connectorId: NodeId) => (draft: Draft<State>) =>
 	maybeSpliceValue(outputSide, connectorId);
 	draft.connectors.delete(connectorId);
 	reflowConnectors(draft, [...inputSide, ...outputSide]);
+};
+
+export const addBus = (value: Bus) => (draft: Draft<State>) => {
+	draft.buses.set(value.id, value);
 };
 
 const FIXUP_BUILDING_X_OFFSET = 300;

@@ -1,4 +1,5 @@
 import { Point } from "../util";
+import type { Bus } from "./store/Bus";
 
 export interface ProducerDrawing {
 	/** `d` value for the main path.  Starts at the center of the building */
@@ -54,6 +55,9 @@ const rotations = [
 ];
 function turn() {
 	rotationIndex = (rotationIndex + 1) % 4;
+}
+function turnOpposite() {
+	rotationIndex = (rotationIndex + 3) % 4;
 }
 function p(x: number, y: number) {
 	const rx = rotations[rotationIndex];
@@ -475,3 +479,36 @@ export const LiquidAttach = drawShape(() => {
 
 	draw("z");
 }).d;
+
+export const BUS_HEIGHT = 40;
+
+const BUS_TEMP = 20;
+
+export const MakeBusDrawing = (bus: Bus) =>
+	drawShape(() => {
+		const width = bus.x2 - bus.x1;
+
+		draw("M", -BUS_TEMP * 2, 0);
+
+		lines.straight(BUS_HEIGHT / 2);
+		corners.round(BUS_TEMP);
+		corners.round(BUS_TEMP);
+		turnOpposite();
+
+		lines.straight(width);
+		turnOpposite();
+
+		corners.round(BUS_TEMP);
+		corners.round(BUS_TEMP);
+		lines.straight(BUS_HEIGHT);
+		corners.round(BUS_TEMP);
+		corners.round(BUS_TEMP);
+		turnOpposite();
+
+		lines.straight(width);
+		turnOpposite();
+
+		corners.round(BUS_TEMP);
+		corners.round(BUS_TEMP);
+		lines.straight(BUS_HEIGHT / 2);
+	}).d;

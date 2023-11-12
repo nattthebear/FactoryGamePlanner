@@ -6,7 +6,7 @@ import { BigRat } from "../math/BigRat";
 import { addProducer } from "./store/Actions";
 import { SIXTY, toTranslation } from "./store/Common";
 import { ProductionBuilding, Sink, Source } from "./store/Producers";
-import { selectConnectorIds, selectProducerIds, update, useSelector } from "./store/Store";
+import { selectBusIds, selectConnectorIds, selectProducerIds, update, useSelector } from "./store/Store";
 import {
 	BUILDING_MAX,
 	BUILDING_MIN,
@@ -24,6 +24,7 @@ import "./FactoryEditor.css";
 import { HotKeyActions } from "./HotKeyActions";
 import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
+import { Bus } from "./Bus";
 
 const ZOOM_MAX = 5;
 const ZOOM_MIN = 1 / 10;
@@ -67,6 +68,7 @@ function onDrag({ x, y }: Point) {
 export function FactoryEditor() {
 	const producers = useSelector(selectProducerIds);
 	const connectors = useSelector(selectConnectorIds);
+	const buses = useSelector(selectBusIds);
 	const viewport = useSelector((s) => s.viewport);
 	const viewportElementRef = useRef<HTMLDivElement | null>(null);
 	const svgRef = useRef<SVGSVGElement | null>(null);
@@ -74,6 +76,7 @@ export function FactoryEditor() {
 
 	const producerComponents = useMemo(() => producers.map((id) => <Producer key={id} id={id} />), [producers]);
 	const connectorComponents = useMemo(() => connectors.map((id) => <Connector key={id} id={id} />), [connectors]);
+	const busComponents = useMemo(() => buses.map((id) => <Bus key={id} id={id} />), [buses]);
 
 	function onWheel(ev: WheelEvent) {
 		ev.preventDefault();
@@ -110,6 +113,7 @@ export function FactoryEditor() {
 					{backGrid}
 				</g>
 				{connectorComponents}
+				{busComponents}
 				{producerComponents}
 			</svg>
 			<HotKeyActions />
