@@ -2,6 +2,7 @@ import { State } from "./Store";
 import { Draft } from "../../immer";
 import { NodeId } from "./Common";
 import { BigRat } from "../../math/BigRat";
+import { Dictionary, solveStandardFormMutate } from "../../solver/Dictionary";
 
 /**
  * Recomputes the rate some connectors, and other connectors connected to them.
@@ -11,36 +12,76 @@ import { BigRat } from "../../math/BigRat";
  */
 export function reflowConnectors(draft: Draft<State>, connectorIds: Iterable<NodeId>) {
 	const todo = new Set<NodeId>(connectorIds);
+	const connectorMaps = new Map<NodeId, number>();
 
-	const ratesUsed = new Map<string, BigRat>();
+	const producerTerminals = new Map<
+		string,
+		{
+			rate: BigRat;
+			connectors: NodeId[];
+		}
+	>();
+
+	const nonBasic = [];
+	const basic = [];
+
+	let nextVariable = 1;
 
 	for (const id of todo) {
 		const c = draft.connectors.get(id)!;
+		connectorMaps.set(id, nextVariable);
+		nonBasic.push(nextVariable++);
+
 		const pin = draft.producers.get(c.input)!;
 		const pout = draft.producers.get(c.output)!;
 
 		const keyIn = `i-${c.input}-${c.inputIndex}`;
 		const keyOut = `o-${c.output}-${c.outputIndex}`;
 
-		if (!ratesUsed.has(keyIn)) {
-			ratesUsed.set(keyIn, pin.outputFlows()[c.inputIndex].rate);
+		if (!producerTerminals.has(keyIn)) {
+			const connectors = pin.outputs[c.inputIndex];
+			producerTerminals.set(keyIn, { rate: pin.outputFlows()[c.inputIndex].rate, connectors });
+			for (const otherId of connectors) {
+				todo.add(otherId);
+			}
 		}
-		if (!ratesUsed.has(keyOut)) {
-			ratesUsed.set(keyOut, pout.inputFlows()[c.outputIndex].rate);
+		if (!producerTerminals.has(keyOut)) {
+			const connectors = pout.inputs[c.outputIndex];
+			producerTerminals.set(keyOut, { rate: pout.inputFlows()[c.outputIndex].rate, connectors });
+			for (const otherId of connectors) {
+				todo.add(otherId);
+			}
 		}
-		const rateIn = ratesUsed.get(keyIn)!;
-		const rateOut = ratesUsed.get(keyOut)!;
-		const newRate = rateIn.lt(rateOut) ? rateIn : rateOut;
-		c.rate = newRate;
-		ratesUsed.set(keyIn, rateIn.sub(newRate));
-		ratesUsed.set(keyOut, rateOut.sub(newRate));
+	}
 
-		for (const otherId of pin.outputs[c.inputIndex]) {
-			todo.add(otherId);
+	const nCols = todo.size + 1;
+	const nRows = producerTerminals.size + 1;
+
+	const coefficients = Array<BigRat>(nCols * nRows).fill(BigRat.ZERO);
+
+	{
+		let row = 0;
+		for (const { rate, connectors } of producerTerminals.values()) {
+			basic.push(nextVariable++);
+			for (const id of connectors) {
+				const col = connectorMaps.get(id)! - 1;
+				coefficients[row * nCols + col] = BigRat.MINUS_ONE;
+			}
+			coefficients[(row + 1) * nCols - 1] = rate;
+			row += 1;
 		}
-		for (const otherId of pout.inputs[c.outputIndex]) {
-			todo.add(otherId);
+		for (let col = 0; col < nCols - 1; col++) {
+			coefficients[row * nCols + col] = BigRat.ONE;
 		}
+	}
+
+	const dictionary = solveStandardFormMutate(new Dictionary(basic, nonBasic, false, coefficients))!;
+
+	for (const [connectorId, variableName] of connectorMaps) {
+		const connector = draft.connectors.get(connectorId)!;
+		const row = dictionary.basic.indexOf(variableName);
+		const rate = dictionary.coefficients[(row + 1) * nCols - 1];
+		connector.rate = rate;
 	}
 
 	return todo;

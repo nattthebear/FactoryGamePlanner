@@ -65,6 +65,26 @@ function makeMapping<T>(x: T[], y: T[]) {
 	return ret;
 }
 
+/*
+Standard form example
+Given
+	D x1 + E x2 + F x3 <= G
+	H x1 + I x2 + J x3 <= K
+	x1, x2, x3 >= 0
+	
+	Maximize L x1 + M x2 + N x3
+
+basic: [4, 5]
+nonBasic: [1, 2, 3]
+isDualObjective: false
+coefficients:
+[
+	-D, -E, -F, G,
+	-H, -I, -J, K,
+	L, M, N, 0,
+]
+
+*/
 export class Dictionary {
 	/** names of the exiting variables, top to bottom. */
 	basic: number[];
@@ -81,6 +101,10 @@ export class Dictionary {
 
 	/**
 	 * Create a new Dictionary.  All passed parameters will be owned by the dictionary.
+	 * @param basic names of the exiting variables, top to bottom.  Together with `nonBasic`, should use integers >= 1 consecutively.  0 must not be used.
+	 * @param nonBasic names of the entering variables, left to right.  Together with `basic`, should use integers >= 1 consecutively.  0 must not be used.
+	 * @param isDualObjective if true, there is a second objective row below the first one.
+	 * @param coefficients All coefficients, left to right then top to bottom.  The last column contains constants, and the last rows are objective rows.
 	 */
 	constructor(basic: number[], nonBasic: number[], isDualObjective: boolean, coefficients?: BigRat[]) {
 		this.basic = basic;
@@ -467,7 +491,7 @@ export class Dictionary {
 	}
 }
 
-/** Convenience wrapper around `solveStandardFormMutate` when yielding is not needed */
+/** Convenience wrapper around `solveStandardFormMutateCoop` when yielding is not needed */
 export function solveStandardFormMutate(dict: Dictionary) {
 	const iter = solveStandardFormMutateCoop(dict);
 	while (true) {
