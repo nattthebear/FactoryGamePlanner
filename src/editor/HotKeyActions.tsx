@@ -145,7 +145,7 @@ export function HotKeyActions() {
 						onAct={(wasClick) => {
 							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
 							const INITIAL_WIDTH = 200;
-							const bus = new Bus(p.x, p.x + INITIAL_WIDTH, p.y);
+							const bus = new Bus(p.x, p.y, INITIAL_WIDTH);
 							update(addBus(bus));
 						}}
 					>

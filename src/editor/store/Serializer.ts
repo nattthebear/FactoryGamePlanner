@@ -87,18 +87,18 @@ export function serialize(state: State) {
 
 	writeBigPos(w, BigInt(state.buses.size));
 	for (const b of state.buses.values()) {
-		let x = b.x1;
-		saveX(w, x);
+		saveX(w, b.x);
 		saveY(w, b.y);
 		const terminals = b.terminals.slice();
 		terminals.sort(compareTerminals);
+		let dx = 0;
 		for (let i = 0; i < terminals.length; i++) {
-			const nextx = terminals[i].x;
-			const diff = nextx - x;
+			const ndx = terminals[i].dx;
+			const diff = ndx - dx;
 			writeBigPos(w, BigInt(diff >>> 0));
-			x = nextx;
+			dx = ndx;
 		}
-		writeBigPos(w, BigInt((b.x2 - x) >>> 0));
+		writeBigPos(w, BigInt((b.width - dx) >>> 0));
 		writeBigPos(w, 0n);
 
 		for (const { id } of terminals) {
@@ -214,30 +214,31 @@ export function deserialize(encoded: string) {
 	const buses: Bus[] = [];
 	const busCount = Number(readBigPos(r));
 	for (let i = 0; i < busCount; i++) {
-		let x = loadX(r);
+		const x = loadX(r);
 		const y = loadY(r);
-		const x1 = x;
-		const terminalX: number[] = [];
+
+		const terminalDx: number[] = [];
+		let dx = 0;
 		while (true) {
-			const diffx = Number(readBigPos(r));
-			if (diffx === 0) {
+			const value = Number(readBigPos(r));
+			if (value === 0) {
 				break;
 			}
-			const nextX = x + diffx;
-			terminalX.push(nextX);
-			x = nextX;
+			const ndx = dx + value;
+			terminalDx.push(ndx);
+			dx = ndx;
 		}
-		const x2 = terminalX.pop();
-		if (x2 == null) {
-			console.warn(`Decode:  Bus with no x2`);
+		const width = terminalDx.pop();
+		if (width == null) {
+			console.warn(`Decode:  Bus with no width`);
 			return null;
 		}
 
-		const bus = new Bus(x1, x2, y);
-		for (const x of terminalX) {
+		const bus = new Bus(x, y, width);
+		for (const dx of terminalDx) {
 			const terminalIndex = r.read(C_BITS);
 			bus.terminals.push({
-				x,
+				dx,
 				id: connectors[terminalIndex].id,
 			});
 		}

@@ -1,28 +1,29 @@
 import { immerable } from "../../immer";
+import { Point } from "../../util";
 import { generateId, NodeId } from "./Common";
 
 export interface BusTerminal {
-	x: number;
+	dx: number;
 	id: NodeId;
 }
 
 export function compareTerminals(a: BusTerminal, b: BusTerminal) {
-	return a.x - b.x;
+	return a.dx - b.dx;
 }
 
-export class Bus {
+export class Bus implements Point {
 	[immerable] = true;
 	id = generateId();
 
-	x1: number;
-	x2: number;
+	x: number;
 	y: number;
+	width: number;
 
 	terminals: BusTerminal[] = [];
 
-	constructor(x1: number, x2: number, y: number) {
-		this.x1 = x1;
-		this.x2 = x2;
+	constructor(x: number, y: number, width: number) {
+		this.x = x;
 		this.y = y;
+		this.width = width;
 	}
 }

@@ -486,7 +486,7 @@ const BUS_TEMP = 20;
 
 export const MakeBusDrawing = (bus: Bus) =>
 	drawShape(() => {
-		const width = bus.x2 - bus.x1;
+		const { width } = bus;
 
 		draw("M", -BUS_TEMP * 2, 0);
 
