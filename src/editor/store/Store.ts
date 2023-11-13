@@ -17,7 +17,8 @@ export type MouseOverInfo =
 			producerId: NodeId;
 	  }
 	| { type: "producer:connection:input" | "producer:connection:output"; producerId: NodeId; index: number }
-	| { type: "connector"; connectorId: NodeId };
+	| { type: "connector"; connectorId: NodeId }
+	| { type: "bus"; busId: NodeId };
 
 export type WipInfo =
 	| { type: "none" }
@@ -115,7 +116,8 @@ export type MouseOverObject =
 			connectors: Connector[];
 			flow: Flow;
 	  }
-	| { type: "connector"; connector: Connector };
+	| { type: "connector"; connector: Connector }
+	| { type: "bus"; bus: Bus };
 
 export function selectMouseOverObject(state: State): MouseOverObject {
 	const { mouseOver } = state;
@@ -153,6 +155,10 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 				type,
 				connector,
 			};
+		}
+		case "bus": {
+			const bus = state.buses.get(mouseOver.busId)!;
+			return { type, bus };
 		}
 	}
 }

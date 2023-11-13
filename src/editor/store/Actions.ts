@@ -86,6 +86,10 @@ export const addBus = (value: Bus) => (draft: Draft<State>) => {
 	draft.buses.set(value.id, value);
 };
 
+export const removeBus = (busId: NodeId) => (draft: Draft<State>) => {
+	draft.buses.delete(busId);
+};
+
 const FIXUP_BUILDING_X_OFFSET = 300;
 const FIXUP_SOURCE_X_OFFSET = 200;
 

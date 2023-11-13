@@ -1,5 +1,5 @@
 import { NodeId, toTranslation } from "./store/Common";
-import { useSelector } from "./store/Store";
+import { update, useSelector } from "./store/Store";
 import { MakeBusDrawing } from "./ProducerArt";
 
 import "./Bus.css";
@@ -11,7 +11,18 @@ export function Bus({ id }: { id: NodeId }) {
 
 	return (
 		<g class="bus" style={`transform: ${toTranslation({ x: x1, y })}`}>
-			<path class="outline" d={MakeBusDrawing(bus)} />
+			<path
+				class="outline"
+				d={MakeBusDrawing(bus)}
+				onMouseEnter={() =>
+					update((draft) => {
+						draft.mouseOver = {
+							type: "bus",
+							busId: id,
+						};
+					})
+				}
+			/>
 		</g>
 	);
 }

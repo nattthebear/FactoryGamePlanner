@@ -12,6 +12,7 @@ import {
 	matchBuildingToInput,
 	matchBuildingToOutput,
 	mergeProducers,
+	removeBus,
 	removeConnector,
 	removeProducer,
 	splitOffConnectorClosest,
@@ -179,7 +180,7 @@ export function HotKeyActions() {
 				<>
 					<KeyButton
 						keyName="x"
-						onAct={async () => {
+						onAct={() => {
 							const { producer } = o;
 							update(removeProducer(producer.id));
 						}}
@@ -384,7 +385,7 @@ export function HotKeyActions() {
 				<>
 					<KeyButton
 						keyName="x"
-						onAct={async () => {
+						onAct={() => {
 							const { connector } = o;
 							update(removeConnector(connector.id));
 						}}
@@ -410,6 +411,21 @@ export function HotKeyActions() {
 						}}
 					>
 						Split connector off closest building
+					</KeyButton>
+				</>
+			);
+		},
+		bus: (o, w) => {
+			return (
+				<>
+					<KeyButton
+						keyName="x"
+						onAct={() => {
+							const { bus } = o;
+							update(removeBus(bus.id));
+						}}
+					>
+						Remove Bus
 					</KeyButton>
 				</>
 			);
