@@ -479,36 +479,3 @@ export const LiquidAttach = drawShape(() => {
 
 	draw("z");
 }).d;
-
-export const BUS_HEIGHT = 40;
-
-const BUS_TEMP = 20;
-
-export const MakeBusDrawing = (bus: Bus) =>
-	drawShape(() => {
-		const { width } = bus;
-
-		draw("M", -BUS_TEMP * 2, 0);
-
-		lines.straight(BUS_HEIGHT / 2);
-		corners.round(BUS_TEMP);
-		corners.round(BUS_TEMP);
-		turnOpposite();
-
-		lines.straight(width);
-		turnOpposite();
-
-		corners.round(BUS_TEMP);
-		corners.round(BUS_TEMP);
-		lines.straight(BUS_HEIGHT);
-		corners.round(BUS_TEMP);
-		corners.round(BUS_TEMP);
-		turnOpposite();
-
-		lines.straight(width);
-		turnOpposite();
-
-		corners.round(BUS_TEMP);
-		corners.round(BUS_TEMP);
-		lines.straight(BUS_HEIGHT / 2);
-	}).d;

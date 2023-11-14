@@ -1,6 +1,5 @@
 import { NodeId, toTranslation } from "./store/Common";
 import { update, useSelector } from "./store/Store";
-import { MakeBusDrawing } from "./ProducerArt";
 import { useDrag } from "../hook/drag";
 import { BUILDING_MAX, BUILDING_MIN, clamp } from "../util";
 
@@ -101,22 +100,6 @@ export function Bus({ id }: { id: NodeId }) {
 					}}
 				/>
 			</g>
-			{/* <path
-				class="outline"
-				d={MakeBusDrawing(bus)}
-				onMouseDown={(ev) => {
-					ev.stopPropagation();
-					dragStart(ev);
-				}}
-				onMouseEnter={() =>
-					update((draft) => {
-						draft.mouseOver = {
-							type: "bus",
-							busId: id,
-						};
-					})
-				}
-			/> */}
 		</g>
 	);
 }
