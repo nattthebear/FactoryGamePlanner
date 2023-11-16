@@ -17,7 +17,7 @@ import {
 } from "../../base64";
 import { BigRat } from "../../math/BigRat";
 import { FACTORY_MAX, FACTORY_MIN } from "../../util";
-import { Bus, compareTerminals } from "./Bus";
+import { Bus, BusTerminal, compareTerminals } from "./Bus";
 import { generateId, NodeId } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
@@ -91,19 +91,18 @@ export function serialize(state: State) {
 		saveY(w, b.y);
 		const terminals = b.terminals.slice();
 		terminals.sort(compareTerminals);
+		writeBigPos(w, BigInt(terminals.length));
+
 		let dx = 0;
 		for (let i = 0; i < terminals.length; i++) {
-			const ndx = terminals[i].dx;
-			const diff = ndx - dx;
-			writeBigPos(w, BigInt(diff >>> 0));
-			dx = ndx;
+			const v1 = terminals[i].rxIn - dx;
+			const v2 = terminals[i].rxOut - dx - v1;
+			writeBigPos(w, BigInt(v1 >>> 0));
+			writeBigPos(w, BigInt(v2 >>> 0));
+			writeCId(w, terminals[i].id);
+			dx += v1;
 		}
 		writeBigPos(w, BigInt((b.width - dx) >>> 0));
-		writeBigPos(w, 0n);
-
-		for (const { id } of terminals) {
-			writeCId(w, id);
-		}
 	}
 
 	return w.finish();
@@ -217,31 +216,25 @@ export function deserialize(encoded: string) {
 		const x = loadX(r);
 		const y = loadY(r);
 
-		const terminalDx: number[] = [];
+		const terminalCount = Number(readBigPos(r));
 		let dx = 0;
-		while (true) {
-			const value = Number(readBigPos(r));
-			if (value === 0) {
-				break;
-			}
-			const ndx = dx + value;
-			terminalDx.push(ndx);
-			dx = ndx;
-		}
-		const width = terminalDx.pop();
-		if (width == null) {
-			console.warn(`Decode:  Bus with no width`);
-			return null;
+		const terminals: BusTerminal[] = [];
+
+		for (let j = 0; j < terminalCount; j++) {
+			const v1 = Number(readBigPos(r));
+			const v2 = Number(readBigPos(r));
+			const connectorIndex = r.read(C_BITS);
+			terminals.push({
+				rxIn: dx + v1,
+				rxOut: dx + v1 + v2,
+				id: connectors[connectorIndex].id,
+			});
+			dx += v1;
 		}
 
+		const width = dx + Number(readBigPos(r));
 		const bus = new Bus(x, y, width);
-		for (const dx of terminalDx) {
-			const terminalIndex = r.read(C_BITS);
-			bus.terminals.push({
-				dx,
-				id: connectors[terminalIndex].id,
-			});
-		}
+		bus.terminals = terminals;
 		buses.push(bus);
 	}
 

@@ -3,12 +3,13 @@ import { Point } from "../../util";
 import { generateId, NodeId } from "./Common";
 
 export interface BusTerminal {
-	dx: number;
+	rxIn: number;
+	rxOut: number;
 	id: NodeId;
 }
 
 export function compareTerminals(a: BusTerminal, b: BusTerminal) {
-	return a.dx - b.dx;
+	return a.rxIn - b.rxIn;
 }
 
 export class Bus implements Point {
