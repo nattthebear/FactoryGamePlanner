@@ -123,12 +123,13 @@ export const selectConnectorBusTerminal = (id: NodeId): Selector<State, Connecto
 		for (const bus of state.buses.values()) {
 			const t = bus.terminals.find((t) => t.id === id);
 			if (t) {
+				const xShift = bus.width * 0.5;
 				return {
 					in: {
-						x: bus.x + t.rxIn,
+						x: bus.x + t.rxIn - xShift,
 						y: bus.y,
 					},
-					out: { x: bus.x + t.rxOut, y: bus.y },
+					out: { x: bus.x + t.rxOut - xShift, y: bus.y },
 				};
 			}
 		}

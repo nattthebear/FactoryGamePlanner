@@ -8,7 +8,7 @@ import "./Bus.css";
 const resizeRect = <rect x={-10} y={-30} width={20} height={60} />;
 
 const MIN_WIDTH = 200;
-const MAX_WIDTH = 800;
+const MAX_WIDTH = 2000;
 
 export function Bus({ id }: { id: NodeId }) {
 	const bus = useSelector((s) => s.buses.get(id)!);
@@ -32,9 +32,14 @@ export function Bus({ id }: { id: NodeId }) {
 			const p = draft.buses.get(id)!;
 			const { x: ox, width: ow } = p;
 			const nw = clamp(ow - x / zoom, MIN_WIDTH, MAX_WIDTH);
+			const dw = ow - nw;
 
-			p.x = ox + (ow - nw) / 2;
+			p.x = ox + dw / 2;
 			p.width = nw;
+			for (const t of p.terminals) {
+				t.rxIn -= dw;
+				t.rxOut -= dw;
+			}
 		});
 		return true;
 	});
