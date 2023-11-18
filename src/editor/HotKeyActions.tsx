@@ -379,6 +379,26 @@ export function HotKeyActions() {
 		},
 		connector: (o, w) => {
 			if (w.type !== "none") {
+				if (w.type === "bus:connector") {
+					return (
+						<KeyButton
+							keyName="n"
+							disabled={!!o.bus}
+							onAct={() => {
+								update((draft) => {
+									draft.buses.get(w.busId)!.terminals.push({
+										rxIn: 50,
+										rxOut: 100,
+										id: o.connector.id,
+									});
+									draft.wip = { type: "none" };
+								});
+							}}
+						>
+							Finish Connect to Bus
+						</KeyButton>
+					);
+				}
 				return null;
 			}
 			return (
@@ -412,10 +432,48 @@ export function HotKeyActions() {
 					>
 						Split connector off closest building
 					</KeyButton>
+					<KeyButton
+						keyName="n"
+						onAct={() => {
+							const { connector } = o;
+							update((draft) => {
+								if (o.bus) {
+									const { terminals } = draft.buses.get(o.bus.id)!;
+									terminals.splice(terminals.findIndex((t) => t.id === connector.id));
+								} else {
+									draft.wip = { type: "connector:bus", connectorId: connector.id };
+								}
+							});
+						}}
+					>
+						{o.bus ? "Disconnect from bus" : "Connect to Bus"}
+					</KeyButton>
 				</>
 			);
 		},
 		bus: (o, w) => {
+			if (w.type !== "none") {
+				if (w.type === "connector:bus") {
+					return (
+						<KeyButton
+							keyName="n"
+							onAct={() => {
+								update((draft) => {
+									draft.buses.get(o.bus.id)!.terminals.push({
+										rxIn: 50,
+										rxOut: 100,
+										id: w.connectorId,
+									});
+									draft.wip = { type: "none" };
+								});
+							}}
+						>
+							Finish Connect to Connector
+						</KeyButton>
+					);
+				}
+				return null;
+			}
 			return (
 				<>
 					<KeyButton
@@ -426,6 +484,17 @@ export function HotKeyActions() {
 						}}
 					>
 						Remove Bus
+					</KeyButton>
+					<KeyButton
+						keyName="n"
+						onAct={() => {
+							const { bus } = o;
+							update((draft) => {
+								draft.wip = { type: "bus:connector", busId: bus.id };
+							});
+						}}
+					>
+						Connect to Connector
 					</KeyButton>
 				</>
 			);

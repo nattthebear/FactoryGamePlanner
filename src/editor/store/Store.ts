@@ -24,7 +24,9 @@ export type WipInfo =
 	| { type: "none" }
 	| { type: "connector:input"; producerId: NodeId; index: number; item: Item }
 	| { type: "connector:output"; producerId: NodeId; index: number; item: Item }
-	| { type: "producer:merge"; producerId: NodeId };
+	| { type: "producer:merge"; producerId: NodeId }
+	| { type: "connector:bus"; connectorId: NodeId }
+	| { type: "bus:connector"; busId: NodeId };
 
 export interface State {
 	viewport: {
@@ -102,6 +104,39 @@ export const selectProducerLocation = (id: NodeId): Selector<State, Point> => ({
 	equal: pointEqual,
 });
 
+interface ConnectorBusTerminal {
+	in: Point;
+	out: Point;
+}
+function cbtEqual(a: ConnectorBusTerminal | null, b: ConnectorBusTerminal | null) {
+	if (!a) {
+		return !b;
+	}
+	if (!b) {
+		return false;
+	}
+	return pointEqual(a.in, b.in) && pointEqual(a.out, b.out);
+}
+export const selectConnectorBusTerminal = (id: NodeId): Selector<State, ConnectorBusTerminal | null> => ({
+	select: (state) => {
+		// todo: speed this up
+		for (const bus of state.buses.values()) {
+			const t = bus.terminals.find((t) => t.id === id);
+			if (t) {
+				return {
+					in: {
+						x: bus.x + t.rxIn,
+						y: bus.y,
+					},
+					out: { x: bus.x + t.rxOut, y: bus.y },
+				};
+			}
+		}
+		return null;
+	},
+	equal: cbtEqual,
+});
+
 export type MouseOverObject =
 	| { type: "none" }
 	| { type: "viewport" }
@@ -116,7 +151,7 @@ export type MouseOverObject =
 			connectors: Connector[];
 			flow: Flow;
 	  }
-	| { type: "connector"; connector: Connector }
+	| { type: "connector"; connector: Connector; bus: Bus | undefined }
 	| { type: "bus"; bus: Bus };
 
 export function selectMouseOverObject(state: State): MouseOverObject {
@@ -151,9 +186,21 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 		}
 		case "connector": {
 			const connector = state.connectors.get(mouseOver.connectorId)!;
+
+			// todo: speed this up
+			let foundBus = undefined;
+			for (const bus of state.buses.values()) {
+				const t = bus.terminals.find((t) => t.id === connector.id);
+				if (t) {
+					foundBus = bus;
+					break;
+				}
+			}
+
 			return {
 				type,
 				connector,
+				bus: foundBus,
 			};
 		}
 		case "bus": {
