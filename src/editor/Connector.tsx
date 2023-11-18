@@ -25,6 +25,9 @@ export function Connector({ id }: { id: NodeId }) {
 
 	if (busLoc) {
 		function renderPath(p1: Point, d1: Point, p2: Point, d2: Point) {
+			const tx = 0.125 * p1.x + 0.375 * (p1.x + d1.x) + 0.375 * (p2.x + d2.x) + 0.125 * p2.x;
+			const ty = 0.125 * p1.y + 0.375 * (p1.y + d1.y) + 0.375 * (p2.y + d2.y) + 0.125 * p2.y;
+
 			return (
 				<>
 					<path
@@ -33,7 +36,7 @@ export function Connector({ id }: { id: NodeId }) {
 							p2.y
 						}`}
 					/>
-					<text class="connector-text" x={(p1.x + p2.x) / 2} y={(p1.y + p2.y) / 2}>
+					<text class="connector-text" x={tx} y={ty}>
 						{connector.rate.toFixed(2)}/min
 					</text>
 				</>
