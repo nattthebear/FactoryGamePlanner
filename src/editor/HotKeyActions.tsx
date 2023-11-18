@@ -40,6 +40,9 @@ export function HotKeyActions() {
 	const currentScreenCoords = useRef<Point | null>(null);
 	const currentObject = useSelector(selectMouseOverObject);
 	const currentWip = useSelector((s) => s.wip);
+	const wipConnectorPiped = useSelector(
+		(s) => s.wip.type === "connector:bus" && s.connectors.get(s.wip.connectorId)!.item.IsPiped,
+	);
 
 	useEffect(() => {
 		function listener(ev: KeyboardEvent) {
@@ -434,6 +437,7 @@ export function HotKeyActions() {
 					</KeyButton>
 					<KeyButton
 						keyName="n"
+						disabled={o.connector.item.IsPiped}
 						onAct={() => {
 							const { connector } = o;
 							update((draft) => {
@@ -457,6 +461,7 @@ export function HotKeyActions() {
 					return (
 						<KeyButton
 							keyName="n"
+							disabled={wipConnectorPiped}
 							onAct={() => {
 								update((draft) => {
 									draft.buses.get(o.bus.id)!.terminals.push({
