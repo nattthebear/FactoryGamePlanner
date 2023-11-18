@@ -43,6 +43,7 @@ export function useDrag(onDrag: (diff: Point) => boolean) {
 }
 
 export function initiateDrag(ev: MouseEvent, onDrag: (diff: Point) => boolean) {
+	ev.stopPropagation();
 	ev.preventDefault();
 	let last = { x: ev.clientX, y: ev.clientY };
 

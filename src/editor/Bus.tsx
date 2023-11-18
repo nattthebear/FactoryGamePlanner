@@ -26,37 +26,6 @@ export function Bus({ id }: { id: NodeId }) {
 		return true;
 	});
 
-	const resizeLeft = useDrag(({ x, y }) => {
-		update((draft) => {
-			const { zoom } = draft.viewport;
-			const p = draft.buses.get(id)!;
-			const { x: ox, width: ow } = p;
-			const nw = clamp(ow - x / zoom, MIN_WIDTH, MAX_WIDTH);
-			const dw = ow - nw;
-
-			p.x = ox + dw / 2;
-			p.width = nw;
-			for (const t of p.terminals) {
-				t.rxIn -= dw;
-				t.rxOut -= dw;
-			}
-		});
-		return true;
-	});
-
-	const resizeRight = useDrag(({ x, y }) => {
-		update((draft) => {
-			const { zoom } = draft.viewport;
-			const p = draft.buses.get(id)!;
-			const { x: ox, width: ow } = p;
-			const nw = clamp(ow + x / zoom, MIN_WIDTH, MAX_WIDTH);
-
-			p.x = ox + (nw - ow) / 2;
-			p.width = nw;
-		});
-		return true;
-	});
-
 	const { x, y, width } = bus;
 
 	return (
@@ -87,20 +56,47 @@ export function Bus({ id }: { id: NodeId }) {
 			</g>
 			<g
 				class="resizer"
-				onMouseDown={(ev) => {
-					ev.stopPropagation();
-					resizeLeft(ev);
-				}}
+				onMouseDown={(ev) =>
+					initiateDrag(ev, ({ x }) => {
+						update((draft) => {
+							const { zoom } = draft.viewport;
+							const p = draft.buses.get(id)!;
+							const { x: ox, width: ow } = p;
+							const rxInMin = p.terminals.reduce((acc, { rxIn }) => Math.min(acc, rxIn), 9999999);
+							const nw = clamp(ow - x / zoom, Math.max(MIN_WIDTH, ow - rxInMin), MAX_WIDTH);
+							const dw = ow - nw;
+
+							p.x = ox + dw / 2;
+							p.width = nw;
+							for (const t of p.terminals) {
+								t.rxIn -= dw;
+								t.rxOut -= dw;
+							}
+						});
+						return true;
+					})
+				}
 			>
 				{resizeRect}
 			</g>
 			<g
 				class="resizer"
 				style={`transform: translate(${width}px)`}
-				onMouseDown={(ev) => {
-					ev.stopPropagation();
-					resizeRight(ev);
-				}}
+				onMouseDown={(ev) =>
+					initiateDrag(ev, ({ x }) => {
+						update((draft) => {
+							const { zoom } = draft.viewport;
+							const p = draft.buses.get(id)!;
+							const { x: ox, width: ow } = p;
+							const rxOutMax = p.terminals.reduce((acc, { rxOut }) => Math.max(acc, rxOut), MIN_WIDTH);
+							const nw = clamp(ow + x / zoom, rxOutMax, MAX_WIDTH);
+
+							p.x = ox + (nw - ow) / 2;
+							p.width = nw;
+						});
+						return true;
+					})
+				}
 			>
 				{resizeRect}
 			</g>
@@ -108,8 +104,7 @@ export function Bus({ id }: { id: NodeId }) {
 				<g
 					class="resizer"
 					style={`transform: translate(${terminal.rxIn}px)`}
-					onMouseDown={(ev) => {
-						ev.stopPropagation();
+					onMouseDown={(ev) =>
 						initiateDrag(ev, ({ x }) => {
 							update((draft) => {
 								const { zoom } = draft.viewport;
@@ -119,8 +114,8 @@ export function Bus({ id }: { id: NodeId }) {
 								draftTerminal.rxIn = nx;
 							});
 							return true;
-						});
-					}}
+						})
+					}
 				>
 					{resizeRect}
 				</g>
@@ -129,8 +124,7 @@ export function Bus({ id }: { id: NodeId }) {
 				<g
 					class="resizer"
 					style={`transform: translate(${terminal.rxOut}px)`}
-					onMouseDown={(ev) => {
-						ev.stopPropagation();
+					onMouseDown={(ev) =>
 						initiateDrag(ev, ({ x }) => {
 							update((draft) => {
 								const { zoom } = draft.viewport;
@@ -140,8 +134,8 @@ export function Bus({ id }: { id: NodeId }) {
 								draftTerminal.rxOut = nx;
 							});
 							return true;
-						});
-					}}
+						})
+					}
 				>
 					{resizeRect}
 				</g>
