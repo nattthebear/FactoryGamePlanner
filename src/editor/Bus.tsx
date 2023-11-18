@@ -1,6 +1,6 @@
 import { NodeId, toTranslation } from "./store/Common";
 import { update, useSelector } from "./store/Store";
-import { useDrag } from "../hook/drag";
+import { initiateDrag, useDrag } from "../hook/drag";
 import { BUILDING_MAX, BUILDING_MIN, clamp } from "../util";
 
 import "./Bus.css";
@@ -62,7 +62,7 @@ export function Bus({ id }: { id: NodeId }) {
 	return (
 		<g
 			class="bus"
-			style={`transform: ${toTranslation(bus)}`}
+			style={`transform: translate(${x - bus.width / 2}px, ${y}px)`}
 			onMouseEnter={() =>
 				update((draft) => {
 					draft.mouseOver = {
@@ -72,30 +72,10 @@ export function Bus({ id }: { id: NodeId }) {
 				})
 			}
 		>
-			<path class="mainline" d={`M ${-width / 2} -20 l 0 40 m 0 -20 l ${width} 0 m 0 -20 l 0 40`} />
-			<g
-				class="resizer"
-				style={`transform: translate(-${width / 2}px, 0)`}
-				onMouseDown={(ev) => {
-					ev.stopPropagation();
-					resizeLeft(ev);
-				}}
-			>
-				{resizeRect}
-			</g>
-			<g
-				class="resizer"
-				style={`transform: translate(${width / 2}px, 0)`}
-				onMouseDown={(ev) => {
-					ev.stopPropagation();
-					resizeRight(ev);
-				}}
-			>
-				{resizeRect}
-			</g>
+			<path class="mainline" d={`M 0 -20 l 0 40 m 0 -20 l ${width} 0 m 0 -20 l 0 40`} />
 			<g class="dragger">
 				<rect
-					x={-width / 2}
+					x={0}
 					y={-10}
 					width={width}
 					height={20}
@@ -105,6 +85,67 @@ export function Bus({ id }: { id: NodeId }) {
 					}}
 				/>
 			</g>
+			<g
+				class="resizer"
+				onMouseDown={(ev) => {
+					ev.stopPropagation();
+					resizeLeft(ev);
+				}}
+			>
+				{resizeRect}
+			</g>
+			<g
+				class="resizer"
+				style={`transform: translate(${width}px)`}
+				onMouseDown={(ev) => {
+					ev.stopPropagation();
+					resizeRight(ev);
+				}}
+			>
+				{resizeRect}
+			</g>
+			{bus.terminals.map((terminal, index) => (
+				<g
+					class="resizer"
+					style={`transform: translate(${terminal.rxIn}px)`}
+					onMouseDown={(ev) => {
+						ev.stopPropagation();
+						initiateDrag(ev, ({ x }) => {
+							update((draft) => {
+								const { zoom } = draft.viewport;
+								const p = draft.buses.get(id)!;
+								const draftTerminal = p.terminals[index];
+								const nx = clamp(draftTerminal.rxIn + x / zoom, 0, draftTerminal.rxOut);
+								draftTerminal.rxIn = nx;
+							});
+							return true;
+						});
+					}}
+				>
+					{resizeRect}
+				</g>
+			))}
+			{bus.terminals.map((terminal, index) => (
+				<g
+					class="resizer"
+					style={`transform: translate(${terminal.rxOut}px)`}
+					onMouseDown={(ev) => {
+						ev.stopPropagation();
+						initiateDrag(ev, ({ x }) => {
+							update((draft) => {
+								const { zoom } = draft.viewport;
+								const p = draft.buses.get(id)!;
+								const draftTerminal = p.terminals[index];
+								const nx = clamp(draftTerminal.rxOut + x / zoom, draftTerminal.rxIn, p.width);
+								draftTerminal.rxOut = nx;
+							});
+							return true;
+						});
+					}}
+				>
+					{resizeRect}
+				</g>
+			))}
 		</g>
 	);
 }

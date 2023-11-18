@@ -41,3 +41,28 @@ export function useDrag(onDrag: (diff: Point) => boolean) {
 
 	return dragStart;
 }
+
+export function initiateDrag(ev: MouseEvent, onDrag: (diff: Point) => boolean) {
+	ev.preventDefault();
+	let last = { x: ev.clientX, y: ev.clientY };
+
+	function mouseMove(ev: MouseEvent) {
+		const p = { x: ev.clientX, y: ev.clientY };
+		const dx = p.x - last.x;
+		const dy = p.y - last.y;
+		if (!onDrag({ x: dx, y: dy })) {
+			stop();
+		}
+		last = p;
+	}
+
+	function stop() {
+		document.documentElement.removeEventListener("mouseleave", stop);
+		document.removeEventListener("mouseup", stop, { capture: true });
+		document.removeEventListener("mousemove", mouseMove, { capture: true });
+	}
+
+	document.documentElement.addEventListener("mouseleave", stop, { passive: true });
+	document.addEventListener("mouseup", stop, { capture: true, passive: true });
+	document.addEventListener("mousemove", mouseMove, { capture: true, passive: true });
+}
