@@ -80,8 +80,13 @@ export function reflowConnectors(draft: Draft<State>, connectorIds: Iterable<Nod
 	for (const [connectorId, variableName] of connectorMaps) {
 		const connector = draft.connectors.get(connectorId)!;
 		const row = dictionary.basic.indexOf(variableName);
-		const rate = dictionary.coefficients[(row + 1) * nCols - 1];
-		connector.rate = rate;
+		if (row !== -1) {
+			const rate = dictionary.coefficients[(row + 1) * nCols - 1];
+			connector.rate = rate;
+		} else {
+			// solver was unable to increase this value
+			connector.rate = BigRat.ZERO;
+		}
 	}
 
 	return todo;
