@@ -1,9 +1,9 @@
 import { Draft } from "../../immer";
 import { BigRat } from "../../math/BigRat";
 import { Flow, Point } from "../../util";
-import { NodeId, pointEqual } from "./Common";
+import { NodeId, pointAdd, pointEqual } from "./Common";
 import { Connector } from "./Connectors";
-import { makeStore, makeStoreWithHashRouter, ROUTER_EDITOR_STORE, Selector } from "../../MakeStore";
+import { makeStore, makeStoreWithHashRouter, ROUTER_EDITOR_STORE, Selector, SelectorEq } from "../../MakeStore";
 import { Producer, Sink, Source } from "./Producers";
 import { deserialize, serialize } from "./Serializer";
 import { Item } from "../../../data/types";
@@ -100,6 +100,24 @@ export const selectProducerLocation = (id: NodeId): Selector<State, Point> => ({
 	select: (state) => {
 		const p = state.producers.get(id)!;
 		return { x: p.x, y: p.y };
+	},
+	equal: pointEqual,
+});
+
+export const selectConnectorInputLocation = (id: NodeId): SelectorEq<State, Point> => ({
+	select: (state) => {
+		const connector = state.connectors.get(id)!;
+		const producer = state.producers.get(connector.input)!;
+		return pointAdd(producer, producer.outputAttachPoints[connector.inputIndex]);
+	},
+	equal: pointEqual,
+});
+
+export const selectConnectorOutputLocation = (id: NodeId): SelectorEq<State, Point> => ({
+	select: (state) => {
+		const connector = state.connectors.get(id)!;
+		const producer = state.producers.get(connector.output)!;
+		return pointAdd(producer, producer.inputAttachPoints[connector.outputIndex]);
 	},
 	equal: pointEqual,
 });

@@ -5,6 +5,7 @@ import {
 	addConnector,
 	addProducer,
 	adjustConnectorClosest,
+	connectConnectorToBus,
 	emptyToRecipe,
 	emptyToSink,
 	fillFromRecipe,
@@ -387,16 +388,7 @@ export function HotKeyActions() {
 						<KeyButton
 							keyName="n"
 							disabled={!!o.bus}
-							onAct={() => {
-								update((draft) => {
-									draft.buses.get(w.busId)!.terminals.push({
-										rxIn: 50,
-										rxOut: 100,
-										id: o.connector.id,
-									});
-									draft.wip = { type: "none" };
-								});
-							}}
+							onAct={() => update(connectConnectorToBus(o.connector.id, w.busId))}
 						>
 							Finish Connect to Bus
 						</KeyButton>
@@ -462,16 +454,7 @@ export function HotKeyActions() {
 						<KeyButton
 							keyName="n"
 							disabled={wipConnectorPiped}
-							onAct={() => {
-								update((draft) => {
-									draft.buses.get(o.bus.id)!.terminals.push({
-										rxIn: 50,
-										rxOut: 100,
-										id: w.connectorId,
-									});
-									draft.wip = { type: "none" };
-								});
-							}}
+							onAct={() => update(connectConnectorToBus(w.connectorId, o.bus.id))}
 						>
 							Finish Connect to Connector
 						</KeyButton>

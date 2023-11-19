@@ -8,7 +8,7 @@ import "./Bus.css";
 const resizeRect = <rect x={-10} y={-30} width={20} height={60} />;
 
 const MIN_WIDTH = 200;
-const MAX_WIDTH = 2000;
+const MAX_WIDTH = 8000;
 
 export function Bus({ id }: { id: NodeId }) {
 	const bus = useSelector((s) => s.buses.get(id)!);

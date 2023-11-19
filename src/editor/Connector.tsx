@@ -1,27 +1,21 @@
 import { NodeId, pointAdd, pointEqual } from "./store/Common";
 import { Producer } from "./store/Producers";
-import { selectConnectorBusTerminal, selectProducerLocation, update, useSelector } from "./store/Store";
+import {
+	selectConnectorBusTerminal,
+	selectConnectorInputLocation,
+	selectConnectorOutputLocation,
+	update,
+	useSelector,
+} from "./store/Store";
 
 import "./Connector.css";
 import { Point } from "../util";
 
 export function Connector({ id }: { id: NodeId }) {
 	const connector = useSelector((s) => s.connectors.get(id)!);
-
-	const inputLoc = useSelector(selectProducerLocation(connector.input));
-	const inputAttach = useSelector({
-		select: (state) => state.producers.get(connector.input)!.outputAttachPoints[connector.inputIndex],
-		equal: pointEqual,
-	});
-	const outputLoc = useSelector(selectProducerLocation(connector.output));
-	const outputAttach = useSelector({
-		select: (state) => state.producers.get(connector.output)!.inputAttachPoints[connector.outputIndex],
-		equal: pointEqual,
-	});
 	const busLoc = useSelector(selectConnectorBusTerminal(id));
-
-	const ip = pointAdd(inputLoc, inputAttach);
-	const op = pointAdd(outputLoc, outputAttach);
+	const ip = useSelector(selectConnectorInputLocation(id));
+	const op = useSelector(selectConnectorOutputLocation(id));
 
 	if (busLoc) {
 		function renderPath(p1: Point, d1: Point, p2: Point, d2: Point) {

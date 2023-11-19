@@ -1,11 +1,11 @@
 import { Draft } from "../../immer";
 import { Recipe } from "../../../data/types";
 import { BigRat } from "../../math/BigRat";
-import { Point } from "../../util";
+import { Point, clamp, clampp } from "../../util";
 import { NodeId, SIXTY, pointAdd, pointDist } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
-import { State } from "./Store";
+import { State, selectConnectorInputLocation, selectConnectorOutputLocation } from "./Store";
 import { reflowConnectors } from "./ReflowConnector";
 import { Bus } from "./Bus";
 
@@ -382,4 +382,23 @@ export const mergeProducers = (pid1: NodeId, pid2: NodeId) => (draft: Draft<Stat
 
 	draft.producers.delete(pid2);
 	reflowConnectors(draft, producer.inputsAndOutputs());
+};
+
+export const connectConnectorToBus = (connectorId: NodeId, busId: NodeId) => (draft: Draft<State>) => {
+	const bus = draft.buses.get(busId)!;
+	const cInX = selectConnectorInputLocation(connectorId).select(draft).x;
+	const cOutX = selectConnectorOutputLocation(connectorId).select(draft).x;
+	const { x: busX, width: busWidth } = bus;
+
+	const desiredGap = clamp(cOutX - cInX - 50, 50, busWidth - 100);
+	const centerDiffLimit = (busWidth - 50 - desiredGap) / 2;
+	const terminalAbsoluteCenter = clamp((cInX + cOutX) / 2, busX - centerDiffLimit, busX + centerDiffLimit);
+
+	const busStartX = busX - busWidth / 2;
+	bus.terminals.push({
+		rxIn: terminalAbsoluteCenter - desiredGap / 2 - busStartX,
+		rxOut: terminalAbsoluteCenter + desiredGap / 2 - busStartX,
+		id: connectorId,
+	});
+	draft.wip = { type: "none" };
 };
