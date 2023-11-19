@@ -1,0 +1,3 @@
+[submodule "texex/CUE4Parse"]
+	path = texex/CUE4Parse
+	url = git@github.com:FabianFG/CUE4Parse.git

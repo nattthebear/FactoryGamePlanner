@@ -7,8 +7,8 @@ export const Buildings: Building[] = [
 		ClassName: {{ClassName}},
 		DisplayName: {{mDisplayName}},
 		Description: {{mDescription}},
-		PowerConsumption: BigRat.fromInteger({{mPowerConsumption}}),
-		OverclockPowerFactor: BigRat.parse({{mPowerConsumptionExponent}}),
+		PowerConsumption: {{{PowerConsumptionExpr}}},
+		OverclockPowerFactor: {{{PowerConsumptionExponentExpr}}},
 	},
 	{{/.}}
 ];

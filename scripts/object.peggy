@@ -11,12 +11,14 @@ Object
 	= "(" head:KVPair tail:("," v:KVPair { return v; })* ")" { return Object.fromEntries([head, ...tail]); }
 
 // What is this?
+ClassPrefix
+	= "/" [A-Za-z/]+ { return text(); }
 Class
 	= [A-Za-z]+ { return text(); }
 ClassContent
 	= [^'"]+ { return text(); }
 ClassString
-	= clazz:Class "'\"" data:ClassContent "\"'" { return clazz + " " + data; }
+	= clazzPrefix:ClassPrefix "." clazz:Class "'\"" data:ClassContent "\"'" { return clazz + " " + data; }
 
 String
 	= [^()=,]* { return text(); }

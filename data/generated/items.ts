@@ -242,7 +242,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NuclearWaste_C",
 		DisplayName: "Uranium Waste",
-		Description: "The by-product of consuming Uranium Fuel Rods in the Nuclear Power Plant.\nNon-fissible Uranium can be extracted. Handle with caution.\n\nCaution: HIGHLY Radioactive.",
+		Description: "The by-product of consuming Uranium Fuel Rods in the Nuclear Power Plant.\nNon-fissile Uranium can be extracted. Handle with caution.\n\nCaution: HIGHLY Radioactive.",
 		IsResource: false,
 		Icon: Desc_NuclearWaste_C,
 		IsPiped: false,
@@ -282,7 +282,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NonFissibleUranium_C",
 		DisplayName: "Non-fissile Uranium",
-		Description: "The isotope Uranium-238 is non-fissile, meaning it cannot be used for nuclear fission. It can, however, be conversed into fissile Plutonium in the Particle Accelerator.\n\nCaution: Mildly Radioactive.",
+		Description: "The isotope Uranium-238 is non-fissile, meaning it cannot be used for nuclear fission. It can, however, be converted into fissile Plutonium in the Particle Accelerator.\n\nCaution: Mildly Radioactive.",
 		IsResource: false,
 		Icon: Desc_NonFissibleUranium_C,
 		IsPiped: false,
@@ -402,7 +402,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Fuel_C",
 		DisplayName: "Packaged Fuel",
-		Description: "Fuel, packaged for alternative transport. Can be used as fuel for Vehicles or the Jetpack.",
+		Description: "Fuel, packaged for alternative transport. Can be used as fuel for Vehicles and the Jetpack.",
 		IsResource: false,
 		Icon: Desc_Fuel_C,
 		IsPiped: false,
@@ -412,7 +412,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_TurboFuel_C",
 		DisplayName: "Packaged Turbofuel",
-		Description: "Turbofuel, packaged for alternative transport. Can be used as fuel for Vehicles.",
+		Description: "Turbofuel, packaged for alternative transport. Can be used as fuel for Vehicles and the Jetpack.",
 		IsResource: false,
 		Icon: Desc_TurboFuel_C,
 		IsPiped: false,
@@ -432,7 +432,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Filter_C",
 		DisplayName: "Gas Filter",
-		Description: "Used in the Gas Mask to filter out toxics and pollutants from the air.",
+		Description: "Used in the Gas Mask to filter out toxins and pollutants from the air.",
 		IsResource: false,
 		Icon: Desc_Filter_C,
 		IsPiped: false,
@@ -602,7 +602,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_8_C",
 		DisplayName: "Thermal Propulsion Rocket",
-		Description: "Project Part #8. Ship with the Space Elevator to complete phases of Project Assembly.\n\nUses extreme heat to produce the high pressure plasma required to get Project Assembly into motion.",
+		Description: "Project Part #8. Ship with the Space Elevator to complete phases of Project Assembly.\n\nUses extreme heat to produce the high-pressure plasma required to get Project Assembly into motion.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_8_C,
 		IsPiped: false,
@@ -632,7 +632,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_AluminumPlate_C",
 		DisplayName: "Alclad Aluminum Sheet",
-		Description: "Thin, lightweight, and highly durable sheets that are mainly used for products that require high heat conduction or a high specific strength.",
+		Description: "Thin, lightweight, and highly durable sheets mainly used for products that require high heat conduction or a high specific strength.",
 		IsResource: false,
 		Icon: Desc_AluminumPlate_C,
 		IsPiped: false,
@@ -722,7 +722,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PetroleumCoke_C",
 		DisplayName: "Petroleum Coke",
-		Description: "Used for crafting.\nA carbon-rich material distilled from Heavy Oil Residue. \nUsed as a less efficient coal replacement or for aluminum refinement.",
+		Description: "Used for crafting.\nA carbon-rich material distilled from Heavy Oil Residue. \nUsed as a less efficient coal replacement.",
 		IsResource: false,
 		Icon: Desc_PetroleumCoke_C,
 		IsPiped: false,
@@ -872,7 +872,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Computer_C",
 		DisplayName: "Computer",
-		Description: "A Computer is a complex logic machine that is used to control advanced behaviour in machines.",
+		Description: "A Computer is a complex logic machine that is used to control advanced behavior in machines.",
 		IsResource: false,
 		Icon: Desc_Computer_C,
 		IsPiped: false,
@@ -932,7 +932,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CompactedCoal_C",
 		DisplayName: "Compacted Coal",
-		Description: "A much more efficient alternative for Coal. Used as fuel for vehicles & coal generators.",
+		Description: "A much more efficient alternative to Coal. Used as fuel for vehicles and coal generators.",
 		IsResource: false,
 		Icon: Desc_CompactedCoal_C,
 		IsPiped: false,
@@ -992,7 +992,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_MotorLightweight_C",
 		DisplayName: "Turbo Motor",
-		Description: "The Turbo Motor is a more complex, and more powerful, version of the regular Motor.",
+		Description: "The Turbo Motor is a more complex and more powerful version of the regular Motor.",
 		IsResource: false,
 		Icon: Desc_MotorLightweight_C,
 		IsPiped: false,
@@ -1002,7 +1002,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CopperDust_C",
 		DisplayName: "Copper Powder",
-		Description: "Ground down Copper Ingots.\nThe high natural density of Copper, combined with the granularity of the powder, make this part fit for producing Nuclear Pasta in the Particle Accelerator.",
+		Description: "Ground down Copper Ingots.\nThe high natural density of Copper, combined with the granularity of the powder, makes this part fit for producing Nuclear Pasta in the Particle Accelerator.",
 		IsResource: false,
 		Icon: Desc_CopperDust_C,
 		IsPiped: false,
@@ -1042,7 +1042,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedBiofuel_C",
 		DisplayName: "Packaged Liquid Biofuel",
-		Description: "Liquid Biofuel, packaged for alternative transport. Can be used as fuel for Vehicles.",
+		Description: "Liquid Biofuel, packaged for alternative transport. Can be used as fuel for Vehicles and the Jetpack.",
 		IsResource: false,
 		Icon: Desc_PackagedBiofuel_C,
 		IsPiped: false,
@@ -1152,7 +1152,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CartridgeSmartProjectile_C",
 		DisplayName: "Homing Rifle Ammo",
-		Description: "The bullet guidance system, build into this ammunition, allows it to accurately hit any target within the reticle area.\nEspecially useful when dealing with agile threats, or for Pioneers who can't be bothered to aim properly.",
+		Description: "The bullet guidance system built into this ammunition allows it to accurately hit any target within the reticle area.\nEspecially useful when dealing with agile threats, or for Pioneers who can't be bothered to aim properly.",
 		IsResource: false,
 		Icon: Desc_CartridgeSmartProjectile_C,
 		IsPiped: false,

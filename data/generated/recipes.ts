@@ -384,7 +384,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectroAluminumScrap_C",
-		DisplayName: "Alternate: Electrode - Aluminum Scrap",
+		DisplayName: "Alternate: Electrode Aluminum Scrap",
 		Inputs: [{ Item: Items[66], Rate: BigRat.fromInteger(180) }, { Item: Items[60], Rate: BigRat.fromInteger(60) }, ],
 		Outputs: [{ Item: Items[67], Rate: BigRat.fromInteger(300) }, { Item: Items[9], Rate: BigRat.fromInteger(105) }, ],
 		Building: Buildings[3],

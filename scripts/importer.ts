@@ -1,7 +1,6 @@
 import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";
 import * as fs from "fs/promises";
-import { existsSync } from "fs";
 import { spawnSync } from "child_process";
 import { chain } from "fp-ts/lib/Either.js";
 import mustache from "mustache";
@@ -15,6 +14,10 @@ mustache.escape = (s) => JSON.stringify(s, null, "\t");
 
 const SIXTY = BigRat.fromInteger(60);
 const ONE_THOUSAND = BigRat.fromInteger(1000);
+
+function makeDescriptor<const T extends string>(clazz: T) {
+	return `/Script/CoreUObject.Class'/Script/FactoryGame.FG${clazz}'` as const;
+}
 
 const Config = t.type({
 	GameDir: t.string,
@@ -38,34 +41,32 @@ async function loadJson<T>(fn: string, validator: t.Type<T>, encoding?: BufferEn
 
 class Texture {
 	constructor(public resource: string) {}
-	async exportImage(outname: string) {
-		const { resource } = this;
-		console.log(`Exporting asset ${resource}...`);
-		const res = spawnSync(
-			`${config.umodelDir}/umodel_64.exe`,
-			[
-				`-path="${config.GameDir}/FactoryGame/Content/Paks"`,
-				`-out="${__dirname}/../umodel-temp"`,
-				`-png`,
-				`-export`,
-				`${resource}.uasset`,
-				`-game=ue4.23`,
-			],
-			{
-				encoding: "utf-8",
+
+	static async exportBatch(batch: { texture: Texture; outname: string }[]) {
+		function fixResourceName(resource: string) {
+			if (resource.startsWith("/Game/FactoryGame")) {
+				return "FactoryGame/Content" + resource.slice(5);
 			}
-		);
+			throw new Error(`Unable to fix resource name ${JSON.stringify(resource)}`);
+		}
+		const texexConfig = {
+			GameRootPath: config.GameDir,
+			Items: batch.map((item) => ({
+				ObjectName: fixResourceName(item.texture.resource),
+				OutputPngPath: `${__dirname}/../data/generated/images/${item.outname}.png`,
+			})),
+		};
+
+		const res = spawnSync("dotnet", ["run"], {
+			cwd: `${__dirname}/../texex/texex`,
+			input: JSON.stringify(texexConfig),
+			encoding: "utf-8",
+		});
 		if (res.status) {
 			console.log(res.output);
 			console.log(res.status);
 			throw new Error();
 		}
-		const expectedDir = `${__dirname}/../umodel-temp${resource}.png`;
-		if (!existsSync(expectedDir)) {
-			throw new Error(`Expected file ${expectedDir} was not found; did umodel fail?`);
-		}
-		const outPath = `${__dirname}/../data/generated/images/${outname}.png`;
-		await fs.rename(expectedDir, outPath);
 	}
 }
 
@@ -85,7 +86,7 @@ function miniobj<A>(type: t.Type<A>) {
 			}
 			return type.validate(parsed, context);
 		},
-		type.encode
+		type.encode,
 	);
 }
 
@@ -100,7 +101,7 @@ function not(type: t.Type<any>) {
 			}
 			return t.failure(input, context, "Subtype was valid");
 		},
-		t.identity
+		t.identity,
 	);
 }
 
@@ -116,7 +117,7 @@ const stringInteger = new t.Type<number>(
 		}
 		return t.success(Number(input));
 	},
-	t.identity
+	t.identity,
 );
 
 const stringFloat = new t.Type<string>(
@@ -131,14 +132,14 @@ const stringFloat = new t.Type<string>(
 		}
 		return t.success(input);
 	},
-	t.identity
+	t.identity,
 );
 
 const multiLineString = new t.Type<string>(
 	"multiLineString",
 	t.string.is,
 	(a, b) => chain((s: string) => t.success(s.replace(/\r\n/g, "\n")))(t.string.validate(a, b)),
-	t.identity
+	t.identity,
 );
 
 const recipeIngredient = new t.Type<string>(
@@ -155,7 +156,7 @@ const recipeIngredient = new t.Type<string>(
 		const [, clazz] = match;
 		return t.success(clazz);
 	},
-	t.identity
+	t.identity,
 );
 
 const buildingClass = new t.Type<string>(
@@ -165,14 +166,14 @@ const buildingClass = new t.Type<string>(
 		if (typeof input !== "string") {
 			return t.failure(input, context, "Value must be a string");
 		}
-		const match = input.match(/^[^.]*\.([^.]*)$/);
+		const match = input.match(/^"[^.]*\.([^.]*)"$/);
 		if (!match) {
 			return t.failure(input, context, `Regex was not matched for ${input}`);
 		}
 		const [, clazz] = match;
 		return t.success(clazz);
 	},
-	t.identity
+	t.identity,
 );
 
 const Texture2D = new t.Type<Texture>(
@@ -189,21 +190,21 @@ const Texture2D = new t.Type<Texture>(
 		const [, resource] = match;
 		return t.success(new Texture(resource));
 	},
-	t.identity
+	t.identity,
 );
 
 const Color = miniobj(t.type({ R: stringInteger, G: stringInteger, B: stringInteger, A: stringInteger }));
 const IngredientList = miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringInteger })));
 const Form = t.keyof({ RF_SOLID: null, RF_LIQUID: null, RF_GAS: null });
 
-const $ItemDescriptor = "Class'/Script/FactoryGame.FGItemDescriptor'";
-const $ItemDescriptorBiomass = "Class'/Script/FactoryGame.FGItemDescriptorBiomass'";
-const $AmmoTypeProjectile = "Class'/Script/FactoryGame.FGAmmoTypeProjectile'";
-const $AmmoTypeInstantHit = "Class'/Script/FactoryGame.FGAmmoTypeInstantHit'";
-const $AmmoTypeSpreadshot = "Class'/Script/FactoryGame.FGAmmoTypeSpreadshot'";
-const $ItemDescriptorNuclearFuel = "Class'/Script/FactoryGame.FGItemDescriptorNuclearFuel'";
-const $ConsumableDescriptor = "Class'/Script/FactoryGame.FGConsumableDescriptor'";
-const $EquipmentDescriptor = "Class'/Script/FactoryGame.FGEquipmentDescriptor'";
+const $ItemDescriptor = makeDescriptor("ItemDescriptor");
+const $ItemDescriptorBiomass = makeDescriptor("ItemDescriptorBiomass");
+const $AmmoTypeProjectile = makeDescriptor("AmmoTypeProjectile");
+const $AmmoTypeInstantHit = makeDescriptor("AmmoTypeInstantHit");
+const $AmmoTypeSpreadshot = makeDescriptor("AmmoTypeSpreadshot");
+const $ItemDescriptorNuclearFuel = makeDescriptor("ItemDescriptorNuclearFuel");
+const $ConsumableDescriptor = makeDescriptor("ConsumableDescriptor");
+const $EquipmentDescriptor = makeDescriptor("EquipmentDescriptor");
 const ItemDescriptor = t.type({
 	ClassName: t.string,
 	mDisplayName: t.string,
@@ -232,7 +233,7 @@ const ItemDescriptor = t.type({
 	mResourceSinkPoints: stringInteger,
 });
 
-const $ResourceDescriptor = "Class'/Script/FactoryGame.FGResourceDescriptor'";
+const $ResourceDescriptor = makeDescriptor("ResourceDescriptor");
 const ResourceDescriptor = t.type({
 	ClassName: t.string,
 	// "mDecalSize": "200.000000",
@@ -265,7 +266,7 @@ const ResourceDescriptor = t.type({
 	mResourceSinkPoints: stringInteger,
 });
 
-const $Recipe = "Class'/Script/FactoryGame.FGRecipe'";
+const $Recipe = makeDescriptor("Recipe");
 const Recipe = t.type({
 	ClassName: t.string,
 	// "FullName": "BlueprintGeneratedClass /Game/FactoryGame/Recipes/AlternateRecipes/New_Update4/Recipe_Alternate_ClassicBattery.Recipe_Alternate_ClassicBattery_C",
@@ -281,8 +282,8 @@ const Recipe = t.type({
 	mVariablePowerConsumptionFactor: stringInteger,
 });
 
-const $BuildableManufacturer = "Class'/Script/FactoryGame.FGBuildableManufacturer'";
-const $BuildableManufacturerVariablePower = "Class'/Script/FactoryGame.FGBuildableManufacturerVariablePower'";
+const $BuildableManufacturer = makeDescriptor("BuildableManufacturer");
+const $BuildableManufacturerVariablePower = makeDescriptor("BuildableManufacturerVariablePower");
 const BuildableManufacturer = t.type({
 	ClassName: t.string,
 	// "IsPowered": "False",
@@ -295,7 +296,7 @@ const BuildableManufacturer = t.type({
 	// "mPipeInputConnections": "",
 	// "mFactoryOutputConnections": "",
 	// "mPipeOutputConnections": "",
-	mPowerConsumption: stringInteger,
+	mPowerConsumption: stringFloat,
 	mPowerConsumptionExponent: stringFloat,
 	// "mDoesHaveShutdownAnimation": "False",
 	// "mOnHasPowerChanged": "()",
@@ -341,7 +342,7 @@ const BuildableManufacturer = t.type({
 	// "mShouldModifyWorldGrid": "True",
 });
 
-const $Schematic = "Class'/Script/FactoryGame.FGSchematic'";
+const $Schematic = makeDescriptor("Schematic");
 const Schematic = t.type({
 	ClassName: t.string,
 	// "FullName": "BlueprintGeneratedClass /Game/FactoryGame/Schematics/ResourceSink/ResourceSink_CyberWagon_Unlock.ResourceSink_CyberWagon_Unlock_C",
@@ -366,7 +367,7 @@ const Schematic = t.type({
 		t.type({
 			Class: t.string,
 			mRecipes: t.union([t.undefined, miniobj(t.array(t.string))]),
-		})
+		}),
 	),
 	// "mSchematicIcon": "(ImageSize=(X=256.000000,Y=256.000000),Margin=(),TintColor=(SpecifiedColor=(R=1.000000,G=1.000000,B=1.000000,A=1.000000)),ResourceObject=Texture2D'\"/Game/FactoryGame/Buildable/Vehicle/Cyberwagon/UI/Cyberwagon_256.Cyberwagon_256\"',UVRegion=(Min=(X=0.000000,Y=0.000000),Max=(X=0.000000,Y=0.000000),bIsValid=0),DrawAs=Image)",
 	// "mSmallSchematicIcon": "None",
@@ -377,8 +378,8 @@ const Schematic = t.type({
 	// "mIncludeInBuilds": "IIB_PublicBuilds"
 });
 
-const $BuildableGeneratorFuel = "Class'/Script/FactoryGame.FGBuildableGeneratorFuel'";
-const $BuildableGeneratorNuclear = "Class'/Script/FactoryGame.FGBuildableGeneratorNuclear'";
+const $BuildableGeneratorFuel = makeDescriptor("BuildableGeneratorFuel");
+const $BuildableGeneratorNuclear = makeDescriptor("BuildableGeneratorNuclear");
 const BuildableGenerator = t.type({
 	ClassName: t.string,
 	// "m_SFXSockets": "(\"AudioSocketTurbine\",\"CoalGeneratorPotential\")",
@@ -391,7 +392,7 @@ const BuildableGenerator = t.type({
 			mSupplementalResourceClass: t.string,
 			mByproduct: t.string,
 			mByproductAmount: t.union([t.literal(""), stringInteger]),
-		})
+		}),
 	),
 	// "mAvailableFuelClasses": "",
 	// "mFuelResourceForm": "RF_SOLID",
@@ -480,10 +481,27 @@ const Data = t.type({
 	[$BuildableGeneratorNuclear]: t.array(BuildableGenerator),
 });
 
-async function doMustache(name: string, data: any) {
-	const mustacheTemplate = await fs.readFile(`${__dirname}/${name}.mustache`, { encoding: "utf-8" });
+const ouputNameToPath = (name: string) => `${__dirname}/../data/generated/${name}.ts`;
+const outputNameToTemplate = (name: string) => `${__dirname}/${name}.mustache`;
+
+async function reorderDataMutate(name: string, data: { ClassName: string }[]) {
+	// use the old data to reorder the new data, to cut down on diffs
+	const oldRawData = await fs.readFile(ouputNameToPath(name), "utf-8");
+	const oldClassNames = [...oldRawData.matchAll(/^\s*ClassName:\s*("[^"]+")/gm)].map(
+		(match) => JSON.parse(match[1]) as string,
+	);
+	const oldClassMap = new Map(oldClassNames.map((s, i) => [s, i]));
+	data.sort((x, y) => {
+		const oldXIndex = oldClassMap.get(x.ClassName) ?? 99999999;
+		const oldYIndex = oldClassMap.get(y.ClassName) ?? 99999999;
+		return oldXIndex - oldYIndex;
+	});
+}
+
+async function doMustache(name: string, data: { ClassName: string }[]) {
+	const mustacheTemplate = await fs.readFile(outputNameToTemplate(name), { encoding: "utf-8" });
 	const generatedTS = mustache.render(mustacheTemplate, data);
-	await fs.writeFile(`${__dirname}/../data/generated/${name}.ts`, generatedTS);
+	await fs.writeFile(ouputNameToPath(name), generatedTS);
 }
 
 const formatComponent = (n: number) => n.toString(16).padStart(2, "0");
@@ -577,7 +595,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 					mVariablePowerConsumptionConstant: 0,
 					mVariablePowerConsumptionFactor: 1,
 				};
-			})
+			}),
 		),
 	];
 	const buildings = [
@@ -587,7 +605,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			return {
 				ClassName: p.ClassName,
 				mManufacturingSpeed: "1.000000",
-				mPowerConsumption: -p.mPowerProduction,
+				mPowerConsumption: "-" + p.mPowerProduction,
 				mPowerConsumptionExponent: "1",
 				mDisplayName: p.mDisplayName,
 				mDescription: p.mDescription,
@@ -595,9 +613,11 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		}),
 	];
 
+	await reorderDataMutate("buildings", buildings);
+
 	const buildingClazzes = new Map(buildings.map((x, i) => [x.ClassName, i]));
 	const recipesMaybeBuildable = allRecipes.filter(
-		(x) => Array.isArray(x.mProducedIn) && x.mProducedIn.some((p) => buildingClazzes.has(p))
+		(x) => Array.isArray(x.mProducedIn) && x.mProducedIn.some((p) => buildingClazzes.has(p)),
 	); // Filter out build gun only recipes
 
 	let items = allItems;
@@ -629,6 +649,9 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		}
 	}
 
+	await reorderDataMutate("items", items);
+	await reorderDataMutate("recipes", recipes);
+
 	const itemsLookup = new Map(items.map((x, i) => [x.ClassName, i]));
 
 	const alternateUnlockData = new Set(
@@ -636,7 +659,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			.filter((s) => s.mType === "EST_Alternate")
 			.flatMap((s) => s.mUnlocks.filter((u) => u.Class === "BP_UnlockRecipe_C"))
 			.flatMap((u) => u.mRecipes!)
-			.map((s) => s.split(".")[1])
+			.map((s) => s.split(".")[1]),
 	);
 
 	const mapIngredients = (input: { ItemClass: string; Amount: number | BigRat }[], duration: BigRat) =>
@@ -694,17 +717,28 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		}[x.mForm],
 	}));
 
-	const HACK_PowerIcon = new Texture(
-		"/Game/FactoryGame/Interface/UI/Assets/MonochromeIcons/TXUI_MIcon_Power"
-		// "/Game/FactoryGame/Buildable/Factory/TradingPost/UI/SchematicIcons/SchematicIcon_Factory"
-	);
+	const buildingsView = buildings.map((x) => ({
+		...x,
+		PowerConsumptionExpr: BigRat.parse(x.mPowerConsumption).uneval(),
+		PowerConsumptionExponentExpr: BigRat.parse(x.mPowerConsumptionExponent).uneval(),
+	}));
 
-	// for (const x of items) {
-	// 	await x.mSmallIcon.exportImage(x.ClassName);
-	// }
-	// await HACK_PowerIcon.exportImage("TXUI_MIcon_Power");
+	const HACK_PowerIcon = new Texture("/Game/FactoryGame/Interface/UI/Assets/MonochromeIcons/TXUI_MIcon_Power");
+
+	if (false) {
+		await Texture.exportBatch([
+			...items.map((x) => ({
+				texture: x.mSmallIcon,
+				outname: x.ClassName,
+			})),
+			{
+				texture: HACK_PowerIcon,
+				outname: "TXUI_MIcon_Power",
+			},
+		]);
+	}
 
 	await doMustache("items", itemsView);
 	await doMustache("recipes", recipeView);
-	await doMustache("buildings", buildings);
+	await doMustache("buildings", buildingsView);
 })();
