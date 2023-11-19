@@ -45,9 +45,9 @@ function assertProducerEqual(a: Producer, b: Producer) {
 }
 
 function assertBusEqual(a: Bus, b: Bus) {
-	assert.equal(a.x1, b.x1);
-	assert.equal(a.x2, b.x2);
+	assert.equal(a.x, b.x);
 	assert.equal(a.y, b.y);
+	assert.equal(a.width, b.width);
 	assert.equal(a.terminals.length, b.terminals.length);
 }
 

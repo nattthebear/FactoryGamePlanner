@@ -5,3 +5,5 @@ src/math/ExpressionParser.js
 .parcel-cache
 .parcel-dev
 docs.json
+/build
+/parcel-bundle-reports
