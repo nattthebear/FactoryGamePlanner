@@ -159,14 +159,24 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 	const { mouseOver } = state;
 	const { type } = mouseOver;
 	switch (type) {
-		case "none":
+		case "none": {
 			return { type };
-		case "viewport":
+		}
+		case "viewport": {
 			return { type };
-		case "producer":
-			return { type, producer: state.producers.get(mouseOver.producerId)! };
+		}
+		case "producer": {
+			const producer = state.producers.get(mouseOver.producerId);
+			if (!producer) {
+				return { type: "none" };
+			}
+			return { type, producer };
+		}
 		case "producer:connection:input": {
-			const producer = state.producers.get(mouseOver.producerId)!;
+			const producer = state.producers.get(mouseOver.producerId);
+			if (!producer) {
+				return { type: "none" };
+			}
 			return {
 				type,
 				producer,
@@ -176,7 +186,10 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 			};
 		}
 		case "producer:connection:output": {
-			const producer = state.producers.get(mouseOver.producerId)!;
+			const producer = state.producers.get(mouseOver.producerId);
+			if (!producer) {
+				return { type: "none" };
+			}
 			return {
 				type,
 				producer,
@@ -186,7 +199,10 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 			};
 		}
 		case "connector": {
-			const connector = state.connectors.get(mouseOver.connectorId)!;
+			const connector = state.connectors.get(mouseOver.connectorId);
+			if (!connector) {
+				return { type: "none" };
+			}
 
 			// todo: speed this up
 			let foundBus = undefined;
@@ -205,7 +221,10 @@ export function selectMouseOverObject(state: State): MouseOverObject {
 			};
 		}
 		case "bus": {
-			const bus = state.buses.get(mouseOver.busId)!;
+			const bus = state.buses.get(mouseOver.busId);
+			if (!bus) {
+				return { type: "none" };
+			}
 			return { type, bus };
 		}
 	}
