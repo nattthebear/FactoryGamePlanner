@@ -4,6 +4,13 @@ import { RecipesByClassName } from "../../data/generated/recipes";
 import { Recipe } from "../../data/types";
 import "./Tooltip.css";
 import { FakePower } from "../../data/power";
+import { toId } from "../editor/store/Common";
+import { ProducerTooltip } from "../editor/ProducerTooltip";
+
+const tooltip = document.createElement("div");
+tooltip.className = "tooltip";
+tooltip.style.display = "none";
+let anchor: Element | null = null;
 
 function RecipeTooltip({ recipe }: { recipe: Recipe }) {
 	return (
@@ -28,23 +35,23 @@ function TooltipContent({ value }: { value: string }) {
 	if (recipe) {
 		return <RecipeTooltip recipe={recipe} />;
 	}
+	let match: RegExpMatchArray | null;
+	match = value.match(/^\$producer:(\d+)$/);
+	if (match) {
+		return <ProducerTooltip id={toId(match[1])} />;
+	}
 	return value as any;
 }
 
-export function installTooltip() {
-	const tooltip = document.createElement("div");
-	tooltip.className = "tooltip";
-	tooltip.style.display = "none";
-	document.body.appendChild(tooltip);
-
-	let anchor: Element | null = null;
-
-	async function updateStyles() {
-		if (anchor) {
-			const styles = await computePosition(anchor, tooltip, { middleware: [flip(), shift()] });
-			tooltip.style.transform = `translate(${Math.round(styles.x)}px,${Math.round(styles.y)}px)`;
-		}
+export async function updateStyles() {
+	if (anchor) {
+		const styles = await computePosition(anchor, tooltip, { middleware: [flip(), shift()], strategy: "fixed" });
+		tooltip.style.transform = `translate(${Math.round(styles.x)}px,${Math.round(styles.y)}px)`;
 	}
+}
+
+export function installTooltip() {
+	document.body.appendChild(tooltip);
 
 	document.addEventListener("mouseover", (event) => {
 		let target = event.target as Element | null;

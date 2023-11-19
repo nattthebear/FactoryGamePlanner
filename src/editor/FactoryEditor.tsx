@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Recipes } from "../../data/generated/recipes";
-import { useDrag } from "../hook/drag";
+import { initiateDrag } from "../hook/drag";
 import { useLatestValue } from "../hook/useLatestValue";
 import { BigRat } from "../math/BigRat";
 import { addProducer } from "./store/Actions";
@@ -54,7 +54,7 @@ const backGrid = (() => {
 	);
 })();
 
-function onDrag({ x, y }: Point) {
+function handlePan({ x, y }: Point) {
 	update((draft) => {
 		const { center, zoom } = draft.viewport;
 		const nx = clamp(center.x + x / zoom, FACTORY_MIN.x, FACTORY_MAX.x);
@@ -72,7 +72,6 @@ export function FactoryEditor() {
 	const viewport = useSelector((s) => s.viewport);
 	const viewportElementRef = useRef<HTMLDivElement | null>(null);
 	const svgRef = useRef<SVGSVGElement | null>(null);
-	const panStart = useDrag(onDrag);
 
 	const producerComponents = useMemo(() => producers.map((id) => <Producer key={id} id={id} />), [producers]);
 	const connectorComponents = useMemo(() => connectors.map((id) => <Connector key={id} id={id} />), [connectors]);
@@ -103,7 +102,7 @@ export function FactoryEditor() {
 			<svg viewBox={viewBox} style={transform} ref={svgRef}>
 				<g
 					class="backgrid"
-					onMouseDown={panStart}
+					onMouseDown={(ev) => initiateDrag(ev, handlePan)}
 					onMouseEnter={() =>
 						update((draft) => {
 							draft.mouseOver = { type: "viewport" };

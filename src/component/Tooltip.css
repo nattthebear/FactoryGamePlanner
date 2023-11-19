@@ -1,7 +1,7 @@
 .tooltip {
 	top: 0;
 	left: 0;
-	position: absolute;
+	position: fixed;
 	font-size: 16px;
 	color: #fff;
 	padding: 2px;

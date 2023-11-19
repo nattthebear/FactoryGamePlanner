@@ -26,4 +26,6 @@ export const generateId = (() => {
 	return () => nextId++ as any as NodeId;
 })();
 
+export const toId = (value: string) => Number(value) as any as NodeId;
+
 export const SIXTY = BigRat.fromIntegers(60, 1);

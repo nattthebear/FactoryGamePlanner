@@ -1,0 +1,15 @@
+.producer-tooltip {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+
+	.name {
+		padding: 2px;
+	}
+	.recipe-name {
+		font-size: 12px;
+		background-color: #fff;
+		color: #000;
+		padding: 2px;
+	}
+}

@@ -1,4 +1,4 @@
-import { useDrag } from "../hook/drag";
+import { initiateDrag } from "../hook/drag";
 import { NodeId, toTranslation } from "./store/Common";
 import { ProductionBuilding } from "./store/Producers";
 import { update, useSelector } from "./store/Store";
@@ -20,19 +20,6 @@ export function Producer({ id }: { id: NodeId }) {
 		return other.canCombineWith(producer);
 	});
 
-	const dragStart = useDrag(({ x, y }) => {
-		update((draft) => {
-			const { zoom } = draft.viewport;
-			const p = draft.producers.get(id)!;
-			const { x: ox, y: oy } = p;
-			const nx = clamp(ox + x / zoom, BUILDING_MIN.x, BUILDING_MAX.x);
-			const ny = clamp(oy + y / zoom, BUILDING_MIN.y, BUILDING_MAX.y);
-			p.x = nx;
-			p.y = ny;
-		});
-		return true;
-	});
-
 	const drawing = producer.getDrawing();
 
 	const rateText =
@@ -43,7 +30,7 @@ export function Producer({ id }: { id: NodeId }) {
 		);
 
 	return (
-		<g class="producer" style={`transform: ${toTranslation(producer)}`}>
+		<g class="producer" style={`transform: ${toTranslation(producer)}`} data-tooltip={`$producer:${id}`}>
 			<path
 				class={
 					activeMergeAttempt === true
@@ -55,10 +42,20 @@ export function Producer({ id }: { id: NodeId }) {
 						: "outline"
 				}
 				d={drawing.d}
-				onMouseDown={(ev) => {
-					ev.stopPropagation();
-					dragStart(ev);
-				}}
+				onMouseDown={(ev) =>
+					initiateDrag(ev, ({ x, y }) => {
+						update((draft) => {
+							const { zoom } = draft.viewport;
+							const p = draft.producers.get(id)!;
+							const { x: ox, y: oy } = p;
+							const nx = clamp(ox + x / zoom, BUILDING_MIN.x, BUILDING_MAX.x);
+							const ny = clamp(oy + y / zoom, BUILDING_MIN.y, BUILDING_MAX.y);
+							p.x = nx;
+							p.y = ny;
+						});
+						return true;
+					})
+				}
 				onMouseEnter={() =>
 					update((draft) => {
 						draft.mouseOver = { type: "producer", producerId: id };

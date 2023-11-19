@@ -1,6 +1,6 @@
 import { NodeId, toTranslation } from "./store/Common";
 import { update, useSelector } from "./store/Store";
-import { initiateDrag, useDrag } from "../hook/drag";
+import { initiateDrag } from "../hook/drag";
 import { BUILDING_MAX, BUILDING_MIN, clamp } from "../util";
 
 import "./Bus.css";
@@ -12,19 +12,6 @@ const MAX_WIDTH = 2000;
 
 export function Bus({ id }: { id: NodeId }) {
 	const bus = useSelector((s) => s.buses.get(id)!);
-
-	const dragStart = useDrag(({ x, y }) => {
-		update((draft) => {
-			const { zoom } = draft.viewport;
-			const p = draft.buses.get(id)!;
-			const { x: ox, y: oy } = p;
-			const nx = clamp(ox + x / zoom, BUILDING_MIN.x, BUILDING_MAX.x);
-			const ny = clamp(oy + y / zoom, BUILDING_MIN.y, BUILDING_MAX.y);
-			p.x = nx;
-			p.y = ny;
-		});
-		return true;
-	});
 
 	const { x, y, width } = bus;
 
@@ -48,10 +35,20 @@ export function Bus({ id }: { id: NodeId }) {
 					y={-10}
 					width={width}
 					height={20}
-					onMouseDown={(ev) => {
-						ev.stopPropagation();
-						dragStart(ev);
-					}}
+					onMouseDown={(ev) =>
+						initiateDrag(ev, ({ x, y }) => {
+							update((draft) => {
+								const { zoom } = draft.viewport;
+								const p = draft.buses.get(id)!;
+								const { x: ox, y: oy } = p;
+								const nx = clamp(ox + x / zoom, BUILDING_MIN.x, BUILDING_MAX.x);
+								const ny = clamp(oy + y / zoom, BUILDING_MIN.y, BUILDING_MAX.y);
+								p.x = nx;
+								p.y = ny;
+							});
+							return true;
+						})
+					}
 				/>
 			</g>
 			<g
