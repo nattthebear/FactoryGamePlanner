@@ -4,6 +4,7 @@ import { initiateDrag } from "../hook/drag";
 import { BUILDING_MAX, BUILDING_MIN, clamp } from "../util";
 
 import "./Bus.css";
+import { compareTerminals, findTerminalIndex } from "./store/Bus";
 
 const resizeRect = <rect x={-10} y={-30} width={20} height={60} />;
 
@@ -106,9 +107,28 @@ export function Bus({ id }: { id: NodeId }) {
 							update((draft) => {
 								const { zoom } = draft.viewport;
 								const p = draft.buses.get(id)!;
-								const draftTerminal = p.terminals[index];
+								const { terminals } = p;
+								const draftTerminal = terminals[index];
 								const nx = clamp(draftTerminal.rxIn + x / zoom, 0, draftTerminal.rxOut);
+
+								let newIndex = findTerminalIndex(terminals, nx);
+								if (newIndex > index) {
+									newIndex--;
+								}
+								if (newIndex < index) {
+									for (let i = index; i > newIndex; ) {
+										terminals[i] = terminals[--i];
+									}
+									terminals[newIndex] = draftTerminal;
+								} else if (newIndex > index) {
+									for (let i = index; i < newIndex; ) {
+										terminals[i] = terminals[++i];
+									}
+									terminals[newIndex] = draftTerminal;
+								}
+
 								draftTerminal.rxIn = nx;
+								index = newIndex;
 							});
 							return true;
 						})

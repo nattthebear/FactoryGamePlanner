@@ -7,7 +7,7 @@ import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State, selectConnectorInputLocation, selectConnectorOutputLocation } from "./Store";
 import { reflowConnectors } from "./ReflowConnector";
-import { Bus } from "./Bus";
+import { Bus, compareTerminals, findTerminalIndex } from "./Bus";
 
 function maybeSpliceValue<T>(array: T[], value: T) {
 	const index = array.indexOf(value);
@@ -395,8 +395,10 @@ export const connectConnectorToBus = (connectorId: NodeId, busId: NodeId) => (dr
 	const terminalAbsoluteCenter = clamp((cInX + cOutX) / 2, busX - centerDiffLimit, busX + centerDiffLimit);
 
 	const busStartX = busX - busWidth / 2;
-	bus.terminals.push({
-		rxIn: terminalAbsoluteCenter - desiredGap / 2 - busStartX,
+	const rxIn = terminalAbsoluteCenter - desiredGap / 2 - busStartX;
+
+	bus.terminals.splice(findTerminalIndex(bus.terminals, rxIn), 0, {
+		rxIn,
 		rxOut: terminalAbsoluteCenter + desiredGap / 2 - busStartX,
 		id: connectorId,
 	});

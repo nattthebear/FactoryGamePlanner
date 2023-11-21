@@ -89,13 +89,15 @@ export function serialize(state: State) {
 	for (const b of state.buses.values()) {
 		saveX(w, b.x);
 		saveY(w, b.y);
-		const terminals = b.terminals.slice();
-		terminals.sort(compareTerminals);
+		const { terminals } = b;
 		writeBigPos(w, BigInt(terminals.length));
 
 		let dx = 0;
 		for (let i = 0; i < terminals.length; i++) {
 			const v1 = terminals[i].rxIn - dx;
+			if (v1 < 0) {
+				throw new Error("WOW");
+			}
 			const v2 = terminals[i].rxOut - dx - v1;
 			writeBigPos(w, BigInt(v1 >>> 0));
 			writeBigPos(w, BigInt(v2 >>> 0));
