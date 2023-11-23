@@ -22,7 +22,7 @@ export function findTerminalIndex(terminals: BusTerminal[], rxIn: number) {
 		return a;
 	}
 	if (rxIn > terminals[b].rxIn) {
-		return b;
+		return b + 1;
 	}
 
 	while (b - a > 1) {
