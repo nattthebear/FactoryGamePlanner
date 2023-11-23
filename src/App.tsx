@@ -7,7 +7,7 @@ import { Planner } from "./planner";
 import { installTooltip } from "./component/Tooltip";
 
 import "./App.css";
-import { makeStoreWithHashRouter, ROUTER_APP_STORE } from "./MakeStore";
+import { makeStoreWithHashRouter, ROUTER_APP_STORE } from "./MakeHashRouterStore";
 
 interface AppState {
 	inPlanner: boolean;

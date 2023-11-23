@@ -2,7 +2,7 @@ import { Items } from "../../../data/generated/items";
 import { Recipes } from "../../../data/generated/recipes";
 import { FakePower } from "../../../data/power";
 import { Item } from "../../../data/types";
-import { makeStore, makeStoreWithHashRouter, ROUTER_PLANNER_STORE } from "../../MakeStore";
+import { makeStoreWithHashRouter, ROUTER_PLANNER_STORE } from "../../MakeHashRouterStore";
 import { BigRat } from "../../math/BigRat";
 import { Problem } from "../../solver/Solver";
 import { Flow } from "../../util";

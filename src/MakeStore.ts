@@ -14,6 +14,13 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 	let state = initialValue;
 	const subs = new Set<() => void>();
 
+	function replace(newState: S) {
+		state = newState;
+		for (const sub of subs) {
+			sub();
+		}
+	}
+
 	const ret = {
 		useSelector<V>(selector: Selector<S, V>) {
 			const equal = typeof selector === "function" ? Object.is : selector.equal;
@@ -49,11 +56,9 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 			}, []);
 			return selected;
 		},
+		replace,
 		update(action: (draft: Draft<S>) => void) {
-			state = produce(state, action);
-			for (const sub of subs) {
-				sub();
-			}
+			replace(produce(state, action));
 		},
 		getStateRaw() {
 			return state;
@@ -74,66 +79,4 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 	}
 
 	return ret;
-}
-
-export interface SerializableStore<S> {
-	serialize(state: S): string;
-	deserialize(serialized: string): S | null;
-	makeDefault(): S;
-}
-
-export const ROUTER_APP_STORE = 0;
-export const ROUTER_PLANNER_STORE = 1;
-export const ROUTER_EDITOR_STORE = 2;
-
-export function makeStoreWithHashRouter<S>(
-	{ serialize, deserialize, makeDefault }: SerializableStore<S>,
-	hashIndex: number,
-	debugName?: string,
-) {
-	const initialState = (() => {
-		let { hash } = window.location;
-		if (hash[0] === "#") {
-			hash = hash.slice(1);
-		}
-		const parts = hash.split(".");
-		const part = parts[hashIndex];
-		if (!part) {
-			return makeDefault();
-		}
-		try {
-			const deserialized = deserialize(part);
-			if (deserialized != null) {
-				return deserialized;
-			}
-		} catch (e) {
-			console.error(e);
-		}
-		return makeDefault();
-	})();
-
-	const store = makeStore(initialState, debugName);
-	const DELAY_MS = 50;
-	const { getStateRaw } = store;
-	function updateUrl() {
-		let { hash } = window.location;
-		if (hash[0] === "#") {
-			hash = hash.slice(1);
-		}
-		const parts = hash.split(".");
-		while (parts.length <= hashIndex) {
-			parts.push("");
-		}
-		parts[hashIndex] = serialize(getStateRaw());
-		window.location.hash = parts.join(".");
-	}
-
-	let timeoutHandle = -1;
-	store.subscribeRaw(() => {
-		clearTimeout(timeoutHandle);
-		timeoutHandle = setTimeout(updateUrl, DELAY_MS) as any as number;
-	});
-
-	updateUrl();
-	return store;
 }
