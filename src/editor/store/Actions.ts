@@ -7,7 +7,7 @@ import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State, selectConnectorInputLocation, selectConnectorOutputLocation } from "./Store";
 import { reflowConnectors } from "./ReflowConnector";
-import { Bus, compareTerminals, findTerminalIndex } from "./Bus";
+import { Bus, findTerminalIndex } from "./Bus";
 
 function maybeSpliceValue<T>(array: T[], value: T) {
 	const index = array.indexOf(value);

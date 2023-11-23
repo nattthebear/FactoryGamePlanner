@@ -8,10 +8,6 @@ export interface BusTerminal {
 	id: NodeId;
 }
 
-export function compareTerminals(a: BusTerminal, b: BusTerminal) {
-	return a.rxIn - b.rxIn;
-}
-
 /**
  * Find the index to insert a new terminal at to maintain order
  */

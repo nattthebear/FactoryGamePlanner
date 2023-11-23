@@ -2,7 +2,23 @@ g.bus {
 	& > .mainline {
 		stroke: #222;
 		stroke-width: 8px;
-		/* fill: #eee; */
+	}
+
+	.rate-text {
+		text-anchor: middle;
+		dominant-baseline: middle;
+		pointer-events: none;
+		paint-order: stroke;
+		font-size: 28px;
+		stroke-width: 4px;
+		fill: #fff;
+		stroke: rgba(0, 0, 0, 0.8);
+		stroke-linejoin: round;
+	}
+
+	.rate-over {
+		stroke: #f00;
+		stroke-width: 8px;
 	}
 
 	.resizer {
