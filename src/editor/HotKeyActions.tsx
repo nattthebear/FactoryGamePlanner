@@ -435,7 +435,10 @@ export function HotKeyActions() {
 							update((draft) => {
 								if (o.bus) {
 									const { terminals } = draft.buses.get(o.bus.id)!;
-									terminals.splice(terminals.findIndex((t) => t.id === connector.id));
+									terminals.splice(
+										terminals.findIndex((t) => t.id === connector.id),
+										1,
+									);
 								} else {
 									draft.wip = { type: "connector:bus", connectorId: connector.id };
 								}
