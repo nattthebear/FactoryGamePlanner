@@ -23,7 +23,7 @@ export function KeyButton(props: Props) {
 	}, []);
 
 	return (
-		<button disabled={props.disabled} onClick={() => props.onAct(true)}>
+		<button disabled={props.disabled} onClick={() => !isAnyPromptActive() && props.onAct(true)}>
 			{props.keyName}: {props.children}
 		</button>
 	);
