@@ -62,4 +62,30 @@
 	.scrollable {
 		box-shadow: inset 0 10px 10px -10px #aaa;
 	}
+
+	table {
+		border-collapse: collapse;
+		margin: 4px;
+		border: 0;
+
+		.icon {
+			width: 24px;
+			height: 24px;
+		}
+
+		tr:nth-child(even) {
+			background-color: #f4f4ff;
+		}
+
+		th {
+			text-align: right;
+		}
+
+		td,
+		th {
+			&:not(:first-child) {
+				padding-left: 5px;
+			}
+		}
+	}
 }

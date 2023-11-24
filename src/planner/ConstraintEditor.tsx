@@ -20,77 +20,105 @@ const makeRateList = (
 	updateData: (cb: (draft: Draft<NullableFlow[]>) => void) => void,
 	promptRate: (rate: BigRat | "unlimited", item: Item) => Promise<BigRat | "unlimited" | null>,
 	unlimitedText: string,
+	resetText: string,
+	resetAction: () => void,
 ) =>
 	function RateList() {
 		const data = useData();
 
 		return (
 			<div class="rate-list">
-				{data.map((d, index) => (
-					<div class="rate-item">
-						<button
-							onClick={async () => {
-								const { products, inputs } = getStateRaw();
-								const possibleItems = ItemsWithFakePower.filter(
-									(i) =>
-										i === d.item ||
-										(!products.find((r) => r.item === i) && !inputs.find((r) => r.item === i)),
-								);
-								const newItem = await chooseItem("Select new item:", possibleItems);
-								if (newItem) {
-									updateData((draft) => {
-										draft[index].item = newItem;
-									});
-								}
-							}}
-						>
-							{d.item.DisplayName}
-						</button>
-						<button
-							onClick={async () => {
-								const newRate = await promptRate(d.rate ?? "unlimited", d.item);
-								if (newRate) {
-									updateData((draft) => {
-										draft[index].rate = newRate === "unlimited" ? null : newRate;
-									});
-								}
-							}}
-						>
-							{d.rate
-								? d.rate.toFixed(2).toString() + (d.item === FakePower ? " MW" : "/min")
-								: unlimitedText}
-						</button>
-						<button
-							onClick={() =>
-								updateData((draft) => {
-									draft.splice(index, 1);
-								})
-							}
-						>
-							✖
-						</button>
-					</div>
-				))}
-				<div
-					class="rate-add"
-					onClick={async () => {
-						const { products, inputs } = getStateRaw();
-						const possibleItems = ItemsWithFakePower.filter(
-							(i) => !products.find((r) => r.item === i) && !inputs.find((r) => r.item === i),
-						);
-						const newItem = await chooseItem("Select new item:", possibleItems);
-						if (newItem) {
-							updateData((draft) => {
-								draft.push({
-									rate: BigRat.fromIntegers(60, 1),
-									item: newItem,
-								});
-							});
-						}
-					}}
-				>
-					Add new item
-				</div>
+				<table>
+					{data.map((d, index) => (
+						<tr>
+							<td>
+								<img class="icon" src={d.item.Icon} />
+							</td>
+							<td>
+								<a
+									onClick={async () => {
+										const { products, inputs } = getStateRaw();
+										const possibleItems = ItemsWithFakePower.filter(
+											(i) =>
+												i === d.item ||
+												(!products.find((r) => r.item === i) &&
+													!inputs.find((r) => r.item === i)),
+										);
+										const newItem = await chooseItem("Select new item:", possibleItems);
+										if (newItem) {
+											updateData((draft) => {
+												draft[index].item = newItem;
+											});
+										}
+									}}
+								>
+									{d.item.DisplayName}
+								</a>
+							</td>
+							<th>
+								<a
+									onClick={async () => {
+										const newRate = await promptRate(d.rate ?? "unlimited", d.item);
+										if (newRate) {
+											updateData((draft) => {
+												draft[index].rate = newRate === "unlimited" ? null : newRate;
+											});
+										}
+									}}
+								>
+									{d.rate
+										? d.rate.toFixed(2).toString() + (d.item === FakePower ? " MW" : "/min")
+										: unlimitedText}
+								</a>
+							</th>
+							<td>
+								<button
+									onClick={() =>
+										updateData((draft) => {
+											draft.splice(index, 1);
+										})
+									}
+								>
+									✖&#xfe0e;
+								</button>
+							</td>
+						</tr>
+					))}
+					<tr>
+						<td>
+							<div class="icon" />
+						</td>
+						<td colSpan={3}>
+							<a
+								onClick={async () => {
+									const { products, inputs } = getStateRaw();
+									const possibleItems = ItemsWithFakePower.filter(
+										(i) => !products.find((r) => r.item === i) && !inputs.find((r) => r.item === i),
+									);
+									const newItem = await chooseItem("Select new item:", possibleItems);
+									if (newItem) {
+										updateData((draft) => {
+											draft.push({
+												rate: BigRat.fromIntegers(60, 1),
+												item: newItem,
+											});
+										});
+									}
+								}}
+							>
+								Add new item...
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="icon" />
+						</td>
+						<td colSpan={3}>
+							<a onClick={resetAction}>{resetText}</a>
+						</td>
+					</tr>
+				</table>
 			</div>
 		);
 	};
@@ -104,6 +132,11 @@ const ProductsRateList = makeRateList(
 		}),
 	(rate, item) => chooseConstraintRate(rate, item, true),
 	"maximize",
+	"Clear outputs",
+	() =>
+		update((draft) => {
+			draft.products = [];
+		}),
 );
 
 const InputsRateList = makeRateList(
@@ -115,6 +148,13 @@ const InputsRateList = makeRateList(
 		}),
 	(rate, item) => chooseConstraintRate(rate, item, false),
 	"unlimited",
+	"Set inputs to default",
+	() =>
+		update((draft) => {
+			const inputs = buildDefaultInputs();
+			draft.inputs = inputs;
+			draft.products = draft.products.filter((p) => !inputs.find((i) => i.item.ClassName === p.item.ClassName));
+		}),
 );
 
 export function ConstraintEditor() {
@@ -126,32 +166,10 @@ export function ConstraintEditor() {
 			<div class="pane">
 				<h3 class="title">Outputs</h3>
 				<ProductsRateList />
-				<button
-					onClick={() =>
-						update((draft) => {
-							draft.products = [];
-						})
-					}
-				>
-					Clear outputs
-				</button>
 			</div>
 			<div class="pane">
 				<h3 class="title">Inputs</h3>
 				<InputsRateList />
-				<button
-					onClick={() =>
-						update((draft) => {
-							const inputs = buildDefaultInputs();
-							draft.inputs = inputs;
-							draft.products = draft.products.filter(
-								(p) => !inputs.find((i) => i.item.ClassName === p.item.ClassName),
-							);
-						})
-					}
-				>
-					Set inputs to default
-				</button>
 			</div>
 		</div>
 	);
