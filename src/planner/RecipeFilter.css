@@ -10,11 +10,14 @@
 		flex: 1 0 0;
 		overflow-y: scroll;
 
-		background-color: #f8f8ff;
+		& > :nth-child(even) {
+			background-color: #f4f4ff;
+		}
 	}
 
 	& .entry {
 		height: 28px;
+		line-height: 28px;
 
 		& label {
 			display: inline-flex;

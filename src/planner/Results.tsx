@@ -24,7 +24,7 @@ function* solveAndRender(state: State) {
 	if (!solution) {
 		return (
 			<div class="pane">
-				<div class="title">Overview</div>
+				<h2 class="title">Solution</h2>
 				<div>No solution found. Check your inputs and recipes.</div>
 			</div>
 		);
@@ -52,7 +52,7 @@ function* solveAndRender(state: State) {
 		}
 		return (
 			<div class="pane">
-				<div class="title">Recipes used</div>
+				<h3 class="title">Recipes used</h3>
 				<table>{nodes}</table>
 			</div>
 		);
@@ -84,11 +84,11 @@ function* solveAndRender(state: State) {
 		return (
 			<>
 				<div class="pane">
-					<div class="title">Items produced</div>
+					<h3 class="title">Items produced</h3>
 					<table>{produced}</table>
 				</div>
 				<div class="pane">
-					<div class="title">Items used</div>
+					<h3 class="title">Items used</h3>
 					<table>{consumed}</table>
 				</div>
 			</>
@@ -109,26 +109,29 @@ function* solveAndRender(state: State) {
 	return (
 		<>
 			<div class="pane">
-				<div class="title">Overview</div>
+				<h2 class="title">Solution</h2>
+				<h3 class="title">Overview</h3>
 				<div>
 					WP: <strong data-tooltip={solution.wp.toRatioString()}>{solution.wp.toFixed(2)}</strong>
 				</div>
 				{renderPower()}
+				<div>
+					<button
+						onClick={() => {
+							updateEditor((draft) => {
+								Object.assign(draft, connectSolution(problem, solution));
+							});
+						}}
+					>
+						TEMP - Copy to Editor
+					</button>
+				</div>
 			</div>
 
-			<br />
-			<button
-				onClick={() => {
-					updateEditor((draft) => {
-						Object.assign(draft, connectSolution(problem, solution));
-					});
-				}}
-			>
-				TEMP - Copy to Editor
-			</button>
-			<br />
-			{renderNet()}
-			{renderRecipes()}
+			<div class="scrollable">
+				{renderNet()}
+				{renderRecipes()}
+			</div>
 		</>
 	);
 }
@@ -148,7 +151,7 @@ export function Results() {
 						<Spinner />
 					</div>
 				)}
-				<div class="scroll">{content}</div>
+				<div class="contents">{content}</div>
 			</div>
 		</div>
 	);

@@ -133,10 +133,10 @@ export function ConstraintEditor() {
 	return (
 		<div class="rate-setter">
 			<div class="pane">
-				<div class="title">Settings</div>
+				<h2 class="title">Settings</h2>
 			</div>
 			<div class="pane">
-				<div class="title">Outputs</div>
+				<h3 class="title">Outputs</h3>
 				<ProductsRateList />
 				<button
 					onClick={() =>
@@ -149,7 +149,7 @@ export function ConstraintEditor() {
 				</button>
 			</div>
 			<div class="pane">
-				<div class="title">Inputs</div>
+				<h3 class="title">Inputs</h3>
 				<InputsRateList />
 				<button
 					onClick={() =>

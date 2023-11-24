@@ -47,7 +47,7 @@ const makeRecipeFilter = (
 
 		return (
 			<div class="recipe-filter">
-				<div class="title">{titleText}</div>
+				<h2 class="title">{titleText}</h2>
 				<input
 					type="text"
 					value={search}
@@ -66,7 +66,8 @@ const makeRecipeFilter = (
 								setAll(newValue);
 							}}
 						/>
-						Select all
+						<div class="icon" />
+						<span>Select all</span>
 					</label>
 				</div>
 				<div class="scrollable">
@@ -77,7 +78,7 @@ const makeRecipeFilter = (
 									<label data-has-checkbox data-tooltip={recipe.ClassName}>
 										<input type="checkbox" checked={active[index]} onChange={() => toggle(index)} />
 										<img class="icon" src={imageForRecipe(recipe)} />
-										{highlightText(recipe.DisplayName, highlightRegex)}
+										<span>{highlightText(recipe.DisplayName, highlightRegex)}</span>
 									</label>
 								</div>
 							),
