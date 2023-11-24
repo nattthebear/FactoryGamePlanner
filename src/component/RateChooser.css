@@ -10,11 +10,11 @@
 	flex-direction: column;
 	position: relative;
 
-	& input {
+	input {
 		z-index: 1;
 		background: none;
 	}
-	& .underlay {
+	.underlay {
 		pointer-events: none;
 		position: absolute;
 		white-space: pre;
@@ -24,28 +24,28 @@
 
 		background-color: #fee;
 
-		& .error {
+		.error {
 			background-color: #f99;
 		}
 	}
-	& .lower-text {
+	.lower-text {
 	}
 }
 
 .building-rate-chooser {
-	& .display {
+	.display {
 		display: flex;
 
-		& .flows {
-			& .flow {
+		.flows {
+			.flow {
 				display: flex;
 
-				& img {
+				img {
 					width: 24px;
 					height: 24px;
 				}
 
-				& span {
+				span {
 					line-height: 24px;
 				}
 			}
@@ -55,18 +55,18 @@
 			}
 		}
 
-		& .rate {
+		.rate {
 			flex: 1 0 0;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
 
-			& .num {
+			.num {
 				font-size: 20px;
 			}
 
-			& .ratio {
+			.ratio {
 				font-size: 12px;
 			}
 		}
@@ -74,25 +74,25 @@
 }
 
 .source-sink-rate-chooser {
-	& .display {
+	.display {
 		display: flex;
 
-		& .rate {
+		.rate {
 			flex: 1 0 0;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			& .num {
+			.num {
 				font-size: 20px;
 			}
 
-			& .ratio {
+			.ratio {
 				font-size: 12px;
 			}
 		}
 
-		& img {
+		img {
 			width: 64px;
 			height: 64px;
 		}

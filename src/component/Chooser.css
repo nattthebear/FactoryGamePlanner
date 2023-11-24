@@ -1,13 +1,13 @@
 .chooser {
-	& input {
+	input {
 		width: 100%;
 		margin-bottom: 10px;
 	}
-	& .scroll {
+	.scroll {
 		max-height: 120px;
 		overflow-y: auto;
 
-		& .item {
+		.item {
 			display: flex;
 			height: 24px;
 			overflow: hidden;
@@ -24,7 +24,7 @@
 				box-shadow: inset 0 0 8px #99f;
 			}
 
-			& .text {
+			.text {
 				line-height: 24px;
 			}
 		}

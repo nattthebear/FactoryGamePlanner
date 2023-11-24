@@ -1,5 +1,5 @@
 g.producer {
-	& > .outline {
+	> .outline {
 		stroke: #666;
 		stroke-width: 3px;
 		fill: #eee;
@@ -15,7 +15,7 @@ g.producer {
 		}
 	}
 
-	& > text {
+	> text {
 		text-anchor: middle;
 		fill: #666;
 		pointer-events: none;

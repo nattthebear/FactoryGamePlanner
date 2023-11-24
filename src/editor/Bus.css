@@ -1,5 +1,5 @@
 g.bus {
-	& > .mainline {
+	> .mainline {
 		stroke: #222;
 		stroke-width: 8px;
 	}

@@ -2,29 +2,29 @@
 	display: flex;
 	flex-direction: column;
 
-	& input[type="text"] {
+	input[type="text"] {
 		width: 100%;
 	}
 
-	& .scrollable {
+	.scrollable {
 		flex: 1 0 0;
 		overflow-y: scroll;
 
-		& > :nth-child(even) {
+		> :nth-child(even) {
 			background-color: #f4f4ff;
 		}
 	}
 
-	& .entry {
+	.entry {
 		height: 28px;
 
-		& label {
+		label {
 			line-height: 28px;
 			display: inline-flex;
 			gap: 6px;
 		}
 
-		& .icon {
+		.icon {
 			width: 24px;
 			height: 24px;
 		}

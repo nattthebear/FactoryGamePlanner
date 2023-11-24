@@ -15,23 +15,23 @@
 }
 
 .recipe-tooltip {
-	& .building-name {
+	.building-name {
 		display: block;
 		padding: 2px;
 		text-align: center;
 	}
-	& .io {
+	.io {
 		display: flex;
 		background-color: #fff;
 		padding: 2px;
 		justify-content: center;
 
-		& img {
+		img {
 			width: 24px;
 			height: 24px;
 		}
 
-		& .arrow {
+		.arrow {
 			color: #000;
 			width: 24px;
 			height: 24px;

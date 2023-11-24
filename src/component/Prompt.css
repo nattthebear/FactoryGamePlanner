@@ -7,24 +7,24 @@
 	justify-content: center;
 	align-items: center;
 
-	& .prompt {
+	.prompt {
 		width: 360px;
 		padding: 10px;
 		background-color: #fff;
 		box-shadow: 0 0 30px 10px #000a;
 
-		& .title {
+		.title {
 			font-size: 20px;
 			padding-bottom: 10px;
 		}
 
-		& .dialog-buttons {
+		.dialog-buttons {
 			padding-top: 10px;
 			display: flex;
 			justify-content: flex-end;
 			gap: 10px;
 
-			& button {
+			button {
 				flex: 0 0 80px;
 				border: none;
 				height: 25px;

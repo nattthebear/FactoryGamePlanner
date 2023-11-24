@@ -1,5 +1,5 @@
 .connection-terminal {
-	& > .outline {
+	> .outline {
 		stroke-width: 3px;
 		fill: #fff;
 
@@ -24,14 +24,14 @@
 		stroke: #f00;
 	}
 
-	& > image {
+	> image {
 		width: 56px;
 		height: 56px;
 		transform: translate(-28px, -28px);
 		pointer-events: none;
 	}
 
-	& > text {
+	> text {
 		transform: translate(0, 20px);
 		text-anchor: middle;
 		pointer-events: none;
