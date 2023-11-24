@@ -1,4 +1,4 @@
-import { render } from "preact";
+import { createRoot } from "vdomk";
 import { computePosition, shift, flip } from "@floating-ui/dom";
 import { RecipesByClassName } from "../../data/generated/recipes";
 import { Recipe } from "../../data/types";
@@ -53,6 +53,8 @@ export async function updateStyles() {
 export function installTooltip() {
 	document.body.appendChild(tooltip);
 
+	const root = createRoot(tooltip, null);
+
 	document.addEventListener("mouseover", (event) => {
 		let target = event.target as Element | null;
 		let label: string | null = null;
@@ -62,7 +64,7 @@ export function installTooltip() {
 		if (anchor !== target) {
 			anchor = target;
 			if (label) {
-				render(<TooltipContent value={label} />, tooltip);
+				root.render(<TooltipContent value={label} />);
 				tooltip.style.display = "";
 				updateStyles();
 			} else {

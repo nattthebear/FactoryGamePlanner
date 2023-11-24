@@ -37,7 +37,8 @@
 		"immer": "^10.0.2",
 		"modern-normalize": "^2.0.0",
 		"preact": "^10.16.0",
-		"scroll-into-view-if-needed": "^3.0.10"
+		"scroll-into-view-if-needed": "^3.0.10",
+		"vdomk": "^0.1.4"
 	},
 	"browserslist": {
 		"production": [

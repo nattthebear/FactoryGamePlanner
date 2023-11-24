@@ -1,13 +1,13 @@
-import { useState } from "preact/hooks";
+import { TPC, VNode, scheduleUpdate } from "vdomk";
 import { ConstraintEditor } from "./ConstraintEditor";
 import { RecipeFilterAlternate, RecipeFilterBasic } from "./RecipeFilter";
+import { Results } from "./Results";
 
 import "./FactoryPlanner.css";
-import { Results } from "./Results";
 
 type TabType = "constraints" | "basicRecipes" | "alternateRecipes";
 
-const tabs: { type: TabType; name: string; content: preact.ComponentChild }[] = [
+const tabs: { type: TabType; name: string; content: VNode }[] = [
 	{
 		type: "constraints",
 		name: "Resource Limits",
@@ -31,10 +31,10 @@ const resultsArea = (
 	</div>
 );
 
-export function FactoryPlanner() {
-	const [activeTab, changeTab] = useState<TabType>("constraints");
+export const FactoryPlanner: TPC<{}> = (_, instance) => {
+	let activeTab: TabType = "constraints";
 
-	return (
+	return () => (
 		<div class="factory-planner">
 			<div class="tabs-holder">
 				<div class="tabs">
@@ -44,7 +44,8 @@ export function FactoryPlanner() {
 							role="tab"
 							aria-selected={type === activeTab}
 							onClick={() => {
-								changeTab(type);
+								activeTab = type;
+								scheduleUpdate(instance);
 							}}
 						>
 							{name}
@@ -58,4 +59,4 @@ export function FactoryPlanner() {
 			{resultsArea}
 		</div>
 	);
-}
+};

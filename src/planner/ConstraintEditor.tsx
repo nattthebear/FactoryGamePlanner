@@ -1,3 +1,4 @@
+import { LayerInstance, TPC } from "vdomk";
 import { Draft } from "../immer";
 import { chooseItem } from "../component/ItemChooser";
 import { chooseConstraintRate } from "../component/RateChoser";
@@ -16,115 +17,121 @@ import { FakePower, ItemsWithFakePower } from "../../data/power";
 import "./ConstraintEditor.css";
 
 const makeRateList = (
-	useData: () => NullableFlow[],
+	useData: (instance: LayerInstance) => () => NullableFlow[],
 	updateData: (cb: (draft: Draft<NullableFlow[]>) => void) => void,
 	promptRate: (rate: BigRat | "unlimited", item: Item) => Promise<BigRat | "unlimited" | null>,
 	unlimitedText: string,
 	resetText: string,
 	resetAction: () => void,
-) =>
-	function RateList() {
-		const data = useData();
+): TPC<{}> =>
+	function RateList(_, instance) {
+		const getData = useData(instance);
 
-		return (
-			<div class="rate-list">
-				<table>
-					{data.map((d, index) => (
+		return () => {
+			const data = getData();
+
+			return (
+				<div class="rate-list">
+					<table>
+						{data.map((d, index) => (
+							<tr>
+								<td>
+									<img class="icon" src={d.item.Icon} />
+								</td>
+								<td>
+									<a
+										onClick={async () => {
+											const { products, inputs } = getStateRaw();
+											const possibleItems = ItemsWithFakePower.filter(
+												(i) =>
+													i === d.item ||
+													(!products.find((r) => r.item === i) &&
+														!inputs.find((r) => r.item === i)),
+											);
+											const newItem = await chooseItem("Select new item:", possibleItems);
+											if (newItem) {
+												updateData((draft) => {
+													draft[index].item = newItem;
+												});
+											}
+										}}
+									>
+										{d.item.DisplayName}
+									</a>
+								</td>
+								<th>
+									<a
+										onClick={async () => {
+											const newRate = await promptRate(d.rate ?? "unlimited", d.item);
+											if (newRate) {
+												updateData((draft) => {
+													draft[index].rate = newRate === "unlimited" ? null : newRate;
+												});
+											}
+										}}
+									>
+										{d.rate
+											? d.rate.toFixed(2).toString() + (d.item === FakePower ? " MW" : "/min")
+											: unlimitedText}
+									</a>
+								</th>
+								<td>
+									<button
+										onClick={() =>
+											updateData((draft) => {
+												draft.splice(index, 1);
+											})
+										}
+									>
+										✖&#xfe0e;
+									</button>
+								</td>
+							</tr>
+						))}
 						<tr>
 							<td>
-								<img class="icon" src={d.item.Icon} />
+								<div class="icon" />
 							</td>
-							<td>
+							<td colSpan={3}>
 								<a
 									onClick={async () => {
 										const { products, inputs } = getStateRaw();
 										const possibleItems = ItemsWithFakePower.filter(
 											(i) =>
-												i === d.item ||
-												(!products.find((r) => r.item === i) &&
-													!inputs.find((r) => r.item === i)),
+												!products.find((r) => r.item === i) &&
+												!inputs.find((r) => r.item === i),
 										);
 										const newItem = await chooseItem("Select new item:", possibleItems);
 										if (newItem) {
 											updateData((draft) => {
-												draft[index].item = newItem;
+												draft.push({
+													rate: BigRat.fromIntegers(60, 1),
+													item: newItem,
+												});
 											});
 										}
 									}}
 								>
-									{d.item.DisplayName}
+									Add new item...
 								</a>
-							</td>
-							<th>
-								<a
-									onClick={async () => {
-										const newRate = await promptRate(d.rate ?? "unlimited", d.item);
-										if (newRate) {
-											updateData((draft) => {
-												draft[index].rate = newRate === "unlimited" ? null : newRate;
-											});
-										}
-									}}
-								>
-									{d.rate
-										? d.rate.toFixed(2).toString() + (d.item === FakePower ? " MW" : "/min")
-										: unlimitedText}
-								</a>
-							</th>
-							<td>
-								<button
-									onClick={() =>
-										updateData((draft) => {
-											draft.splice(index, 1);
-										})
-									}
-								>
-									✖&#xfe0e;
-								</button>
 							</td>
 						</tr>
-					))}
-					<tr>
-						<td>
-							<div class="icon" />
-						</td>
-						<td colSpan={3}>
-							<a
-								onClick={async () => {
-									const { products, inputs } = getStateRaw();
-									const possibleItems = ItemsWithFakePower.filter(
-										(i) => !products.find((r) => r.item === i) && !inputs.find((r) => r.item === i),
-									);
-									const newItem = await chooseItem("Select new item:", possibleItems);
-									if (newItem) {
-										updateData((draft) => {
-											draft.push({
-												rate: BigRat.fromIntegers(60, 1),
-												item: newItem,
-											});
-										});
-									}
-								}}
-							>
-								Add new item...
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="icon" />
-						</td>
-						<td colSpan={3}>
-							<a onClick={resetAction}>{resetText}</a>
-						</td>
-					</tr>
-				</table>
-			</div>
-		);
+						<tr>
+							<td>
+								<div class="icon" />
+							</td>
+							<td colSpan={3}>
+								<a onClick={resetAction}>{resetText}</a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			);
+		};
 	};
 
 const ProductsRateList = makeRateList(
-	() => useSelector((state) => state.products),
+	(instance) => useSelector(instance, (state) => state.products),
 	(cb) =>
 		update((draft) => {
 			cb(draft.products);
@@ -140,7 +147,7 @@ const ProductsRateList = makeRateList(
 );
 
 const InputsRateList = makeRateList(
-	() => useSelector((state) => state.inputs),
+	(instance) => useSelector(instance, (state) => state.inputs),
 	(cb) =>
 		update((draft) => {
 			cb(draft.inputs);

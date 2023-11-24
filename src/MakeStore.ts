@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "preact/hooks";
-import { useForceUpdate } from "./hook/useForceUpdate";
+import { LayerInstance, scheduleUpdate, cleanup } from "vdomk";
 import { produce, Draft } from "./immer";
 
 export type BasicSelector<S, V> = (state: S) => V;
@@ -22,39 +21,31 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 	}
 
 	const ret = {
-		useSelector<V>(selector: Selector<S, V>) {
+		useSelector<V>(instance: LayerInstance, selector: Selector<S, V>) {
 			const equal = typeof selector === "function" ? Object.is : selector.equal;
 			const select = typeof selector === "function" ? selector : selector.select;
 
-			const forceUpdate = useForceUpdate();
-			const ref = useRef<{ select: BasicSelector<S, V>; selected: V }>();
-			const newSelected = select(state);
-			const oldSelected = ref.current?.selected;
-			const selected = ref.current && equal(newSelected, oldSelected) ? oldSelected! : newSelected;
+			let selected = select(state);
 
-			ref.current = { select, selected };
-
-			useEffect(() => {
-				function subscription() {
-					let newSelected: V;
-					try {
-						newSelected = ref.current!.select(state);
-					} catch {
-						// This can be hit in various scenarios when removing components.
-						// https://react-redux.js.org/api/hooks#stale-props-and-zombie-children
-						forceUpdate();
-						return;
-					}
-					if (!equal(newSelected, ref.current!.selected)) {
-						forceUpdate();
-					}
+			function subscription() {
+				let newSelected: V;
+				try {
+					newSelected = select(state);
+				} catch {
+					// This can be hit in various scenarios when removing components.
+					// https://react-redux.js.org/api/hooks#stale-props-and-zombie-children
+					scheduleUpdate(instance);
+					return;
 				}
-				subs.add(subscription);
-				return () => {
-					subs.delete(forceUpdate);
-				};
-			}, []);
-			return selected;
+				if (!equal(newSelected, selected)) {
+					scheduleUpdate(instance);
+				}
+			}
+
+			subs.add(subscription);
+			cleanup(instance, () => subs.delete(subscription));
+
+			return () => (selected = select(state));
 		},
 		replace,
 		update(action: (draft: Draft<S>) => void) {

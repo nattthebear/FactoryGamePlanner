@@ -17,7 +17,7 @@ import {
 } from "../../base64";
 import { BigRat } from "../../math/BigRat";
 import { FACTORY_MAX, FACTORY_MIN } from "../../util";
-import { Bus, BusTerminal, compareTerminals } from "./Bus";
+import { Bus, BusTerminal } from "./Bus";
 import { generateId, NodeId } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";

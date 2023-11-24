@@ -1,3 +1,4 @@
+import { TPC, VNode } from "vdomk";
 import { connectSolution } from "../editor/store/ConnectSolution";
 import { update as updateEditor } from "../editor/store/Store";
 import { generateNetResults } from "../solver/GenerateNetResults";
@@ -5,10 +6,10 @@ import { solve, solveCoop } from "../solver/Solver";
 import { makeProblem, State, useSelector } from "./store/Store";
 import { Recipe } from "../../data/types";
 import { FakePower } from "../../data/power";
-
-import "./Results.css";
 import { makeAbortablePromise, useAbortableAsynchronousMemo } from "../hook/usePromise";
 import { Spinner } from "../component/Spinner";
+
+import "./Results.css";
 
 function imageForRecipe(recipe: Recipe) {
 	if (recipe.Building.PowerConsumption.sign() < 0) {
@@ -34,7 +35,7 @@ function* solveAndRender(state: State) {
 	yield;
 
 	function renderRecipes() {
-		const nodes = Array<preact.ComponentChild>(problem.availableRecipes.size);
+		const nodes = Array<VNode>(problem.availableRecipes.size);
 		let index = 0;
 		for (const recipe of problem.availableRecipes) {
 			let rate = solution!.recipes[index++];
@@ -59,8 +60,8 @@ function* solveAndRender(state: State) {
 	}
 
 	function renderNet() {
-		const consumed = Array<preact.ComponentChild>();
-		const produced = Array<preact.ComponentChild>();
+		const consumed = Array<VNode>();
+		const produced = Array<VNode>();
 		for (let [item, rate] of net.items) {
 			const sign = rate.sign();
 			if (sign === 0) {
@@ -138,21 +139,25 @@ function* solveAndRender(state: State) {
 
 const solvePromisify = (state: State) => makeAbortablePromise(solveAndRender(state), 100);
 
-export function Results() {
-	const state = useSelector((s) => s);
+export const Results: TPC<{}> = (_, instance) => {
+	const getState = useSelector(instance, (s) => s);
 
-	const { value: content, stale } = useAbortableAsynchronousMemo(solvePromisify, [state]);
+	const solveAndRender = useAbortableAsynchronousMemo(instance, solvePromisify);
 
-	return (
-		<div class="results">
-			<div class="inner">
-				{stale && (
-					<div class="loader">
-						<Spinner />
-					</div>
-				)}
-				<div class="contents">{content}</div>
+	return () => {
+		const { value: content, stale } = solveAndRender([getState()]);
+
+		return (
+			<div class="results">
+				<div class="inner">
+					{stale && (
+						<div class="loader">
+							<Spinner />
+						</div>
+					)}
+					<div class="contents">{content}</div>
+				</div>
 			</div>
-		</div>
-	);
-}
+		);
+	};
+};

@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { TPC } from "vdomk";
 import { Recipes } from "../../data/generated/recipes";
 import { initiateDrag } from "../hook/drag";
-import { useLatestValue } from "../hook/useLatestValue";
 import { BigRat } from "../math/BigRat";
 import { addProducer } from "./store/Actions";
 import { SIXTY, toTranslation } from "./store/Common";
@@ -19,12 +18,13 @@ import {
 	Point,
 } from "../util";
 import { Connector } from "./Connector";
-
-import "./FactoryEditor.css";
+import { createMemo } from "../hook/createMemo";
 import { HotKeyActions } from "./HotKeyActions";
 import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
 import { Bus } from "./Bus";
+
+import "./FactoryEditor.css";
 
 const ZOOM_MAX = 5;
 const ZOOM_MIN = 1 / 10;
@@ -65,17 +65,34 @@ function handlePan({ x, y }: Point) {
 	return true;
 }
 
-export function FactoryEditor() {
-	const producers = useSelector(selectProducerIds);
-	const connectors = useSelector(selectConnectorIds);
-	const buses = useSelector(selectBusIds);
-	const viewport = useSelector((s) => s.viewport);
-	const viewportElementRef = useRef<HTMLDivElement | null>(null);
-	const svgRef = useRef<SVGSVGElement | null>(null);
+export const FactoryEditor: TPC<{}> = (_, instance) => {
+	const getProducers = useSelector(instance, selectProducerIds);
+	const getConnectors = useSelector(instance, selectConnectorIds);
+	const getBuses = useSelector(instance, selectBusIds);
+	const getViewport = useSelector(instance, (s) => s.viewport);
 
-	const producerComponents = useMemo(() => producers.map((id) => <Producer key={id} id={id} />), [producers]);
-	const connectorComponents = useMemo(() => connectors.map((id) => <Connector key={id} id={id} />), [connectors]);
-	const busComponents = useMemo(() => buses.map((id) => <Bus key={id} id={id} />), [buses]);
+	const viewportRef = (value: HTMLDivElement | null) => (viewportElt = value);
+	const svgRef = (value: SVGSVGElement | null) => (svgElt = value);
+	let viewportElt: HTMLDivElement | null = null;
+	let svgElt: SVGSVGElement | null = null;
+
+	let producers = getProducers();
+	let connectors = getConnectors();
+	let buses = getBuses();
+	let viewport = getViewport();
+
+	const renderProducerComponents = createMemo(
+		(producers) => producers.map((id) => <Producer key={id as any as number} id={id} />),
+		() => producers,
+	);
+	const renderConnectorComponents = createMemo(
+		(connectors) => connectors.map((id) => <Connector key={id as any as number} id={id} />),
+		() => connectors,
+	);
+	const renderBusComponents = createMemo(
+		(buses) => buses.map((id) => <Bus key={id as any as number} id={id} />),
+		() => buses,
+	);
 
 	function onWheel(ev: WheelEvent) {
 		ev.preventDefault();
@@ -95,27 +112,34 @@ export function FactoryEditor() {
 		});
 	}
 
-	const transform = `transform: translate(-50%, -50%) scale(${viewport.zoom}) ${toTranslation(viewport.center)}`;
+	return () => {
+		producers = getProducers();
+		connectors = getConnectors();
+		buses = getBuses();
+		viewport = getViewport();
 
-	return (
-		<div class="viewport" tabIndex={-1} ref={viewportElementRef} onWheelCapture={onWheel}>
-			<svg viewBox={viewBox} style={transform} ref={svgRef}>
-				<g
-					class="backgrid"
-					onMouseDown={(ev) => initiateDrag(ev, handlePan)}
-					onMouseEnter={() =>
-						update((draft) => {
-							draft.mouseOver = { type: "viewport" };
-						})
-					}
-				>
-					{backGrid}
-				</g>
-				{connectorComponents}
-				{busComponents}
-				{producerComponents}
-			</svg>
-			<HotKeyActions />
-		</div>
-	);
-}
+		const transform = `transform: translate(-50%, -50%) scale(${viewport.zoom}) ${toTranslation(viewport.center)}`;
+
+		return (
+			<div class="viewport" tabIndex={-1} ref={viewportRef} onWheelCapture={onWheel}>
+				<svg viewBox={viewBox} style={transform} ref={svgRef}>
+					<g
+						class="backgrid"
+						onMouseDown={(ev) => initiateDrag(ev, handlePan)}
+						onMouseEnter={() =>
+							update((draft) => {
+								draft.mouseOver = { type: "viewport" };
+							})
+						}
+					>
+						{backGrid}
+					</g>
+					{renderConnectorComponents()}
+					{renderBusComponents()}
+					{renderProducerComponents()}
+				</svg>
+				<HotKeyActions />
+			</div>
+		);
+	};
+};

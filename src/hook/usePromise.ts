@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "preact/hooks";
-import { useForceUpdate } from "./useForceUpdate";
+import { LayerInstance, cleanup, scheduleUpdate } from "vdomk";
 
 export interface AbortablePromise<T> {
 	promise: Promise<T>;
@@ -49,41 +48,38 @@ function arrayEqual<T extends any[]>(a: T, b: T) {
 }
 
 export function useAbortableAsynchronousMemo<A extends any[], T>(
+	instance: LayerInstance,
 	factory: (...deps: A) => AbortablePromise<T>,
-	deps: A,
 ) {
-	const { current } = useRef<{
-		deps: A | undefined;
-		value: T | undefined;
-		wip: AbortablePromise<T> | undefined;
-		catchable: Promise<void> | undefined;
-	}>({
-		deps: undefined,
-		value: undefined,
-		wip: undefined,
-		catchable: undefined,
+	let prevDeps: A | undefined;
+	let prevValue: T | undefined;
+
+	let wip: AbortablePromise<T> | undefined;
+	let catchable: Promise<void> | undefined;
+
+	cleanup(instance, () => {
+		catchable?.catch(() => {});
+		wip?.abort();
 	});
-	useEffect(() => {
-		return () => {
-			current.catchable?.catch(() => {});
-			current.wip?.abort();
-		};
-	}, []);
-	const forceUpdate = useForceUpdate();
-	if (!current.deps || !arrayEqual(current.deps, deps)) {
-		current.catchable?.catch(() => {});
-		current.wip?.abort();
+
+	return (deps: A) => {
+		if (!prevDeps || !arrayEqual(prevDeps, deps)) {
+			catchable?.catch(() => {});
+			wip?.abort();
+		}
+
 		const next = factory(...deps);
-		current.deps = deps;
-		current.wip = next;
-		current.catchable = next.promise.then((value) => {
-			if (current.wip === next) {
-				current.value = value;
-				current.wip = undefined;
-				current.catchable = undefined;
-				forceUpdate();
+		prevDeps = deps;
+		wip = next;
+		catchable = next.promise.then((value) => {
+			if (wip === next) {
+				prevValue = value;
+				wip = undefined;
+				catchable = undefined;
+				scheduleUpdate(instance);
 			}
 		});
-	}
-	return { value: current.value, stale: !!current.wip };
+
+		return { value: prevValue, stale: !!wip };
+	};
 }

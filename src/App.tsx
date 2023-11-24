@@ -1,13 +1,12 @@
-import { render } from "preact";
+import { createRoot, TPC } from "vdomk";
 import { Editor } from "./editor";
 import { PromptRoot } from "./component/Prompt";
-import { useState } from "preact/hooks";
 import { AppActions } from "./AppActions";
 import { Planner } from "./planner";
 import { installTooltip } from "./component/Tooltip";
+import { makeStoreWithHashRouter, ROUTER_APP_STORE } from "./MakeHashRouterStore";
 
 import "./App.css";
-import { makeStoreWithHashRouter, ROUTER_APP_STORE } from "./MakeHashRouterStore";
 
 interface AppState {
 	inPlanner: boolean;
@@ -42,16 +41,21 @@ function changeInPlanner(newValue: boolean) {
 	});
 }
 
-function App() {
-	const inPlanner = useSelector((s) => s.inPlanner);
-	return (
-		<>
-			{inPlanner ? <Planner /> : <Editor />}
-			<AppActions inPlanner={inPlanner} changeInPlanner={changeInPlanner} />
-			<PromptRoot />
-		</>
-	);
-}
+const App: TPC<{}> = (_, instance) => {
+	const getInPlanner = useSelector(instance, (s) => s.inPlanner);
+
+	return () => {
+		const inPlanner = getInPlanner();
+
+		return (
+			<>
+				{inPlanner ? <Planner /> : <Editor />}
+				<AppActions inPlanner={inPlanner} changeInPlanner={changeInPlanner} />
+				<PromptRoot />
+			</>
+		);
+	};
+};
 
 installTooltip();
-render(<App />, document.getElementById("root")!);
+createRoot(document.getElementById("root")!, <App />);

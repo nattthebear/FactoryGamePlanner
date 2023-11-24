@@ -1,9 +1,11 @@
+import { TPC, VNode } from "vdomk";
 import { makeStore } from "../MakeStore";
+
 import "./Prompt.css";
 
 export interface PromptItem<T> {
 	title: string;
-	render: (onConfirm: (value: T) => void) => preact.ComponentChild;
+	render: (onConfirm: (value: T) => void) => VNode;
 }
 
 interface PromptImpl {
@@ -13,34 +15,39 @@ interface PromptImpl {
 
 const { useSelector, update, getStateRaw } = makeStore<PromptImpl[]>([]);
 
-export function PromptRoot() {
-	const prompt = useSelector((prompts) => prompts[0]);
-	if (!prompt) {
-		return null;
-	}
+export const PromptRoot: TPC<{}> = (_, instance) => {
+	const getActivePrompt = useSelector(instance, (prompts) => prompts[0]);
 
-	function onConfirm(value: any) {
-		update((prompts) => {
-			prompts.shift()?.resolve(value);
-		});
-	}
+	return () => {
+		const activePrompt = getActivePrompt();
 
-	return (
-		<div
-			class="prompt-backdrop"
-			onClick={(ev) => {
-				if (ev.target === ev.currentTarget) {
-					onConfirm(null);
-				}
-			}}
-		>
-			<div class="prompt">
-				<div class="title">{prompt.item.title}</div>
-				<div class="form">{prompt.item.render(onConfirm)}</div>
+		if (!activePrompt) {
+			return null;
+		}
+
+		function onConfirm(value: any) {
+			update((prompts) => {
+				prompts.shift()?.resolve(value);
+			});
+		}
+
+		return (
+			<div
+				class="prompt-backdrop"
+				onClick={(ev) => {
+					if (ev.target === ev.currentTarget) {
+						onConfirm(null);
+					}
+				}}
+			>
+				<div class="prompt">
+					<div class="title">{activePrompt.item.title}</div>
+					<div class="form">{activePrompt.item.render(onConfirm)}</div>
+				</div>
 			</div>
-		</div>
-	);
-}
+		);
+	};
+};
 
 export const prompt = <T extends any>(item: PromptItem<T>) =>
 	new Promise<T | null>((resolve) =>

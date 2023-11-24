@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "preact/hooks";
+import { TPC, VNode, cleanup, effect } from "vdomk";
 import { BigRat } from "../math/BigRat";
 import {
 	addBus,
@@ -37,15 +37,16 @@ import { chooseBuildingRate, chooseSourceSinkRate } from "../component/RateChose
 import { reflowConnectors } from "./store/ReflowConnector";
 import { Bus } from "./store/Bus";
 
-export function HotKeyActions() {
-	const currentScreenCoords = useRef<Point | null>(null);
-	const currentObject = useSelector(selectMouseOverObject);
-	const currentWip = useSelector((s) => s.wip);
-	const wipConnectorPiped = useSelector(
+export const HotKeyActions: TPC<{}> = (_, instance) => {
+	let currentScreenCoords: Point | null = null;
+	const getCurrentObject = useSelector(instance, selectMouseOverObject);
+	const getCurrentWip = useSelector(instance, (s) => s.wip);
+	const getWipConnectorPiped = useSelector(
+		instance,
 		(s) => s.wip.type === "connector:bus" && s.connectors.get(s.wip.connectorId)!.item.IsPiped,
 	);
 
-	useEffect(() => {
+	effect(instance, () => {
 		function listener(ev: KeyboardEvent) {
 			if (ev.key === "Escape") {
 				update((draft) => {
@@ -54,31 +55,31 @@ export function HotKeyActions() {
 			}
 		}
 		document.addEventListener("keydown", listener, { passive: true, capture: true });
-		return () => {
+		cleanup(instance, () => {
 			document.removeEventListener("keydown", listener, { capture: true });
-		};
-	}, []);
+		});
+	});
 
-	useEffect(() => {
+	effect(instance, () => {
 		function mouseMove(ev: MouseEvent) {
-			currentScreenCoords.current = {
+			currentScreenCoords = {
 				x: ev.clientX,
 				y: ev.clientY,
 			};
 		}
 		function mouseLeave() {
-			currentScreenCoords.current = null;
+			currentScreenCoords = null;
 		}
 		document.documentElement.addEventListener("mouseleave", mouseLeave, { passive: true });
 		document.addEventListener("mousemove", mouseMove, { capture: true, passive: true });
-		return () => {
+		cleanup(instance, () => {
 			window.removeEventListener("blur", mouseLeave, { capture: true });
 			document.documentElement.removeEventListener("mouseleave", mouseLeave);
-		};
-	}, []);
+		});
+	});
 
 	function calculateActionPosition(wasClick: boolean) {
-		const screen = currentScreenCoords.current;
+		const screen = currentScreenCoords;
 		if (wasClick || !screen) {
 			return getStateRaw().viewport.center;
 		}
@@ -97,7 +98,11 @@ export function HotKeyActions() {
 	}
 
 	const actionRender: {
-		[K in MouseOverObject["type"]]: (o: MouseOverObject & { type: K }, w: WipInfo) => preact.ComponentChild;
+		[K in MouseOverObject["type"]]: (
+			o: MouseOverObject & { type: K },
+			w: WipInfo,
+			wipConnectorPiped: boolean,
+		) => VNode;
 	} = {
 		none: () => {
 			return null;
@@ -450,7 +455,7 @@ export function HotKeyActions() {
 				</>
 			);
 		},
-		bus: (o, w) => {
+		bus: (o, w, wipConnectorPiped) => {
 			if (w.type !== "none") {
 				if (w.type === "connector:bus") {
 					return (
@@ -492,5 +497,15 @@ export function HotKeyActions() {
 		},
 	};
 
-	return <div class="hotkey-actions">{actionRender[currentObject.type](currentObject as any, currentWip)}</div>;
-}
+	return () => {
+		const currentObject = getCurrentObject();
+		const currentWip = getCurrentWip();
+		const wipConnectorPiped = getWipConnectorPiped();
+
+		return (
+			<div class="hotkey-actions">
+				{actionRender[currentObject.type](currentObject as any, currentWip, wipConnectorPiped)}
+			</div>
+		);
+	};
+};

@@ -1,3 +1,4 @@
+import { VNode } from "vdomk";
 import { Item } from "../data/types";
 import { BigRat } from "./math/BigRat";
 
@@ -66,7 +67,7 @@ export function makeSearchRegexes(searchTerm: string) {
 
 /** Highlights portions of text that match the given regex with <strong> */
 export function highlightText(text: string, regex: RegExp) {
-	const textNodes: preact.ComponentChild[] = [];
+	const textNodes: VNode[] = [];
 	regex.lastIndex = 0;
 	while (true) {
 		const from = regex.lastIndex;

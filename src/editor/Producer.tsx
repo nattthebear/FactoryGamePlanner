@@ -1,3 +1,5 @@
+import { TPC } from "vdomk";
+
 import { initiateDrag } from "../hook/drag";
 import { NodeId, toTranslation } from "./store/Common";
 import { ProductionBuilding } from "./store/Producers";
@@ -7,9 +9,10 @@ import { ConnectionTerminal } from "./ConnectionTerminal";
 
 import "./Producer.css";
 
-export function Producer({ id }: { id: NodeId }) {
-	const producer = useSelector((s) => s.producers.get(id)!);
-	const activeMergeAttempt = useSelector((s) => {
+export const Producer: TPC<{ id: NodeId }> = ({ id }, instance) => {
+	const getProducer = useSelector(instance, (s) => s.producers.get(id)!);
+	let producer = getProducer();
+	const getActiveMergeAttempt = useSelector(instance, (s) => {
 		if (s.wip.type !== "producer:merge") {
 			return null;
 		}
@@ -20,55 +23,60 @@ export function Producer({ id }: { id: NodeId }) {
 		return other.canCombineWith(producer);
 	});
 
-	const drawing = producer.getDrawing();
+	return () => {
+		producer = getProducer();
+		const activeMergeAttempt = getActiveMergeAttempt();
 
-	const rateText =
-		producer instanceof ProductionBuilding ? (
-			<text class="multiplier">{producer.rate.toFixed(2)}x</text>
-		) : (
-			<text class="rate">{producer.rate.toFixed(2)}/min</text>
-		);
+		const drawing = producer.getDrawing();
 
-	return (
-		<g class="producer" style={`transform: ${toTranslation(producer)}`} data-tooltip={`$producer:${id}`}>
-			<path
-				class={
-					activeMergeAttempt === true
-						? "outline merging-yes"
-						: activeMergeAttempt === false
-						? "outline merging-no"
-						: activeMergeAttempt === "self"
-						? "outline merging-self"
-						: "outline"
-				}
-				d={drawing.d}
-				onMouseDown={(ev) =>
-					initiateDrag(ev, ({ x, y }) => {
+		const rateText =
+			producer instanceof ProductionBuilding ? (
+				<text class="multiplier">{producer.rate.toFixed(2)}x</text>
+			) : (
+				<text class="rate">{producer.rate.toFixed(2)}/min</text>
+			);
+
+		return (
+			<g class="producer" style={`transform: ${toTranslation(producer)}`} data-tooltip={`$producer:${id}`}>
+				<path
+					class={
+						activeMergeAttempt === true
+							? "outline merging-yes"
+							: activeMergeAttempt === false
+							? "outline merging-no"
+							: activeMergeAttempt === "self"
+							? "outline merging-self"
+							: "outline"
+					}
+					d={drawing.d}
+					onMouseDown={(ev) =>
+						initiateDrag(ev, ({ x, y }) => {
+							update((draft) => {
+								const { zoom } = draft.viewport;
+								const p = draft.producers.get(id)!;
+								const { x: ox, y: oy } = p;
+								const nx = clamp(ox + x / zoom, BUILDING_MIN.x, BUILDING_MAX.x);
+								const ny = clamp(oy + y / zoom, BUILDING_MIN.y, BUILDING_MAX.y);
+								p.x = nx;
+								p.y = ny;
+							});
+							return true;
+						})
+					}
+					onMouseEnter={() =>
 						update((draft) => {
-							const { zoom } = draft.viewport;
-							const p = draft.producers.get(id)!;
-							const { x: ox, y: oy } = p;
-							const nx = clamp(ox + x / zoom, BUILDING_MIN.x, BUILDING_MAX.x);
-							const ny = clamp(oy + y / zoom, BUILDING_MIN.y, BUILDING_MAX.y);
-							p.x = nx;
-							p.y = ny;
-						});
-						return true;
-					})
-				}
-				onMouseEnter={() =>
-					update((draft) => {
-						draft.mouseOver = { type: "producer", producerId: id };
-					})
-				}
-			/>
-			{rateText}
-			{producer.inputs.map((_, i) => (
-				<ConnectionTerminal key={i} producerId={id} isOutput={false} index={i} />
-			))}
-			{producer.outputs.map((_, i) => (
-				<ConnectionTerminal key={i} producerId={id} isOutput={true} index={i} />
-			))}
-		</g>
-	);
-}
+							draft.mouseOver = { type: "producer", producerId: id };
+						})
+					}
+				/>
+				{rateText}
+				{producer.inputs.map((_, i) => (
+					<ConnectionTerminal key={i} producerId={id} isOutput={false} index={i} />
+				))}
+				{producer.outputs.map((_, i) => (
+					<ConnectionTerminal key={i} producerId={id} isOutput={true} index={i} />
+				))}
+			</g>
+		);
+	};
+};

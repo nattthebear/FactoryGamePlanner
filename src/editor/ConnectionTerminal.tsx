@@ -1,3 +1,4 @@
+import { TPC } from "vdomk";
 import { LiquidAttach, ProducerDrawing, SolidAttach } from "./ProducerArt";
 import { BigRat } from "../math/BigRat";
 import { NodeId, toTranslation } from "./store/Common";
@@ -5,22 +6,19 @@ import { update, useSelector } from "./store/Store";
 
 import "./ConnectionTerminal.css";
 
-export function ConnectionTerminal({
-	producerId,
-	isOutput,
-	index,
-}: {
+export const ConnectionTerminal: TPC<{
 	producerId: NodeId;
 	isOutput: boolean;
 	index: number;
-}) {
-	const producer = useSelector((s) => s.producers.get(producerId)!);
+}> = ({ producerId, isOutput, index }, instance) => {
+	const getProducer = useSelector(instance, (s) => s.producers.get(producerId)!);
+	let producer = getProducer();
 	const { rate, item } = (isOutput ? producer.outputFlows() : producer.inputFlows())[index];
 	const connectionIds = (isOutput ? producer.outputs : producer.inputs)[index];
-	const connectionSum = useSelector((s) =>
+	const getConnectionSum = useSelector(instance, (s) =>
 		connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO),
 	);
-	const activeConnectionAttempt = useSelector((s) => {
+	const getActiveConnectionAttempt = useSelector(instance, (s) => {
 		if (s.wip.type === "connector:input") {
 			if (isOutput && s.wip.producerId === producerId && s.wip.index === index) {
 				return "self";
@@ -36,56 +34,62 @@ export function ConnectionTerminal({
 		return null;
 	});
 
-	let diff = rate.sub(connectionSum);
-	if (!isOutput) {
-		diff = diff.neg();
-	}
-	const cmp = diff.sign();
-	let cmpClass: string;
-	if (cmp > 0) {
-		cmpClass = "surplus";
-	} else if (cmp < 0) {
-		cmpClass = "shortfall";
-	} else {
-		cmpClass = "exact";
-	}
+	return () => {
+		producer = getProducer();
+		const connectionSum = getConnectionSum();
+		const activeConnectionAttempt = getActiveConnectionAttempt();
 
-	const p = (isOutput ? producer.outputAttachPoints : producer.inputAttachPoints)[index];
-	const d = item.IsPiped ? LiquidAttach : SolidAttach;
+		let diff = rate.sub(connectionSum);
+		if (!isOutput) {
+			diff = diff.neg();
+		}
+		const cmp = diff.sign();
+		let cmpClass: string;
+		if (cmp > 0) {
+			cmpClass = "surplus";
+		} else if (cmp < 0) {
+			cmpClass = "shortfall";
+		} else {
+			cmpClass = "exact";
+		}
 
-	return (
-		<g
-			class={`connection-terminal ${cmpClass}`}
-			style={`transform: ${toTranslation(p)}`}
-			onMouseEnter={() =>
-				update((draft) => {
-					draft.mouseOver = {
-						type: isOutput ? "producer:connection:output" : "producer:connection:input",
-						producerId,
-						index,
-					};
-				})
-			}
-		>
-			<path
-				class={
-					activeConnectionAttempt === true
-						? "outline connecting-yes"
-						: activeConnectionAttempt === false
-						? "outline connecting-no"
-						: activeConnectionAttempt === "self"
-						? "outline connecting-self"
-						: "outline"
+		const p = (isOutput ? producer.outputAttachPoints : producer.inputAttachPoints)[index];
+		const d = item.IsPiped ? LiquidAttach : SolidAttach;
+
+		return (
+			<g
+				class={`connection-terminal ${cmpClass}`}
+				style={`transform: ${toTranslation(p)}`}
+				onMouseEnter={() =>
+					update((draft) => {
+						draft.mouseOver = {
+							type: isOutput ? "producer:connection:output" : "producer:connection:input",
+							producerId,
+							index,
+						};
+					})
 				}
-				d={d}
-			/>
-			<image href={item.Icon} />
-			{cmp !== 0 && (
-				<text>
-					{cmp > 0 && "+"}
-					{diff.toFixed(0)}/min
-				</text>
-			)}
-		</g>
-	);
-}
+			>
+				<path
+					class={
+						activeConnectionAttempt === true
+							? "outline connecting-yes"
+							: activeConnectionAttempt === false
+							? "outline connecting-no"
+							: activeConnectionAttempt === "self"
+							? "outline connecting-self"
+							: "outline"
+					}
+					d={d}
+				/>
+				<image href={item.Icon} />
+				{cmp !== 0 && (
+					<text>
+						{cmp > 0 && "+"}
+						{diff.toFixed(0)}/min
+					</text>
+				)}
+			</g>
+		);
+	};
+};

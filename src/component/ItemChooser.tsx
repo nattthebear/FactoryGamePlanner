@@ -1,10 +1,9 @@
-import { useEffect, useState } from "preact/hooks";
+import { TPC, scheduleUpdate } from "vdomk";
 import { Items } from "../../data/generated/items";
 import { Recipes } from "../../data/generated/recipes";
 import { Item, Recipe } from "../../data/types";
 import { Chooser } from "./Chooser";
 import { prompt } from "../component/Prompt";
-import { BigRat } from "../math/BigRat";
 
 import "./ItemChooser.css";
 import { FakePower, ItemsWithFakePower } from "../../data/power";
@@ -64,47 +63,57 @@ const FakePowerItem: DisplayItem = {
 };
 DisplayItems.push(FakePowerItem);
 
-function RecipeChooser({ type, onConfirm }: { type: "input" | "output"; onConfirm: (value: Recipe | null) => void }) {
-	const [displayItem, changeDisplayItem] = useState<DisplayItem | null>(null);
-	const [tentativeRecipe, changeTentativeRecipe] = useState<Recipe | null>(null);
-	const displayItems = DisplayItems.filter((di) => (type === "input" ? di.consumingRecipes : di.producingRecipes));
+const RecipeChooser: TPC<{ type: "input" | "output"; onConfirm: (value: Recipe | null) => void }> = (
+	{ type, onConfirm },
+	instance,
+) => {
+	let displayItem: DisplayItem | null = null;
+	let tentativeRecipe: Recipe | null = null;
 
-	const recipes = displayItem?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
+	return () => {
+		const displayItems = DisplayItems.filter((di) =>
+			type === "input" ? di.consumingRecipes : di.producingRecipes,
+		);
 
-	function onChangeItemValue(newValue: DisplayItem | null) {
-		const newRecipes = newValue?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
-		if (newRecipes?.length === 1) {
-			onConfirm(newRecipes[0].recipe);
-		} else {
-			changeDisplayItem(newValue);
+		const recipes = displayItem?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
+
+		function onChangeItemValue(newValue: DisplayItem | null) {
+			const newRecipes = newValue?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
+			if (newRecipes?.length === 1) {
+				onConfirm(newRecipes[0].recipe);
+			} else {
+				displayItem = newValue;
+				scheduleUpdate(instance);
+			}
 		}
-	}
 
-	return (
-		<>
-			<Chooser items={displayItems} value={displayItem} changeValue={onChangeItemValue} />
-			{recipes && (
-				<>
-					<div class="recipe-chooser-divider" />
-					<Chooser
-						items={recipes}
-						value={null}
-						changeValue={(dr) => onConfirm(dr?.recipe ?? null)}
-						onTentative={(dr) => {
-							changeTentativeRecipe(dr?.recipe ?? null);
-						}}
-					/>
-				</>
-			)}
-			<div class="dialog-buttons">
-				<button onClick={() => onConfirm(null)}>Cancel</button>
-				<button disabled={!recipes || !tentativeRecipe} onClick={() => onConfirm(tentativeRecipe)}>
-					Ok
-				</button>
-			</div>
-		</>
-	);
-}
+		return (
+			<>
+				<Chooser items={displayItems} value={displayItem} changeValue={onChangeItemValue} />
+				{recipes && (
+					<>
+						<div class="recipe-chooser-divider" />
+						<Chooser
+							items={recipes}
+							value={null}
+							changeValue={(dr) => onConfirm(dr?.recipe ?? null)}
+							onTentative={(dr) => {
+								tentativeRecipe = dr?.recipe ?? null;
+								scheduleUpdate(instance);
+							}}
+						/>
+					</>
+				)}
+				<div class="dialog-buttons">
+					<button onClick={() => onConfirm(null)}>Cancel</button>
+					<button disabled={!recipes || !tentativeRecipe} onClick={() => onConfirm(tentativeRecipe)}>
+						Ok
+					</button>
+				</div>
+			</>
+		);
+	};
+};
 
 /** Choose an item.
  * @param options If not provided, choice will be taken from all items.
