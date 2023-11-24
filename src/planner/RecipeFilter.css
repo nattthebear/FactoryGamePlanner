@@ -17,9 +17,9 @@
 
 	& .entry {
 		height: 28px;
-		line-height: 28px;
 
 		& label {
+			line-height: 28px;
 			display: inline-flex;
 			gap: 6px;
 		}
