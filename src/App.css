@@ -11,3 +11,9 @@ label[data-has-checkbox] {
 		cursor: not-allowed;
 	}
 }
+
+input[type="text"] {
+	padding: 2px;
+	border: 1px solid #aaa;
+	border-radius: 2px;
+}

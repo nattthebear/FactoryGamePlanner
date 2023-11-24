@@ -57,7 +57,7 @@ function ExpressionInput({ onChange }: { onChange: (value: BigRat) => void }) {
 
 	const lowertext = (
 		<span class="lower-text">
-			<span class={evalRes.error ? "error" : undefined}>{evalRes.message}</span>
+			<span class={evalRes.error ? "error" : undefined}>{evalRes.message || "\u00a0"}</span>
 		</span>
 	);
 
