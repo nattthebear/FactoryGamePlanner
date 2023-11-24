@@ -135,6 +135,12 @@ export class BigRat {
 		return this.toNumberApprox().toFixed(fractionDigits);
 	}
 
+	toStringAdaptive() {
+		const f = this.toNumberApprox();
+		const d = f > 100 ? 0 : f > 10 ? 1 : 2;
+		return f.toFixed(d);
+	}
+
 	toRatioString() {
 		return `${this.pb ?? this.ps}:${this.qb ?? this.qs}`;
 	}

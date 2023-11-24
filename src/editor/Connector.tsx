@@ -31,7 +31,7 @@ export function Connector({ id }: { id: NodeId }) {
 						}`}
 					/>
 					<text class="connector-text" x={tx} y={ty}>
-						{connector.rate.toFixed(2)}/min
+						{connector.rate.toStringAdaptive()}/min
 					</text>
 				</>
 			);
@@ -80,7 +80,7 @@ export function Connector({ id }: { id: NodeId }) {
 					}
 				/>
 				<text class="connector-text" x={(op.x + ip.x) / 2} y={(op.y + ip.y) / 2}>
-					{connector.rate.toFixed(2)}/min
+					{connector.rate.toStringAdaptive()}/min
 				</text>
 			</>
 		);

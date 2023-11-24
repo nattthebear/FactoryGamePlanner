@@ -82,7 +82,7 @@ export function Bus({ id }: { id: NodeId }) {
 						<>
 							{netRate.gt(MAX_FLOW) && <path class="rate-over" d={`M ${x} 0 L ${xNext} 0`} />}
 							<text x={(x + xNext) / 2} class="rate-text">
-								{netRate.toFixed(2)}/min
+								{netRate.toStringAdaptive()}/min
 							</text>
 						</>
 					);
