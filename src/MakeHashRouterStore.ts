@@ -80,7 +80,6 @@ function makeDirty(index: number) {
 
 		const newHash = parts.join(".");
 		if (newHash !== lastSentHash) {
-			console.log("newhash out");
 			lastSentHash = newHash;
 			window.location.hash = newHash;
 		}

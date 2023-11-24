@@ -1,6 +1,6 @@
 import { readBigPos, readBigRat, readItem, RStream, writeBigPos, writeBigRat, writeItem, WStream } from "../../base64";
 import { BigRat } from "../../math/BigRat";
-import { makeEmptyState, NullableFlow, State } from "./Store";
+import { makeEmptyState, NullableFlow, sortNullableFlowsMutate, State } from "./Store";
 
 const VERSION = 0;
 
@@ -70,12 +70,14 @@ export function deserialize(encoded: string) {
 	if (!products) {
 		return null;
 	}
+	sortNullableFlowsMutate(products);
 	state.products = products;
 
 	const inputs = readFlows();
 	if (!inputs) {
 		return null;
 	}
+	sortNullableFlowsMutate(inputs);
 	state.inputs = inputs;
 
 	return state;

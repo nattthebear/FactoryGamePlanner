@@ -29,11 +29,13 @@ export const defaultResourceData = new Map<Item, BigRat>(
 );
 const Water = Items.find((i) => i.ClassName === "Desc_Water_C")!;
 
-const resourceDefaults = Resources.map((r) => defaultResourceData.get(r) ?? null);
-
 export interface NullableFlow {
 	rate: BigRat | null;
 	item: Item;
+}
+
+export function sortNullableFlowsMutate(flows: NullableFlow[]) {
+	flows.sort((a, b) => a.item.SortOrder - b.item.SortOrder);
 }
 
 export interface State {
@@ -62,6 +64,7 @@ export function buildDefaultInputs() {
 	}
 	ret[i++] = { rate: null, item: Water };
 	ret[i++] = { rate: null, item: FakePower };
+	sortNullableFlowsMutate(ret);
 	return ret;
 }
 

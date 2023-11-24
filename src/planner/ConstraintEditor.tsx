@@ -1,9 +1,15 @@
 import { Draft } from "../immer";
-import { Items } from "../../data/generated/items";
 import { chooseItem } from "../component/ItemChooser";
 import { chooseConstraintRate } from "../component/RateChoser";
 import { BigRat } from "../math/BigRat";
-import { buildDefaultInputs, getStateRaw, NullableFlow, Resources, update, useSelector } from "./store/Store";
+import {
+	buildDefaultInputs,
+	getStateRaw,
+	NullableFlow,
+	sortNullableFlowsMutate,
+	update,
+	useSelector,
+} from "./store/Store";
 import { Item } from "../../data/types";
 import { FakePower, ItemsWithFakePower } from "../../data/power";
 
@@ -22,32 +28,6 @@ const makeRateList = (
 			<div class="rate-list">
 				{data.map((d, index) => (
 					<div class="rate-item">
-						<button
-							disabled={index === 0}
-							onClick={() =>
-								updateData((draft) => {
-									const prev = draft[index - 1];
-									const curr = draft[index];
-									draft[index - 1] = curr;
-									draft[index] = prev;
-								})
-							}
-						>
-							▲
-						</button>
-						<button
-							disabled={index === data.length - 1}
-							onClick={() =>
-								updateData((draft) => {
-									const next = draft[index + 1];
-									const curr = draft[index];
-									draft[index + 1] = curr;
-									draft[index] = next;
-								})
-							}
-						>
-							▼
-						</button>
 						<button
 							onClick={async () => {
 								const { products, inputs } = getStateRaw();
@@ -117,14 +97,22 @@ const makeRateList = (
 
 const ProductsRateList = makeRateList(
 	() => useSelector((state) => state.products),
-	(cb) => update((draft) => cb(draft.products)),
+	(cb) =>
+		update((draft) => {
+			cb(draft.products);
+			sortNullableFlowsMutate(draft.products);
+		}),
 	(rate, item) => chooseConstraintRate(rate, item, true),
 	"maximize",
 );
 
 const InputsRateList = makeRateList(
 	() => useSelector((state) => state.inputs),
-	(cb) => update((draft) => cb(draft.inputs)),
+	(cb) =>
+		update((draft) => {
+			cb(draft.inputs);
+			sortNullableFlowsMutate(draft.inputs);
+		}),
 	(rate, item) => chooseConstraintRate(rate, item, false),
 	"unlimited",
 );
