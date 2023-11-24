@@ -801,7 +801,9 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 				return;
 			}
 			for (const { ItemClass } of recipe.mProduct) {
-				itemClassesToSortOrders.set(ItemClass, nextSortOrder++);
+				if (!itemClassesToSortOrders.has(ItemClass)) {
+					itemClassesToSortOrders.set(ItemClass, nextSortOrder++);
+				}
 			}
 			for (const { ItemClass } of recipe.mProduct) {
 				const arr = waitingOn.get(ItemClass);

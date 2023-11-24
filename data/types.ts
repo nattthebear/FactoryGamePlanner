@@ -9,7 +9,7 @@ export interface Item {
 	IsPiped: boolean;
 	Color: string;
 	SinkPoints: BigRat;
-	SortOrder: number | null;
+	SortOrder: number;
 }
 
 export interface RecipeFlow {
