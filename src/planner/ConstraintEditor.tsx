@@ -4,10 +4,10 @@ import { chooseItem } from "../component/ItemChooser";
 import { chooseConstraintRate } from "../component/RateChoser";
 import { BigRat } from "../math/BigRat";
 import { buildDefaultInputs, getStateRaw, NullableFlow, Resources, update, useSelector } from "./store/Store";
-
-import "./ConstraintEditor.css";
 import { Item } from "../../data/types";
 import { FakePower, ItemsWithFakePower } from "../../data/power";
+
+import "./ConstraintEditor.css";
 
 const makeRateList = (
 	useData: () => NullableFlow[],

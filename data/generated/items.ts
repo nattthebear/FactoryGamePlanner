@@ -128,6 +128,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(3),
+		SortOrder: 3,
 	},
 	{
 		ClassName: "Desc_OreCopper_C",
@@ -138,6 +139,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(3),
+		SortOrder: 2,
 	},
 	{
 		ClassName: "Desc_OreGold_C",
@@ -148,6 +150,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(7),
+		SortOrder: 4,
 	},
 	{
 		ClassName: "Desc_OreIron_C",
@@ -158,6 +161,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(1),
+		SortOrder: 0,
 	},
 	{
 		ClassName: "Desc_RawQuartz_C",
@@ -168,6 +172,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(15),
+		SortOrder: 5,
 	},
 	{
 		ClassName: "Desc_Stone_C",
@@ -178,6 +183,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(2),
+		SortOrder: 1,
 	},
 	{
 		ClassName: "Desc_Sulfur_C",
@@ -188,6 +194,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(11),
+		SortOrder: 6,
 	},
 	{
 		ClassName: "Desc_LiquidOil_C",
@@ -198,6 +205,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#190019",
 		SinkPoints: BigRat.fromInteger(30),
+		SortOrder: 7,
 	},
 	{
 		ClassName: "Desc_NitrogenGas_C",
@@ -208,6 +216,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#ffffff",
 		SinkPoints: BigRat.fromInteger(10),
+		SortOrder: 9,
 	},
 	{
 		ClassName: "Desc_Water_C",
@@ -218,6 +227,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#7ab0d4",
 		SinkPoints: BigRat.fromInteger(5),
+		SortOrder: 118,
 	},
 	{
 		ClassName: "Desc_OreBauxite_C",
@@ -228,6 +238,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(8),
+		SortOrder: 8,
 	},
 	{
 		ClassName: "Desc_OreUranium_C",
@@ -238,6 +249,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(35),
+		SortOrder: 10,
 	},
 	{
 		ClassName: "Desc_NuclearWaste_C",
@@ -248,6 +260,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
+		SortOrder: 107,
 	},
 	{
 		ClassName: "Desc_PlutoniumWaste_C",
@@ -258,6 +271,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
+		SortOrder: 125,
 	},
 	{
 		ClassName: "Desc_Battery_C",
@@ -268,6 +282,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(465),
+		SortOrder: 97,
 	},
 	{
 		ClassName: "Desc_AluminumIngot_C",
@@ -278,6 +293,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(131),
+		SortOrder: 88,
 	},
 	{
 		ClassName: "Desc_NonFissibleUranium_C",
@@ -288,6 +304,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
+		SortOrder: 117,
 	},
 	{
 		ClassName: "Desc_PlutoniumPellet_C",
@@ -298,6 +315,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
+		SortOrder: 119,
 	},
 	{
 		ClassName: "Desc_PlutoniumCell_C",
@@ -308,6 +326,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
+		SortOrder: 120,
 	},
 	{
 		ClassName: "Desc_IronRod_C",
@@ -318,6 +337,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(4),
+		SortOrder: 15,
 	},
 	{
 		ClassName: "Desc_IronScrew_C",
@@ -328,6 +348,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(2),
+		SortOrder: 20,
 	},
 	{
 		ClassName: "Desc_Wire_C",
@@ -338,6 +359,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(6),
+		SortOrder: 17,
 	},
 	{
 		ClassName: "Desc_Cement_C",
@@ -348,6 +370,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(12),
+		SortOrder: 19,
 	},
 	{
 		ClassName: "Desc_Silica_C",
@@ -358,6 +381,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(20),
+		SortOrder: 84,
 	},
 	{
 		ClassName: "Desc_IronPlate_C",
@@ -368,6 +392,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(6),
+		SortOrder: 14,
 	},
 	{
 		ClassName: "Desc_SteelPlate_C",
@@ -378,6 +403,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(64),
+		SortOrder: 29,
 	},
 	{
 		ClassName: "Desc_Cable_C",
@@ -388,6 +414,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(24),
+		SortOrder: 18,
 	},
 	{
 		ClassName: "Desc_ModularFrame_C",
@@ -398,6 +425,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(408),
+		SortOrder: 25,
 	},
 	{
 		ClassName: "Desc_Fuel_C",
@@ -408,6 +436,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(270),
+		SortOrder: 78,
 	},
 	{
 		ClassName: "Desc_TurboFuel_C",
@@ -418,6 +447,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(570),
+		SortOrder: 75,
 	},
 	{
 		ClassName: "Desc_HazmatFilter_C",
@@ -428,6 +458,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(2718),
+		SortOrder: 94,
 	},
 	{
 		ClassName: "Desc_Filter_C",
@@ -438,6 +469,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(830),
+		SortOrder: 82,
 	},
 	{
 		ClassName: "Desc_IronPlateReinforced_C",
@@ -448,6 +480,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(120),
+		SortOrder: 21,
 	},
 	{
 		ClassName: "Desc_CopperIngot_C",
@@ -458,6 +491,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(6),
+		SortOrder: 16,
 	},
 	{
 		ClassName: "Desc_ModularFrameFused_C",
@@ -468,6 +502,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(62840),
+		SortOrder: 112,
 	},
 	{
 		ClassName: "Desc_CircuitBoard_C",
@@ -478,6 +513,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(696),
+		SortOrder: 67,
 	},
 	{
 		ClassName: "Desc_CopperSheet_C",
@@ -488,6 +524,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(24),
+		SortOrder: 23,
 	},
 	{
 		ClassName: "Desc_CrystalOscillator_C",
@@ -498,6 +535,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(3072),
+		SortOrder: 35,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_1_C",
@@ -508,6 +546,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(520),
+		SortOrder: 26,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_2_C",
@@ -518,6 +557,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(1176),
+		SortOrder: 31,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_3_C",
@@ -528,6 +568,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(1440),
+		SortOrder: 51,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_4_C",
@@ -538,6 +579,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(9960),
+		SortOrder: 72,
 	},
 	{
 		ClassName: "Desc_PackagedWater_C",
@@ -548,6 +590,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(130),
+		SortOrder: 76,
 	},
 	{
 		ClassName: "Desc_HighSpeedConnector_C",
@@ -558,6 +601,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(3776),
+		SortOrder: 68,
 	},
 	{
 		ClassName: "Desc_Motor_C",
@@ -568,6 +612,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(1520),
+		SortOrder: 50,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_5_C",
@@ -578,6 +623,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(86120),
+		SortOrder: 73,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_6_C",
@@ -588,6 +634,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(15650),
+		SortOrder: 106,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_7_C",
@@ -598,6 +645,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(543632),
+		SortOrder: 100,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_8_C",
@@ -608,6 +656,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(732956),
+		SortOrder: 114,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_9_C",
@@ -618,6 +667,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(543424),
+		SortOrder: 124,
 	},
 	{
 		ClassName: "Desc_IronIngot_C",
@@ -628,6 +678,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(2),
+		SortOrder: 13,
 	},
 	{
 		ClassName: "Desc_AluminumPlate_C",
@@ -638,6 +689,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(266),
+		SortOrder: 89,
 	},
 	{
 		ClassName: "Desc_Rotor_C",
@@ -648,6 +700,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(140),
+		SortOrder: 24,
 	},
 	{
 		ClassName: "Desc_Rubber_C",
@@ -658,6 +711,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(60),
+		SortOrder: 60,
 	},
 	{
 		ClassName: "Desc_Plastic_C",
@@ -668,6 +722,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(75),
+		SortOrder: 53,
 	},
 	{
 		ClassName: "Desc_SteelPlateReinforced_C",
@@ -678,6 +733,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(632),
+		SortOrder: 48,
 	},
 	{
 		ClassName: "Desc_SteelPipe_C",
@@ -688,6 +744,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(24),
+		SortOrder: 30,
 	},
 	{
 		ClassName: "Desc_LiquidFuel_C",
@@ -698,6 +755,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#eb7d15",
 		SinkPoints: BigRat.fromInteger(75),
+		SortOrder: 62,
 	},
 	{
 		ClassName: "Desc_PolymerResin_C",
@@ -708,6 +766,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(12),
+		SortOrder: 63,
 	},
 	{
 		ClassName: "Desc_HeavyOilResidue_C",
@@ -718,6 +777,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#6d2d78",
 		SinkPoints: BigRat.fromInteger(30),
+		SortOrder: 61,
 	},
 	{
 		ClassName: "Desc_PetroleumCoke_C",
@@ -728,6 +788,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(20),
+		SortOrder: 66,
 	},
 	{
 		ClassName: "Desc_FluidCanister_C",
@@ -738,6 +799,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(60),
+		SortOrder: 74,
 	},
 	{
 		ClassName: "Desc_ModularFrameHeavy_C",
@@ -748,6 +810,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(11520),
+		SortOrder: 52,
 	},
 	{
 		ClassName: "Desc_PackagedOil_C",
@@ -758,6 +821,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(180),
+		SortOrder: 77,
 	},
 	{
 		ClassName: "Desc_PackagedOilResidue_C",
@@ -768,6 +832,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(180),
+		SortOrder: 79,
 	},
 	{
 		ClassName: "Desc_SteelIngot_C",
@@ -778,6 +843,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(8),
+		SortOrder: 28,
 	},
 	{
 		ClassName: "Desc_AluminaSolution_C",
@@ -788,6 +854,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#c1c1c1",
 		SinkPoints: BigRat.fromInteger(20),
+		SortOrder: 83,
 	},
 	{
 		ClassName: "Desc_AluminumScrap_C",
@@ -798,6 +865,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(27),
+		SortOrder: 86,
 	},
 	{
 		ClassName: "Desc_SulfuricAcid_C",
@@ -808,6 +876,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#ffff00",
 		SinkPoints: BigRat.fromInteger(16),
+		SortOrder: 102,
 	},
 	{
 		ClassName: "Desc_UraniumCell_C",
@@ -818,6 +887,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(147),
+		SortOrder: 101,
 	},
 	{
 		ClassName: "Desc_AluminumPlateReinforced_C",
@@ -828,6 +898,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(2804),
+		SortOrder: 110,
 	},
 	{
 		ClassName: "Desc_CoolingSystem_C",
@@ -838,6 +909,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(12006),
+		SortOrder: 111,
 	},
 	{
 		ClassName: "Desc_NitricAcid_C",
@@ -848,6 +920,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#d9d9a2",
 		SinkPoints: BigRat.fromInteger(94),
+		SortOrder: 115,
 	},
 	{
 		ClassName: "Desc_AluminumCasing_C",
@@ -858,6 +931,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(393),
+		SortOrder: 90,
 	},
 	{
 		ClassName: "Desc_ModularFrameLightweight_C",
@@ -868,6 +942,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(19600),
+		SortOrder: 93,
 	},
 	{
 		ClassName: "Desc_Computer_C",
@@ -878,6 +953,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(17260),
+		SortOrder: 70,
 	},
 	{
 		ClassName: "Desc_QuartzCrystal_C",
@@ -888,6 +964,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(50),
+		SortOrder: 32,
 	},
 	{
 		ClassName: "Desc_GoldIngot_C",
@@ -898,6 +975,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(42),
+		SortOrder: 33,
 	},
 	{
 		ClassName: "Desc_Stator_C",
@@ -908,6 +986,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(240),
+		SortOrder: 49,
 	},
 	{
 		ClassName: "Desc_CircuitBoardHighSpeed_C",
@@ -918,6 +997,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(920),
+		SortOrder: 39,
 	},
 	{
 		ClassName: "Desc_HighSpeedWire_C",
@@ -928,6 +1008,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(17),
+		SortOrder: 38,
 	},
 	{
 		ClassName: "Desc_CompactedCoal_C",
@@ -938,6 +1019,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(28),
+		SortOrder: 42,
 	},
 	{
 		ClassName: "Desc_LiquidTurboFuel_C",
@@ -948,6 +1030,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#d4292e",
 		SinkPoints: BigRat.fromInteger(225),
+		SortOrder: 64,
 	},
 	{
 		ClassName: "Desc_ComputerSuper_C",
@@ -958,6 +1041,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(99576),
+		SortOrder: 99,
 	},
 	{
 		ClassName: "Desc_GasTank_C",
@@ -968,6 +1052,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(225),
+		SortOrder: 108,
 	},
 	{
 		ClassName: "Desc_ElectromagneticControlRod_C",
@@ -978,6 +1063,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(2560),
+		SortOrder: 104,
 	},
 	{
 		ClassName: "Desc_PressureConversionCube_C",
@@ -988,6 +1074,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(257312),
+		SortOrder: 123,
 	},
 	{
 		ClassName: "Desc_MotorLightweight_C",
@@ -998,6 +1085,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(242720),
+		SortOrder: 113,
 	},
 	{
 		ClassName: "Desc_CopperDust_C",
@@ -1008,6 +1096,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(72),
+		SortOrder: 122,
 	},
 	{
 		ClassName: "Desc_Gunpowder_C",
@@ -1018,6 +1107,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(14),
+		SortOrder: 43,
 	},
 	{
 		ClassName: "Desc_GunpowderMK2_C",
@@ -1028,6 +1118,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(58),
+		SortOrder: 55,
 	},
 	{
 		ClassName: "Desc_Biofuel_C",
@@ -1038,6 +1129,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(48),
+		SortOrder: 27,
 	},
 	{
 		ClassName: "Desc_PackagedBiofuel_C",
@@ -1048,6 +1140,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(370),
+		SortOrder: 81,
 	},
 	{
 		ClassName: "Desc_GenericBiomass_C",
@@ -1058,6 +1151,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(12),
+		SortOrder: 12,
 	},
 	{
 		ClassName: "Desc_LiquidBiofuel_C",
@@ -1068,6 +1162,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#3b532c",
 		SinkPoints: BigRat.fromInteger(261),
+		SortOrder: 80,
 	},
 	{
 		ClassName: "Desc_PackagedAlumina_C",
@@ -1078,6 +1173,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(160),
+		SortOrder: 85,
 	},
 	{
 		ClassName: "Desc_PackagedSulfuricAcid_C",
@@ -1088,6 +1184,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(152),
+		SortOrder: 96,
 	},
 	{
 		ClassName: "Desc_PackagedNitrogenGas_C",
@@ -1098,6 +1195,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(312),
+		SortOrder: 109,
 	},
 	{
 		ClassName: "Desc_PackagedNitricAcid_C",
@@ -1108,6 +1206,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(412),
+		SortOrder: 116,
 	},
 	{
 		ClassName: "Desc_Fabric_C",
@@ -1118,6 +1217,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(140),
+		SortOrder: 65,
 	},
 	{
 		ClassName: "Desc_Rebar_Explosive_C",
@@ -1128,6 +1228,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(360),
+		SortOrder: 57,
 	},
 	{
 		ClassName: "Desc_Rebar_Stunshot_C",
@@ -1138,6 +1239,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(186),
+		SortOrder: 40,
 	},
 	{
 		ClassName: "Desc_SpikedRebar_C",
@@ -1148,6 +1250,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(8),
+		SortOrder: 37,
 	},
 	{
 		ClassName: "Desc_CartridgeSmartProjectile_C",
@@ -1158,6 +1261,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(855),
+		SortOrder: 69,
 	},
 	{
 		ClassName: "Desc_NobeliskCluster_C",
@@ -1168,6 +1272,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(1376),
+		SortOrder: 59,
 	},
 	{
 		ClassName: "Desc_NobeliskExplosive_C",
@@ -1178,6 +1283,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(152),
+		SortOrder: 47,
 	},
 	{
 		ClassName: "Desc_NobeliskGas_C",
@@ -1188,6 +1294,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(544),
+		SortOrder: 45,
 	},
 	{
 		ClassName: "Desc_NobeliskNuke_C",
@@ -1198,6 +1305,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(19600),
+		SortOrder: 103,
 	},
 	{
 		ClassName: "Desc_NobeliskShockwave_C",
@@ -1208,6 +1316,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(1533),
+		SortOrder: 46,
 	},
 	{
 		ClassName: "Desc_CartridgeChaos_C",
@@ -1218,6 +1327,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(120),
+		SortOrder: 92,
 	},
 	{
 		ClassName: "Desc_CartridgeStandard_C",
@@ -1228,6 +1338,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(25),
+		SortOrder: 58,
 	},
 	{
 		ClassName: "Desc_NuclearFuelRod_C",
@@ -1238,6 +1349,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(44092),
+		SortOrder: 105,
 	},
 	{
 		ClassName: "Desc_PlutoniumFuelRod_C",
@@ -1248,6 +1360,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(153184),
+		SortOrder: 121,
 	},
 	{
 		ClassName: "Desc_Rebar_Spreadshot_C",
@@ -1258,6 +1371,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(332),
+		SortOrder: 41,
 	},
 	{
 		ClassName: "BP_EquipmentDescriptorBeacon_C",
@@ -1268,6 +1382,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(320),
+		SortOrder: 22,
 	},
 	{
 		ClassName: "BP_ItemDescriptorPortableMiner_C",
@@ -1278,6 +1393,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(56),
+		SortOrder: 126,
 	},
 ];
 

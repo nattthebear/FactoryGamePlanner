@@ -355,7 +355,7 @@ const Schematic = t.type({
 		EST_Alternate: null,
 		EST_ResourceSink: null,
 	}),
-	// "mDisplayName": "Cyber Wagon available in the AWESOME Shop",
+	mDisplayName: t.string,
 	// "mDescription": "",
 	// "mSubCategories": "(None)",
 	// "mMenuPriority": "0.000000",
@@ -626,8 +626,6 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 	// Repeatedly prune to get unproducible chains like protien -> biomass
 	while (true) {
 		const producableItemClasses = new Set(recipes.flatMap((x) => x.mProduct.map((y) => y.ItemClass)));
-		// HACK:  We want to support plutonium recipes but we don't understand nuclear reactors.
-		producableItemClasses.add("Desc_NuclearWaste_C");
 		// HACK:  We want to be able to draw up a factory for gas nobelisks, even though they're not fully automatable
 		producableItemClasses.add("Desc_GenericBiomass_C");
 		const nextItems = items.filter((x) => x.isResource || producableItemClasses.has(x.ClassName)); // Filter out any item that we'd never be able to get in automatable amounts
@@ -653,6 +651,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 	await reorderDataMutate("recipes", recipes);
 
 	const itemsLookup = new Map(items.map((x, i) => [x.ClassName, i]));
+	const recipesLookup = new Map(recipes.map((x, r) => [x.ClassName, r]));
 
 	const alternateUnlockData = new Set(
 		data[$Schematic]
@@ -661,6 +660,63 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			.flatMap((u) => u.mRecipes!)
 			.map((s) => s.split(".")[1]),
 	);
+
+	const milestoneView = data[$Schematic]
+		.filter(
+			(s) =>
+				s.mType === "EST_Milestone" ||
+				s.mType === "EST_Tutorial" ||
+				s.mType === "EST_MAM" ||
+				(s.mType === "EST_Custom" && s.ClassName === "Schematic_StartingRecipes_C"),
+		)
+		.map((s) => {
+			let Tier: number;
+			let SubTier: number;
+			if (s.mType === "EST_Milestone") {
+				const tierData = s.ClassName.match(/^Schematic_(\d+)-(\d+)_C$/);
+				if (!tierData) {
+					throw new Error(`Couldn't parse tier data from ${s.ClassName}`);
+				}
+				Tier = Number(tierData[1]);
+				SubTier = Number(tierData[2]);
+			} else if (s.mType === "EST_Tutorial") {
+				const tierData = s.mDisplayName.match(/^HUB Upgrade (\d+)$/);
+				if (!tierData) {
+					throw new Error(`Couldn't parse tier data from ${s.mDisplayName}`);
+				}
+				Tier = 0;
+				SubTier = Number(tierData[1]);
+			} else if (s.mType === "EST_MAM") {
+				Tier = 3.5;
+				SubTier = 0;
+			} else if (s.mType === "EST_Custom" && s.ClassName === "Schematic_StartingRecipes_C") {
+				Tier = -1;
+				SubTier = 0;
+			} else {
+				throw new Error(s.mType);
+			}
+			return {
+				...s,
+				Tier,
+				SubTier,
+				Unlocks: s.mUnlocks
+					.filter((u) => u.Class === "BP_UnlockRecipe_C")
+					.flatMap((u) => u.mRecipes!)
+					.map((s) => s.split(".")[1])
+					.filter((r) => recipesLookup.has(r)),
+			};
+		});
+	milestoneView.sort((x, y) => {
+		return x.Tier - y.Tier || x.SubTier - y.SubTier;
+	});
+
+	// HACK a few things into the milestone view
+	milestoneView
+		.find((m) => m.mDisplayName === "Nuclear Power")!
+		.Unlocks.push("$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_NuclearFuelRod_C");
+	milestoneView
+		.find((m) => m.mDisplayName === "Particle Enrichment")!
+		.Unlocks.push("$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_PlutoniumFuelRod_C");
 
 	const mapIngredients = (input: { ItemClass: string; Amount: number | BigRat }[], duration: BigRat) =>
 		input.map((x) => {
@@ -708,6 +764,70 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		};
 	});
 
+	const itemClassesToSortOrders = new Map<string, number>();
+	{
+		let nextSortOrder = 0;
+		// default resources are in a hardcoded order
+		const defaultOrders = [
+			"Desc_OreIron_C",
+			"Desc_Stone_C",
+			"Desc_OreCopper_C",
+			"Desc_Coal_C",
+			"Desc_OreGold_C",
+			"Desc_RawQuartz_C",
+			"Desc_Sulfur_C",
+			"Desc_LiquidOil_C",
+			"Desc_OreBauxite_C",
+			"Desc_NitrogenGas_C",
+			"Desc_OreUranium_C",
+
+			"Desc_Water_C",
+			// "FakePower",
+
+			"Desc_GenericBiomass_C",
+		];
+		for (const className of defaultOrders) {
+			itemClassesToSortOrders.set(className, nextSortOrder++);
+		}
+		const waitingOn = new Map<string, (typeof recipes)[number][]>();
+
+		function processRecipe(recipe: (typeof recipes)[number]) {
+			const inputs = recipe.mIngredients.map((i) => i.ItemClass);
+			const missingClass = inputs.find((clazz) => !itemClassesToSortOrders.has(clazz));
+			if (missingClass) {
+				const arr = waitingOn.get(missingClass) ?? [];
+				waitingOn.set(missingClass, arr);
+				arr.push(recipe);
+				return;
+			}
+			for (const { ItemClass } of recipe.mProduct) {
+				itemClassesToSortOrders.set(ItemClass, nextSortOrder++);
+			}
+			for (const { ItemClass } of recipe.mProduct) {
+				const arr = waitingOn.get(ItemClass);
+				if (arr) {
+					waitingOn.delete(ItemClass);
+					for (const otherRecipe of arr) {
+						processRecipe(otherRecipe);
+					}
+				}
+			}
+		}
+
+		for (const { Unlocks } of milestoneView) {
+			for (const className of Unlocks) {
+				const recipe = recipes[recipesLookup.get(className)!];
+				processRecipe(recipe);
+			}
+		}
+
+		// HACK as a buildgun and alternate only, just put this on the end
+		if (itemClassesToSortOrders.has("BP_ItemDescriptorPortableMiner_C")) {
+			throw new Error("BP_ItemDescriptorPortableMiner_C");
+		}
+		itemClassesToSortOrders.set("BP_ItemDescriptorPortableMiner_C", nextSortOrder++);
+	}
+
 	const itemsView = items.map((x) => ({
 		...x,
 		Color: {
@@ -715,6 +835,12 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			RF_LIQUID: formatColor(x.mFluidColor),
 			RF_GAS: formatColor(x.mGasColor),
 		}[x.mForm],
+		SortOrder: ((order: number | undefined) => {
+			if (order == null) {
+				throw new Error("Missing sortOrder for " + x.ClassName);
+			}
+			return order;
+		})(itemClassesToSortOrders.get(x.ClassName)),
 	}));
 
 	const buildingsView = buildings.map((x) => ({
