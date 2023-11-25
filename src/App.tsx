@@ -25,4 +25,4 @@ const App: TPC<{}> = (_, instance) => {
 };
 
 installTooltip();
-createRoot(document.getElementById("root")!, <App />);
+createRoot(document.body, <App />);
