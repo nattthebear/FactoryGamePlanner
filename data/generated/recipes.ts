@@ -87,7 +87,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_AdheredIronPlate_C",
-		DisplayName: "Alternate: Adhered Iron Plate",
+		DisplayName: "Adhered Iron Plate",
 		Inputs: [{ Item: Items[24], Rate: BigRat.fromIntegers(45, 4) }, { Item: Items[53], Rate: BigRat.fromIntegers(15, 4) }, ],
 		Outputs: [{ Item: Items[32], Rate: BigRat.fromIntegers(15, 4) }, ],
 		Building: Buildings[4],
@@ -168,7 +168,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_BoltedFrame_C",
-		DisplayName: "Alternate: Bolted Frame",
+		DisplayName: "Bolted Frame",
 		Inputs: [{ Item: Items[32], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[20], Rate: BigRat.fromInteger(140) }, ],
 		Outputs: [{ Item: Items[27], Rate: BigRat.fromInteger(5) }, ],
 		Building: Buildings[4],
@@ -213,7 +213,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CoatedCable_C",
-		DisplayName: "Alternate: Coated Cable",
+		DisplayName: "Coated Cable",
 		Inputs: [{ Item: Items[21], Rate: BigRat.fromIntegers(75, 2) }, { Item: Items[59], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[26], Rate: BigRat.fromIntegers(135, 2) }, ],
 		Building: Buildings[3],
@@ -222,7 +222,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CoatedIronCanister_C",
-		DisplayName: "Alternate: Coated Iron Canister",
+		DisplayName: "Coated Iron Canister",
 		Inputs: [{ Item: Items[24], Rate: BigRat.fromInteger(30) }, { Item: Items[36], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[61], Rate: BigRat.fromInteger(60) }, ],
 		Building: Buildings[4],
@@ -339,7 +339,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CoatedIronPlate_C",
-		DisplayName: "Alternate: Coated Iron Plate",
+		DisplayName: "Coated Iron Plate",
 		Inputs: [{ Item: Items[50], Rate: BigRat.fromInteger(50) }, { Item: Items[54], Rate: BigRat.fromInteger(10) }, ],
 		Outputs: [{ Item: Items[24], Rate: BigRat.fromInteger(75) }, ],
 		Building: Buildings[4],
@@ -348,7 +348,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CokeSteelIngot_C",
-		DisplayName: "Alternate: Coke Steel Ingot",
+		DisplayName: "Coke Steel Ingot",
 		Inputs: [{ Item: Items[3], Rate: BigRat.fromInteger(75) }, { Item: Items[60], Rate: BigRat.fromInteger(75) }, ],
 		Outputs: [{ Item: Items[65], Rate: BigRat.fromInteger(100) }, ],
 		Building: Buildings[2],
@@ -357,7 +357,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CopperAlloyIngot_C",
-		DisplayName: "Alternate: Copper Alloy Ingot",
+		DisplayName: "Copper Alloy Ingot",
 		Inputs: [{ Item: Items[1], Rate: BigRat.fromInteger(50) }, { Item: Items[3], Rate: BigRat.fromInteger(25) }, ],
 		Outputs: [{ Item: Items[33], Rate: BigRat.fromInteger(100) }, ],
 		Building: Buildings[2],
@@ -366,7 +366,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CopperRotor_C",
-		DisplayName: "Alternate: Copper Rotor",
+		DisplayName: "Copper Rotor",
 		Inputs: [{ Item: Items[36], Rate: BigRat.fromIntegers(45, 2) }, { Item: Items[20], Rate: BigRat.fromInteger(195) }, ],
 		Outputs: [{ Item: Items[52], Rate: BigRat.fromIntegers(45, 4) }, ],
 		Building: Buildings[4],
@@ -375,7 +375,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_DilutedPackagedFuel_C",
-		DisplayName: "Alternate: Diluted Packaged Fuel",
+		DisplayName: "Diluted Packaged Fuel",
 		Inputs: [{ Item: Items[59], Rate: BigRat.fromInteger(30) }, { Item: Items[42], Rate: BigRat.fromInteger(60) }, ],
 		Outputs: [{ Item: Items[28], Rate: BigRat.fromInteger(60) }, ],
 		Building: Buildings[3],
@@ -384,7 +384,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectroAluminumScrap_C",
-		DisplayName: "Alternate: Electrode Aluminum Scrap",
+		DisplayName: "Electrode Aluminum Scrap",
 		Inputs: [{ Item: Items[66], Rate: BigRat.fromInteger(180) }, { Item: Items[60], Rate: BigRat.fromInteger(60) }, ],
 		Outputs: [{ Item: Items[67], Rate: BigRat.fromInteger(300) }, { Item: Items[9], Rate: BigRat.fromInteger(105) }, ],
 		Building: Buildings[3],
@@ -528,7 +528,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectrodeCircuitBoard_C",
-		DisplayName: "Alternate: Electrode Circuit Board",
+		DisplayName: "Electrode Circuit Board",
 		Inputs: [{ Item: Items[53], Rate: BigRat.fromInteger(30) }, { Item: Items[60], Rate: BigRat.fromInteger(45) }, ],
 		Outputs: [{ Item: Items[35], Rate: BigRat.fromInteger(5) }, ],
 		Building: Buildings[4],
@@ -537,7 +537,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_FlexibleFramework_C",
-		DisplayName: "Alternate: Flexible Framework",
+		DisplayName: "Flexible Framework",
 		Inputs: [{ Item: Items[27], Rate: BigRat.fromIntegers(15, 4) }, { Item: Items[25], Rate: BigRat.fromIntegers(45, 2) }, { Item: Items[53], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[39], Rate: BigRat.fromIntegers(15, 2) }, ],
 		Building: Buildings[7],
@@ -546,7 +546,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_FusedWire_C",
-		DisplayName: "Alternate: Fused Wire",
+		DisplayName: "Fused Wire",
 		Inputs: [{ Item: Items[33], Rate: BigRat.fromInteger(12) }, { Item: Items[77], Rate: BigRat.fromInteger(3) }, ],
 		Outputs: [{ Item: Items[21], Rate: BigRat.fromInteger(90) }, ],
 		Building: Buildings[4],
@@ -555,7 +555,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_HeavyFlexibleFrame_C",
-		DisplayName: "Alternate: Heavy Flexible Frame",
+		DisplayName: "Heavy Flexible Frame",
 		Inputs: [{ Item: Items[27], Rate: BigRat.fromIntegers(75, 4) }, { Item: Items[55], Rate: BigRat.fromIntegers(45, 4) }, { Item: Items[53], Rate: BigRat.fromInteger(75) }, { Item: Items[20], Rate: BigRat.fromInteger(390) }, ],
 		Outputs: [{ Item: Items[62], Rate: BigRat.fromIntegers(15, 4) }, ],
 		Building: Buildings[7],
@@ -591,7 +591,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_HeavyOilResidue_C",
-		DisplayName: "Alternate: Heavy Oil Residue",
+		DisplayName: "Heavy Oil Residue",
 		Inputs: [{ Item: Items[7], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[59], Rate: BigRat.fromInteger(40) }, { Item: Items[58], Rate: BigRat.fromInteger(20) }, ],
 		Building: Buildings[3],
@@ -600,7 +600,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_HighSpeedWiring_C",
-		DisplayName: "Alternate: Automated Speed Wiring",
+		DisplayName: "Automated Speed Wiring",
 		Inputs: [{ Item: Items[78], Rate: BigRat.fromIntegers(15, 4) }, { Item: Items[21], Rate: BigRat.fromInteger(75) }, { Item: Items[43], Rate: BigRat.fromIntegers(15, 8) }, ],
 		Outputs: [{ Item: Items[40], Rate: BigRat.fromIntegers(15, 2) }, ],
 		Building: Buildings[7],
@@ -663,7 +663,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_PlasticSmartPlating_C",
-		DisplayName: "Alternate: Plastic Smart Plating",
+		DisplayName: "Plastic Smart Plating",
 		Inputs: [{ Item: Items[32], Rate: BigRat.fromIntegers(5, 2) }, { Item: Items[52], Rate: BigRat.fromIntegers(5, 2) }, { Item: Items[54], Rate: BigRat.fromIntegers(15, 2) }, ],
 		Outputs: [{ Item: Items[38], Rate: BigRat.fromInteger(5) }, ],
 		Building: Buildings[7],
@@ -672,7 +672,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_PolymerResin_C",
-		DisplayName: "Alternate: Polymer Resin",
+		DisplayName: "Polymer Resin",
 		Inputs: [{ Item: Items[7], Rate: BigRat.fromInteger(60) }, ],
 		Outputs: [{ Item: Items[58], Rate: BigRat.fromInteger(130) }, { Item: Items[59], Rate: BigRat.fromInteger(20) }, ],
 		Building: Buildings[3],
@@ -681,7 +681,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_PureAluminumIngot_C",
-		DisplayName: "Alternate: Pure Aluminum Ingot",
+		DisplayName: "Pure Aluminum Ingot",
 		Inputs: [{ Item: Items[67], Rate: BigRat.fromInteger(60) }, ],
 		Outputs: [{ Item: Items[15], Rate: BigRat.fromInteger(30) }, ],
 		Building: Buildings[1],
@@ -690,7 +690,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_PureCateriumIngot_C",
-		DisplayName: "Alternate: Pure Caterium Ingot",
+		DisplayName: "Pure Caterium Ingot",
 		Inputs: [{ Item: Items[2], Rate: BigRat.fromInteger(24) }, { Item: Items[9], Rate: BigRat.fromInteger(24) }, ],
 		Outputs: [{ Item: Items[77], Rate: BigRat.fromInteger(12) }, ],
 		Building: Buildings[3],
@@ -699,7 +699,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_PureCopperIngot_C",
-		DisplayName: "Alternate: Pure Copper Ingot",
+		DisplayName: "Pure Copper Ingot",
 		Inputs: [{ Item: Items[1], Rate: BigRat.fromInteger(15) }, { Item: Items[9], Rate: BigRat.fromInteger(10) }, ],
 		Outputs: [{ Item: Items[33], Rate: BigRat.fromIntegers(75, 2) }, ],
 		Building: Buildings[3],
@@ -708,7 +708,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_PureIronIngot_C",
-		DisplayName: "Alternate: Pure Iron Ingot",
+		DisplayName: "Pure Iron Ingot",
 		Inputs: [{ Item: Items[3], Rate: BigRat.fromInteger(35) }, { Item: Items[9], Rate: BigRat.fromInteger(20) }, ],
 		Outputs: [{ Item: Items[50], Rate: BigRat.fromInteger(65) }, ],
 		Building: Buildings[3],
@@ -717,7 +717,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_PureQuartzCrystal_C",
-		DisplayName: "Alternate: Pure Quartz Crystal",
+		DisplayName: "Pure Quartz Crystal",
 		Inputs: [{ Item: Items[4], Rate: BigRat.fromIntegers(135, 2) }, { Item: Items[9], Rate: BigRat.fromIntegers(75, 2) }, ],
 		Outputs: [{ Item: Items[76], Rate: BigRat.fromIntegers(105, 2) }, ],
 		Building: Buildings[3],
@@ -726,7 +726,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_RecycledRubber_C",
-		DisplayName: "Alternate: Recycled Rubber",
+		DisplayName: "Recycled Rubber",
 		Inputs: [{ Item: Items[54], Rate: BigRat.fromInteger(30) }, { Item: Items[57], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[53], Rate: BigRat.fromInteger(60) }, ],
 		Building: Buildings[3],
@@ -735,7 +735,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_RubberConcrete_C",
-		DisplayName: "Alternate: Rubber Concrete",
+		DisplayName: "Rubber Concrete",
 		Inputs: [{ Item: Items[5], Rate: BigRat.fromInteger(50) }, { Item: Items[53], Rate: BigRat.fromInteger(10) }, ],
 		Outputs: [{ Item: Items[22], Rate: BigRat.fromInteger(45) }, ],
 		Building: Buildings[4],
@@ -744,7 +744,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_SteamedCopperSheet_C",
-		DisplayName: "Alternate: Steamed Copper Sheet",
+		DisplayName: "Steamed Copper Sheet",
 		Inputs: [{ Item: Items[33], Rate: BigRat.fromIntegers(45, 2) }, { Item: Items[9], Rate: BigRat.fromIntegers(45, 2) }, ],
 		Outputs: [{ Item: Items[36], Rate: BigRat.fromIntegers(45, 2) }, ],
 		Building: Buildings[3],
@@ -753,7 +753,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_SteelCanister_C",
-		DisplayName: "Alternate: Steel Canister",
+		DisplayName: "Steel Canister",
 		Inputs: [{ Item: Items[65], Rate: BigRat.fromInteger(60) }, ],
 		Outputs: [{ Item: Items[61], Rate: BigRat.fromInteger(40) }, ],
 		Building: Buildings[0],
@@ -762,7 +762,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_SteelCoatedPlate_C",
-		DisplayName: "Alternate: Steel Coated Plate",
+		DisplayName: "Steel Coated Plate",
 		Inputs: [{ Item: Items[65], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[54], Rate: BigRat.fromInteger(5) }, ],
 		Outputs: [{ Item: Items[24], Rate: BigRat.fromInteger(45) }, ],
 		Building: Buildings[4],
@@ -771,7 +771,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_SteelRod_C",
-		DisplayName: "Alternate: Steel Rod",
+		DisplayName: "Steel Rod",
 		Inputs: [{ Item: Items[65], Rate: BigRat.fromInteger(12) }, ],
 		Outputs: [{ Item: Items[19], Rate: BigRat.fromInteger(48) }, ],
 		Building: Buildings[0],
@@ -816,7 +816,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_TurboHeavyFuel_C",
-		DisplayName: "Alternate: Turbo Heavy Fuel",
+		DisplayName: "Turbo Heavy Fuel",
 		Inputs: [{ Item: Items[59], Rate: BigRat.fromIntegers(75, 2) }, { Item: Items[81], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[82], Rate: BigRat.fromInteger(30) }, ],
 		Building: Buildings[3],
@@ -843,7 +843,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Coal_2_C",
-		DisplayName: "Alternate: Biocoal",
+		DisplayName: "Biocoal",
 		Inputs: [{ Item: Items[93], Rate: BigRat.fromIntegers(75, 2) }, ],
 		Outputs: [{ Item: Items[0], Rate: BigRat.fromInteger(45) }, ],
 		Building: Buildings[0],
@@ -852,7 +852,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_EnrichedCoal_C",
-		DisplayName: "Alternate: Compacted Coal",
+		DisplayName: "Compacted Coal",
 		Inputs: [{ Item: Items[0], Rate: BigRat.fromInteger(25) }, { Item: Items[6], Rate: BigRat.fromInteger(25) }, ],
 		Outputs: [{ Item: Items[81], Rate: BigRat.fromInteger(25) }, ],
 		Building: Buildings[4],
@@ -861,7 +861,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_WetConcrete_C",
-		DisplayName: "Alternate: Wet Concrete",
+		DisplayName: "Wet Concrete",
 		Inputs: [{ Item: Items[5], Rate: BigRat.fromInteger(120) }, { Item: Items[9], Rate: BigRat.fromInteger(100) }, ],
 		Outputs: [{ Item: Items[22], Rate: BigRat.fromInteger(80) }, ],
 		Building: Buildings[3],
@@ -870,7 +870,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_AlcladCasing_C",
-		DisplayName: "Alternate: Alclad Casing",
+		DisplayName: "Alclad Casing",
 		Inputs: [{ Item: Items[15], Rate: BigRat.fromInteger(150) }, { Item: Items[33], Rate: BigRat.fromInteger(75) }, ],
 		Outputs: [{ Item: Items[73], Rate: BigRat.fromIntegers(225, 2) }, ],
 		Building: Buildings[4],
@@ -879,7 +879,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_AutomatedMiner_C",
-		DisplayName: "Alternate: Automated Miner",
+		DisplayName: "Automated Miner",
 		Inputs: [{ Item: Items[44], Rate: BigRat.fromInteger(1) }, { Item: Items[56], Rate: BigRat.fromInteger(4) }, { Item: Items[19], Rate: BigRat.fromInteger(4) }, { Item: Items[24], Rate: BigRat.fromInteger(2) }, ],
 		Outputs: [{ Item: Items[115], Rate: BigRat.fromInteger(1) }, ],
 		Building: Buildings[7],
@@ -888,7 +888,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ClassicBattery_C",
-		DisplayName: "Alternate: Classic Battery",
+		DisplayName: "Classic Battery",
 		Inputs: [{ Item: Items[6], Rate: BigRat.fromInteger(45) }, { Item: Items[51], Rate: BigRat.fromIntegers(105, 2) }, { Item: Items[54], Rate: BigRat.fromInteger(60) }, { Item: Items[21], Rate: BigRat.fromInteger(90) }, ],
 		Outputs: [{ Item: Items[14], Rate: BigRat.fromInteger(30) }, ],
 		Building: Buildings[7],
@@ -960,7 +960,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CoolingDevice_C",
-		DisplayName: "Alternate: Cooling Device",
+		DisplayName: "Cooling Device",
 		Inputs: [{ Item: Items[70], Rate: BigRat.fromIntegers(75, 8) }, { Item: Items[44], Rate: BigRat.fromIntegers(15, 8) }, { Item: Items[8], Rate: BigRat.fromInteger(45) }, ],
 		Outputs: [{ Item: Items[71], Rate: BigRat.fromIntegers(15, 4) }, ],
 		Building: Buildings[6],
@@ -1014,7 +1014,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_DilutedFuel_C",
-		DisplayName: "Alternate: Diluted Fuel",
+		DisplayName: "Diluted Fuel",
 		Inputs: [{ Item: Items[59], Rate: BigRat.fromInteger(50) }, { Item: Items[9], Rate: BigRat.fromInteger(100) }, ],
 		Outputs: [{ Item: Items[57], Rate: BigRat.fromInteger(100) }, ],
 		Building: Buildings[6],
@@ -1023,7 +1023,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectricMotor_C",
-		DisplayName: "Alternate: Electric Motor",
+		DisplayName: "Electric Motor",
 		Inputs: [{ Item: Items[85], Rate: BigRat.fromIntegers(15, 4) }, { Item: Items[52], Rate: BigRat.fromIntegers(15, 2) }, ],
 		Outputs: [{ Item: Items[44], Rate: BigRat.fromIntegers(15, 2) }, ],
 		Building: Buildings[4],
@@ -1032,7 +1032,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_FertileUranium_C",
-		DisplayName: "Alternate: Fertile Uranium",
+		DisplayName: "Fertile Uranium",
 		Inputs: [{ Item: Items[11], Rate: BigRat.fromInteger(25) }, { Item: Items[12], Rate: BigRat.fromInteger(25) }, { Item: Items[72], Rate: BigRat.fromInteger(15) }, { Item: Items[68], Rate: BigRat.fromInteger(25) }, ],
 		Outputs: [{ Item: Items[16], Rate: BigRat.fromInteger(100) }, { Item: Items[9], Rate: BigRat.fromInteger(40) }, ],
 		Building: Buildings[6],
@@ -1113,7 +1113,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_HeatFusedFrame_C",
-		DisplayName: "Alternate: Heat-Fused Frame",
+		DisplayName: "Heat-Fused Frame",
 		Inputs: [{ Item: Items[62], Rate: BigRat.fromInteger(3) }, { Item: Items[15], Rate: BigRat.fromInteger(150) }, { Item: Items[72], Rate: BigRat.fromInteger(24) }, { Item: Items[57], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[34], Rate: BigRat.fromInteger(3) }, ],
 		Building: Buildings[6],
@@ -1122,7 +1122,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_InstantPlutoniumCell_C",
-		DisplayName: "Alternate: Instant Plutonium Cell",
+		DisplayName: "Instant Plutonium Cell",
 		Inputs: [{ Item: Items[16], Rate: BigRat.fromInteger(75) }, { Item: Items[73], Rate: BigRat.fromInteger(10) }, ],
 		Outputs: [{ Item: Items[18], Rate: BigRat.fromInteger(10) }, ],
 		Building: Buildings[8],
@@ -1131,7 +1131,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_InstantScrap_C",
-		DisplayName: "Alternate: Instant Scrap",
+		DisplayName: "Instant Scrap",
 		Inputs: [{ Item: Items[10], Rate: BigRat.fromInteger(150) }, { Item: Items[0], Rate: BigRat.fromInteger(100) }, { Item: Items[68], Rate: BigRat.fromInteger(50) }, { Item: Items[9], Rate: BigRat.fromInteger(60) }, ],
 		Outputs: [{ Item: Items[67], Rate: BigRat.fromInteger(300) }, { Item: Items[9], Rate: BigRat.fromInteger(50) }, ],
 		Building: Buildings[6],
@@ -1140,7 +1140,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_OCSupercomputer_C",
-		DisplayName: "Alternate: OC Supercomputer",
+		DisplayName: "OC Supercomputer",
 		Inputs: [{ Item: Items[74], Rate: BigRat.fromInteger(9) }, { Item: Items[71], Rate: BigRat.fromInteger(9) }, ],
 		Outputs: [{ Item: Items[83], Rate: BigRat.fromInteger(3) }, ],
 		Building: Buildings[4],
@@ -1149,7 +1149,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_PlutoniumFuelUnit_C",
-		DisplayName: "Alternate: Plutonium Fuel Unit",
+		DisplayName: "Plutonium Fuel Unit",
 		Inputs: [{ Item: Items[18], Rate: BigRat.fromInteger(10) }, { Item: Items[86], Rate: BigRat.fromIntegers(1, 2) }, ],
 		Outputs: [{ Item: Items[112], Rate: BigRat.fromIntegers(1, 2) }, ],
 		Building: Buildings[4],
@@ -1158,7 +1158,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_RadioControlSystem_C",
-		DisplayName: "Alternate: Radio Control System",
+		DisplayName: "Radio Control System",
 		Inputs: [{ Item: Items[37], Rate: BigRat.fromIntegers(3, 2) }, { Item: Items[35], Rate: BigRat.fromInteger(15) }, { Item: Items[73], Rate: BigRat.fromInteger(90) }, { Item: Items[53], Rate: BigRat.fromInteger(45) }, ],
 		Outputs: [{ Item: Items[74], Rate: BigRat.fromIntegers(9, 2) }, ],
 		Building: Buildings[7],
@@ -1167,7 +1167,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_SloppyAlumina_C",
-		DisplayName: "Alternate: Sloppy Alumina",
+		DisplayName: "Sloppy Alumina",
 		Inputs: [{ Item: Items[10], Rate: BigRat.fromInteger(200) }, { Item: Items[9], Rate: BigRat.fromInteger(200) }, ],
 		Outputs: [{ Item: Items[66], Rate: BigRat.fromInteger(240) }, ],
 		Building: Buildings[3],
@@ -1176,7 +1176,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_SuperStateComputer_C",
-		DisplayName: "Alternate: Super-State Computer",
+		DisplayName: "Super-State Computer",
 		Inputs: [{ Item: Items[75], Rate: BigRat.fromIntegers(18, 5) }, { Item: Items[85], Rate: BigRat.fromIntegers(12, 5) }, { Item: Items[14], Rate: BigRat.fromInteger(24) }, { Item: Items[21], Rate: BigRat.fromInteger(54) }, ],
 		Outputs: [{ Item: Items[83], Rate: BigRat.fromIntegers(12, 5) }, ],
 		Building: Buildings[7],
@@ -1212,7 +1212,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_TurboBlendFuel_C",
-		DisplayName: "Alternate: Turbo Blend Fuel",
+		DisplayName: "Turbo Blend Fuel",
 		Inputs: [{ Item: Items[57], Rate: BigRat.fromInteger(15) }, { Item: Items[59], Rate: BigRat.fromInteger(30) }, { Item: Items[6], Rate: BigRat.fromIntegers(45, 2) }, { Item: Items[60], Rate: BigRat.fromIntegers(45, 2) }, ],
 		Outputs: [{ Item: Items[82], Rate: BigRat.fromInteger(45) }, ],
 		Building: Buildings[6],
@@ -1221,7 +1221,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_TurboPressureMotor_C",
-		DisplayName: "Alternate: Turbo Pressure Motor",
+		DisplayName: "Turbo Pressure Motor",
 		Inputs: [{ Item: Items[44], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[86], Rate: BigRat.fromIntegers(15, 8) }, { Item: Items[97], Rate: BigRat.fromInteger(45) }, { Item: Items[78], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[87], Rate: BigRat.fromIntegers(15, 4) }, ],
 		Building: Buildings[7],
@@ -1230,7 +1230,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Beacon_1_C",
-		DisplayName: "Alternate: Crystal Beacon",
+		DisplayName: "Crystal Beacon",
 		Inputs: [{ Item: Items[25], Rate: BigRat.fromInteger(2) }, { Item: Items[56], Rate: BigRat.fromInteger(8) }, { Item: Items[37], Rate: BigRat.fromIntegers(1, 2) }, ],
 		Outputs: [{ Item: Items[114], Rate: BigRat.fromInteger(10) }, ],
 		Building: Buildings[7],
@@ -1239,7 +1239,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Cable_1_C",
-		DisplayName: "Alternate: Insulated Cable",
+		DisplayName: "Insulated Cable",
 		Inputs: [{ Item: Items[21], Rate: BigRat.fromInteger(45) }, { Item: Items[53], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[26], Rate: BigRat.fromInteger(100) }, ],
 		Building: Buildings[4],
@@ -1248,7 +1248,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Cable_2_C",
-		DisplayName: "Alternate: Quickwire Cable",
+		DisplayName: "Quickwire Cable",
 		Inputs: [{ Item: Items[80], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[53], Rate: BigRat.fromInteger(5) }, ],
 		Outputs: [{ Item: Items[26], Rate: BigRat.fromIntegers(55, 2) }, ],
 		Building: Buildings[4],
@@ -1266,7 +1266,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CircuitBoard_1_C",
-		DisplayName: "Alternate: Silicon Circuit Board",
+		DisplayName: "Silicon Circuit Board",
 		Inputs: [{ Item: Items[36], Rate: BigRat.fromIntegers(55, 2) }, { Item: Items[23], Rate: BigRat.fromIntegers(55, 2) }, ],
 		Outputs: [{ Item: Items[35], Rate: BigRat.fromIntegers(25, 2) }, ],
 		Building: Buildings[4],
@@ -1275,7 +1275,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CircuitBoard_2_C",
-		DisplayName: "Alternate: Caterium Circuit Board",
+		DisplayName: "Caterium Circuit Board",
 		Inputs: [{ Item: Items[54], Rate: BigRat.fromIntegers(25, 2) }, { Item: Items[80], Rate: BigRat.fromIntegers(75, 2) }, ],
 		Outputs: [{ Item: Items[35], Rate: BigRat.fromIntegers(35, 4) }, ],
 		Building: Buildings[4],
@@ -1284,7 +1284,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Computer_1_C",
-		DisplayName: "Alternate: Caterium Computer",
+		DisplayName: "Caterium Computer",
 		Inputs: [{ Item: Items[35], Rate: BigRat.fromIntegers(105, 4) }, { Item: Items[80], Rate: BigRat.fromInteger(105) }, { Item: Items[53], Rate: BigRat.fromInteger(45) }, ],
 		Outputs: [{ Item: Items[75], Rate: BigRat.fromIntegers(15, 4) }, ],
 		Building: Buildings[7],
@@ -1293,7 +1293,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Computer_2_C",
-		DisplayName: "Alternate: Crystal Computer",
+		DisplayName: "Crystal Computer",
 		Inputs: [{ Item: Items[35], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[37], Rate: BigRat.fromIntegers(45, 16) }, ],
 		Outputs: [{ Item: Items[75], Rate: BigRat.fromIntegers(45, 16) }, ],
 		Building: Buildings[4],
@@ -1302,7 +1302,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Concrete_C",
-		DisplayName: "Alternate: Fine Concrete",
+		DisplayName: "Fine Concrete",
 		Inputs: [{ Item: Items[23], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[5], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[22], Rate: BigRat.fromInteger(25) }, ],
 		Building: Buildings[4],
@@ -1311,7 +1311,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_CrystalOscillator_C",
-		DisplayName: "Alternate: Insulated Crystal Oscillator",
+		DisplayName: "Insulated Crystal Oscillator",
 		Inputs: [{ Item: Items[76], Rate: BigRat.fromIntegers(75, 4) }, { Item: Items[53], Rate: BigRat.fromIntegers(105, 8) }, { Item: Items[79], Rate: BigRat.fromIntegers(15, 8) }, ],
 		Outputs: [{ Item: Items[37], Rate: BigRat.fromIntegers(15, 8) }, ],
 		Building: Buildings[7],
@@ -1320,7 +1320,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ElectromagneticControlRod_1_C",
-		DisplayName: "Alternate: Electromagnetic Connection Rod",
+		DisplayName: "Electromagnetic Connection Rod",
 		Inputs: [{ Item: Items[78], Rate: BigRat.fromInteger(8) }, { Item: Items[43], Rate: BigRat.fromInteger(4) }, ],
 		Outputs: [{ Item: Items[85], Rate: BigRat.fromInteger(8) }, ],
 		Building: Buildings[4],
@@ -1329,7 +1329,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Gunpowder_1_C",
-		DisplayName: "Alternate: Fine Black Powder",
+		DisplayName: "Fine Black Powder",
 		Inputs: [{ Item: Items[6], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[81], Rate: BigRat.fromIntegers(15, 4) }, ],
 		Outputs: [{ Item: Items[89], Rate: BigRat.fromInteger(15) }, ],
 		Building: Buildings[4],
@@ -1338,7 +1338,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_HeatSink_1_C",
-		DisplayName: "Alternate: Heat Exchanger",
+		DisplayName: "Heat Exchanger",
 		Inputs: [{ Item: Items[73], Rate: BigRat.fromInteger(30) }, { Item: Items[53], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[70], Rate: BigRat.fromInteger(10) }, ],
 		Building: Buildings[4],
@@ -1347,7 +1347,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ModularFrameHeavy_C",
-		DisplayName: "Alternate: Heavy Encased Frame",
+		DisplayName: "Heavy Encased Frame",
 		Inputs: [{ Item: Items[27], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[55], Rate: BigRat.fromIntegers(75, 8) }, { Item: Items[56], Rate: BigRat.fromIntegers(135, 4) }, { Item: Items[22], Rate: BigRat.fromIntegers(165, 8) }, ],
 		Outputs: [{ Item: Items[62], Rate: BigRat.fromIntegers(45, 16) }, ],
 		Building: Buildings[7],
@@ -1356,7 +1356,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_HighSpeedConnector_C",
-		DisplayName: "Alternate: Silicon High-Speed Connector",
+		DisplayName: "Silicon High-Speed Connector",
 		Inputs: [{ Item: Items[80], Rate: BigRat.fromInteger(90) }, { Item: Items[23], Rate: BigRat.fromIntegers(75, 2) }, { Item: Items[35], Rate: BigRat.fromInteger(3) }, ],
 		Outputs: [{ Item: Items[43], Rate: BigRat.fromInteger(3) }, ],
 		Building: Buildings[7],
@@ -1365,7 +1365,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_IngotIron_C",
-		DisplayName: "Alternate: Iron Alloy Ingot",
+		DisplayName: "Iron Alloy Ingot",
 		Inputs: [{ Item: Items[3], Rate: BigRat.fromInteger(20) }, { Item: Items[1], Rate: BigRat.fromInteger(20) }, ],
 		Outputs: [{ Item: Items[50], Rate: BigRat.fromInteger(50) }, ],
 		Building: Buildings[2],
@@ -1374,7 +1374,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_IngotSteel_1_C",
-		DisplayName: "Alternate: Solid Steel Ingot",
+		DisplayName: "Solid Steel Ingot",
 		Inputs: [{ Item: Items[50], Rate: BigRat.fromInteger(40) }, { Item: Items[0], Rate: BigRat.fromInteger(40) }, ],
 		Outputs: [{ Item: Items[65], Rate: BigRat.fromInteger(60) }, ],
 		Building: Buildings[2],
@@ -1383,7 +1383,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_IngotSteel_2_C",
-		DisplayName: "Alternate: Compacted Steel Ingot",
+		DisplayName: "Compacted Steel Ingot",
 		Inputs: [{ Item: Items[3], Rate: BigRat.fromIntegers(45, 2) }, { Item: Items[81], Rate: BigRat.fromIntegers(45, 4) }, ],
 		Outputs: [{ Item: Items[65], Rate: BigRat.fromIntegers(75, 2) }, ],
 		Building: Buildings[2],
@@ -1392,7 +1392,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ModularFrame_C",
-		DisplayName: "Alternate: Steeled Frame",
+		DisplayName: "Steeled Frame",
 		Inputs: [{ Item: Items[32], Rate: BigRat.fromInteger(2) }, { Item: Items[56], Rate: BigRat.fromInteger(10) }, ],
 		Outputs: [{ Item: Items[27], Rate: BigRat.fromInteger(3) }, ],
 		Building: Buildings[4],
@@ -1401,7 +1401,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Motor_1_C",
-		DisplayName: "Alternate: Rigour Motor",
+		DisplayName: "Rigour Motor",
 		Inputs: [{ Item: Items[52], Rate: BigRat.fromIntegers(15, 4) }, { Item: Items[78], Rate: BigRat.fromIntegers(15, 4) }, { Item: Items[37], Rate: BigRat.fromIntegers(5, 4) }, ],
 		Outputs: [{ Item: Items[44], Rate: BigRat.fromIntegers(15, 2) }, ],
 		Building: Buildings[7],
@@ -1410,7 +1410,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_NuclearFuelRod_1_C",
-		DisplayName: "Alternate: Uranium Fuel Unit",
+		DisplayName: "Uranium Fuel Unit",
 		Inputs: [{ Item: Items[69], Rate: BigRat.fromInteger(20) }, { Item: Items[85], Rate: BigRat.fromInteger(2) }, { Item: Items[37], Rate: BigRat.fromIntegers(3, 5) }, { Item: Items[114], Rate: BigRat.fromIntegers(6, 5) }, ],
 		Outputs: [{ Item: Items[111], Rate: BigRat.fromIntegers(3, 5) }, ],
 		Building: Buildings[7],
@@ -1419,7 +1419,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Plastic_1_C",
-		DisplayName: "Alternate: Recycled Plastic",
+		DisplayName: "Recycled Plastic",
 		Inputs: [{ Item: Items[53], Rate: BigRat.fromInteger(30) }, { Item: Items[57], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[54], Rate: BigRat.fromInteger(60) }, ],
 		Building: Buildings[3],
@@ -1428,7 +1428,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Quickwire_C",
-		DisplayName: "Alternate: Fused Quickwire",
+		DisplayName: "Fused Quickwire",
 		Inputs: [{ Item: Items[77], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[33], Rate: BigRat.fromIntegers(75, 2) }, ],
 		Outputs: [{ Item: Items[80], Rate: BigRat.fromInteger(90) }, ],
 		Building: Buildings[4],
@@ -1437,7 +1437,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_RadioControlUnit_1_C",
-		DisplayName: "Alternate: Radio Connection Unit",
+		DisplayName: "Radio Connection Unit",
 		Inputs: [{ Item: Items[70], Rate: BigRat.fromInteger(15) }, { Item: Items[43], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[76], Rate: BigRat.fromInteger(45) }, ],
 		Outputs: [{ Item: Items[74], Rate: BigRat.fromIntegers(15, 4) }, ],
 		Building: Buildings[7],
@@ -1446,7 +1446,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ReinforcedIronPlate_1_C",
-		DisplayName: "Alternate: Bolted Iron Plate",
+		DisplayName: "Bolted Iron Plate",
 		Inputs: [{ Item: Items[24], Rate: BigRat.fromInteger(90) }, { Item: Items[20], Rate: BigRat.fromInteger(250) }, ],
 		Outputs: [{ Item: Items[32], Rate: BigRat.fromInteger(15) }, ],
 		Building: Buildings[4],
@@ -1455,7 +1455,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_ReinforcedIronPlate_2_C",
-		DisplayName: "Alternate: Stitched Iron Plate",
+		DisplayName: "Stitched Iron Plate",
 		Inputs: [{ Item: Items[24], Rate: BigRat.fromIntegers(75, 4) }, { Item: Items[21], Rate: BigRat.fromIntegers(75, 2) }, ],
 		Outputs: [{ Item: Items[32], Rate: BigRat.fromIntegers(45, 8) }, ],
 		Building: Buildings[4],
@@ -1464,7 +1464,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_EncasedIndustrialBeam_C",
-		DisplayName: "Alternate: Encased Industrial Pipe",
+		DisplayName: "Encased Industrial Pipe",
 		Inputs: [{ Item: Items[56], Rate: BigRat.fromInteger(28) }, { Item: Items[22], Rate: BigRat.fromInteger(20) }, ],
 		Outputs: [{ Item: Items[55], Rate: BigRat.fromInteger(4) }, ],
 		Building: Buildings[4],
@@ -1473,7 +1473,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Rotor_C",
-		DisplayName: "Alternate: Steel Rotor",
+		DisplayName: "Steel Rotor",
 		Inputs: [{ Item: Items[56], Rate: BigRat.fromInteger(10) }, { Item: Items[21], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[52], Rate: BigRat.fromInteger(5) }, ],
 		Building: Buildings[4],
@@ -1482,7 +1482,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Screw_C",
-		DisplayName: "Alternate: Cast Screw",
+		DisplayName: "Cast Screw",
 		Inputs: [{ Item: Items[50], Rate: BigRat.fromIntegers(25, 2) }, ],
 		Outputs: [{ Item: Items[20], Rate: BigRat.fromInteger(50) }, ],
 		Building: Buildings[0],
@@ -1491,7 +1491,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Screw_2_C",
-		DisplayName: "Alternate: Steel Screw",
+		DisplayName: "Steel Screw",
 		Inputs: [{ Item: Items[25], Rate: BigRat.fromInteger(5) }, ],
 		Outputs: [{ Item: Items[20], Rate: BigRat.fromInteger(260) }, ],
 		Building: Buildings[0],
@@ -1500,7 +1500,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Silica_C",
-		DisplayName: "Alternate: Cheap Silica",
+		DisplayName: "Cheap Silica",
 		Inputs: [{ Item: Items[4], Rate: BigRat.fromIntegers(45, 4) }, { Item: Items[5], Rate: BigRat.fromIntegers(75, 4) }, ],
 		Outputs: [{ Item: Items[23], Rate: BigRat.fromIntegers(105, 4) }, ],
 		Building: Buildings[4],
@@ -1509,7 +1509,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Stator_C",
-		DisplayName: "Alternate: Quickwire Stator",
+		DisplayName: "Quickwire Stator",
 		Inputs: [{ Item: Items[56], Rate: BigRat.fromInteger(16) }, { Item: Items[80], Rate: BigRat.fromInteger(60) }, ],
 		Outputs: [{ Item: Items[78], Rate: BigRat.fromInteger(8) }, ],
 		Building: Buildings[4],
@@ -1527,7 +1527,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_TurboMotor_1_C",
-		DisplayName: "Alternate: Turbo Electric Motor",
+		DisplayName: "Turbo Electric Motor",
 		Inputs: [{ Item: Items[44], Rate: BigRat.fromIntegers(105, 16) }, { Item: Items[74], Rate: BigRat.fromIntegers(135, 16) }, { Item: Items[85], Rate: BigRat.fromIntegers(75, 16) }, { Item: Items[52], Rate: BigRat.fromIntegers(105, 16) }, ],
 		Outputs: [{ Item: Items[87], Rate: BigRat.fromIntegers(45, 16) }, ],
 		Building: Buildings[7],
@@ -1554,7 +1554,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_UraniumCell_1_C",
-		DisplayName: "Alternate: Infused Uranium Cell",
+		DisplayName: "Infused Uranium Cell",
 		Inputs: [{ Item: Items[11], Rate: BigRat.fromInteger(25) }, { Item: Items[23], Rate: BigRat.fromInteger(15) }, { Item: Items[6], Rate: BigRat.fromInteger(25) }, { Item: Items[80], Rate: BigRat.fromInteger(75) }, ],
 		Outputs: [{ Item: Items[69], Rate: BigRat.fromInteger(20) }, ],
 		Building: Buildings[7],
@@ -1563,7 +1563,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Wire_1_C",
-		DisplayName: "Alternate: Iron Wire",
+		DisplayName: "Iron Wire",
 		Inputs: [{ Item: Items[50], Rate: BigRat.fromIntegers(25, 2) }, ],
 		Outputs: [{ Item: Items[21], Rate: BigRat.fromIntegers(45, 2) }, ],
 		Building: Buildings[0],
@@ -1572,7 +1572,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Wire_2_C",
-		DisplayName: "Alternate: Caterium Wire",
+		DisplayName: "Caterium Wire",
 		Inputs: [{ Item: Items[77], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[21], Rate: BigRat.fromInteger(120) }, ],
 		Building: Buildings[0],
@@ -1653,7 +1653,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_PolyesterFabric_C",
-		DisplayName: "Alternate: Polyester Fabric",
+		DisplayName: "Polyester Fabric",
 		Inputs: [{ Item: Items[58], Rate: BigRat.fromInteger(30) }, { Item: Items[9], Rate: BigRat.fromInteger(30) }, ],
 		Outputs: [{ Item: Items[99], Rate: BigRat.fromInteger(30) }, ],
 		Building: Buildings[3],
@@ -1752,7 +1752,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_CartridgeChaos_C",
-		DisplayName: "Turbo Rifle Ammo (Blender)",
+		DisplayName: "Turbo Rifle Ammo",
 		Inputs: [{ Item: Items[110], Rate: BigRat.fromInteger(125) }, { Item: Items[73], Rate: BigRat.fromInteger(15) }, { Item: Items[82], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[109], Rate: BigRat.fromInteger(250) }, ],
 		Building: Buildings[6],
@@ -1761,7 +1761,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_CartridgeChaos_Packaged_C",
-		DisplayName: "Turbo Rifle Ammo (Manufacturer)",
+		DisplayName: "Turbo Rifle Ammo",
 		Inputs: [{ Item: Items[110], Rate: BigRat.fromInteger(125) }, { Item: Items[73], Rate: BigRat.fromInteger(15) }, { Item: Items[29], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[109], Rate: BigRat.fromInteger(250) }, ],
 		Building: Buildings[7],

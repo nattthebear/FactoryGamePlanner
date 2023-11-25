@@ -761,6 +761,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			PowerConsumptionExpr: x.mVariablePowerConsumptionConstant
 				? `BigRat.fromInteger(${x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2})`
 				: "null",
+			DisplayName: x.mDisplayName.split("Alternate: ")[1] ?? x.mDisplayName,
 		};
 	});
 
