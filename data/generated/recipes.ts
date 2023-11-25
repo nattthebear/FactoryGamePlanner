@@ -1752,7 +1752,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_CartridgeChaos_C",
-		DisplayName: "Turbo Rifle Ammo",
+		DisplayName: "Turbo Rifle Ammo (Blender)",
 		Inputs: [{ Item: Items[110], Rate: BigRat.fromInteger(125) }, { Item: Items[73], Rate: BigRat.fromInteger(15) }, { Item: Items[82], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[109], Rate: BigRat.fromInteger(250) }, ],
 		Building: Buildings[6],
@@ -1761,7 +1761,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_CartridgeChaos_Packaged_C",
-		DisplayName: "Turbo Rifle Ammo",
+		DisplayName: "Turbo Rifle Ammo (Manufacturer)",
 		Inputs: [{ Item: Items[110], Rate: BigRat.fromInteger(125) }, { Item: Items[73], Rate: BigRat.fromInteger(15) }, { Item: Items[29], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[109], Rate: BigRat.fromInteger(250) }, ],
 		Building: Buildings[7],

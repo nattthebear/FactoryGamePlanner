@@ -851,6 +851,23 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		PowerConsumptionExponentExpr: BigRat.parse(x.mPowerConsumptionExponent).uneval(),
 	}));
 
+	// Eliminate duplicate recipe names
+	{
+		const displayNamesToRecipes = new Map<string, typeof recipeView>();
+		for (const r of recipeView) {
+			const arr = displayNamesToRecipes.get(r.mDisplayName) ?? [];
+			displayNamesToRecipes.set(r.mDisplayName, arr);
+			arr.push(r);
+		}
+		for (const arr of displayNamesToRecipes.values()) {
+			if (arr.length > 1) {
+				for (const r of arr) {
+					r.mDisplayName += ` (${buildingsView[r.Building!].mDisplayName})`;
+				}
+			}
+		}
+	}
+
 	const HACK_PowerIcon = new Texture("/Game/FactoryGame/Interface/UI/Assets/MonochromeIcons/TXUI_MIcon_Power");
 
 	if (false) {
