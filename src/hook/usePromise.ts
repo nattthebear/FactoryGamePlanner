@@ -66,19 +66,19 @@ export function useAbortableAsynchronousMemo<A extends any[], T>(
 		if (!prevDeps || !arrayEqual(prevDeps, deps)) {
 			catchable?.catch(() => {});
 			wip?.abort();
-		}
 
-		const next = factory(...deps);
-		prevDeps = deps;
-		wip = next;
-		catchable = next.promise.then((value) => {
-			if (wip === next) {
-				prevValue = value;
-				wip = undefined;
-				catchable = undefined;
-				scheduleUpdate(instance);
-			}
-		});
+			const next = factory(...deps);
+			prevDeps = deps;
+			wip = next;
+			catchable = next.promise.then((value) => {
+				if (wip === next) {
+					prevValue = value;
+					wip = undefined;
+					catchable = undefined;
+					scheduleUpdate(instance);
+				}
+			});
+		}
 
 		return { value: prevValue, stale: !!wip };
 	};

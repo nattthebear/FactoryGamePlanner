@@ -35,7 +35,7 @@ function* solveAndRender(state: State) {
 	yield;
 
 	function renderRecipes() {
-		const nodes = Array<VNode>(problem.availableRecipes.size);
+		const nodes: Array<VNode> = [];
 		let index = 0;
 		for (const recipe of problem.availableRecipes) {
 			let rate = solution!.recipes[index++];
