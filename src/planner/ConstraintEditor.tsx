@@ -170,13 +170,15 @@ export function ConstraintEditor() {
 			<div class="pane">
 				<h2 class="title">Settings</h2>
 			</div>
-			<div class="pane">
-				<h3 class="title">Outputs</h3>
-				<ProductsRateList />
-			</div>
-			<div class="pane">
-				<h3 class="title">Inputs</h3>
-				<InputsRateList />
+			<div class="scrollable">
+				<div class="pane">
+					<h3 class="title">Outputs</h3>
+					<ProductsRateList />
+				</div>
+				<div class="pane">
+					<h3 class="title">Inputs</h3>
+					<InputsRateList />
+				</div>
 			</div>
 		</div>
 	);

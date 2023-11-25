@@ -1,4 +1,12 @@
 .rate-setter {
+	display: flex;
+	flex-direction: column;
+
 	.pane {
+	}
+
+	.scrollable {
+		flex: 1 0 0;
+		overflow-y: scroll;
 	}
 }
