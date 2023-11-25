@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
+	"license": "GPL-3.0-or-later",
 	"scripts": {
 		"start": "parcel serve ./src/index.html --dist-dir .parcel-dev --public-url / --port 3000",
 		"build": "tsc && rimraf ./build && parcel build ./src/index.html --public-url . --dist-dir build --reporter @parcel/reporter-bundle-analyzer --log-level verbose",
