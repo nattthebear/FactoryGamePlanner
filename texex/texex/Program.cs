@@ -69,9 +69,9 @@ partial class Program
 			var bitmap = TextureDecoder.Decode(obj)!;
 			try
 			{
-				if (bitmap.Width > 128)
+				if (bitmap.Width > 64)
 				{
-					var resized = bitmap.Resize(new SKSizeI(128, bitmap.Height * 128 / bitmap.Width), SKFilterQuality.High);
+					var resized = bitmap.Resize(new SKSizeI(64, bitmap.Height * 64 / bitmap.Width), SKFilterQuality.High);
 					bitmap.Dispose();
 					bitmap = resized;
 				}
