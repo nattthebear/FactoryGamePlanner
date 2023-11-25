@@ -8,6 +8,8 @@ import { Recipe } from "../../data/types";
 import { FakePower } from "../../data/power";
 import { makeAbortablePromise, useAbortableAsynchronousMemo } from "../hook/usePromise";
 import { Spinner } from "../component/Spinner";
+import { promptBoolean } from "../component/PromptBoolean";
+import { changeInPlanner } from "../AppStore";
 
 import "./Results.css";
 
@@ -112,20 +114,32 @@ function* solveAndRender(state: State) {
 			<div class="pane">
 				<h2 class="title">Solution</h2>
 				<h3 class="title">Overview</h3>
-				<div>
-					WP: <strong data-tooltip={solution.wp.toRatioString()}>{solution.wp.toFixed(2)}</strong>
-				</div>
-				{renderPower()}
-				<div>
-					<button
-						onClick={() => {
-							updateEditor((draft) => {
-								Object.assign(draft, connectSolution(problem, solution));
-							});
-						}}
-					>
-						TEMP - Copy to Editor
-					</button>
+				<div class="result-summary-area">
+					<div>
+						<div>
+							WP: <strong data-tooltip={solution.wp.toRatioString()}>{solution.wp.toFixed(2)}</strong>
+						</div>
+						{renderPower()}
+					</div>
+					<div>
+						<button
+							onClick={async () => {
+								if (
+									await promptBoolean({
+										title: "Confirm Copy to Editor",
+										message: "This will clear any existing contents of the editor.",
+									})
+								) {
+									updateEditor((draft) => {
+										Object.assign(draft, connectSolution(problem, solution));
+									});
+									changeInPlanner(false);
+								}
+							}}
+						>
+							Copy Solution to Editor
+						</button>
+					</div>
 				</div>
 			</div>
 
