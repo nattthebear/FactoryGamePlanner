@@ -38,7 +38,7 @@
 		"modern-normalize": "^2.0.0",
 		"preact": "^10.16.0",
 		"scroll-into-view-if-needed": "^3.0.10",
-		"vdomk": "^0.1.4"
+		"vdomk": "^0.1.5"
 	},
 	"browserslist": {
 		"production": [
