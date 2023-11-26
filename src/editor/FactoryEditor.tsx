@@ -71,11 +71,6 @@ export const FactoryEditor: TPC<{}> = (_, instance) => {
 	const getBuses = useSelector(instance, selectBusIds);
 	const getViewport = useSelector(instance, (s) => s.viewport);
 
-	const viewportRef = (value: HTMLDivElement | null) => (viewportElt = value);
-	const svgRef = (value: SVGSVGElement | null) => (svgElt = value);
-	let viewportElt: HTMLDivElement | null = null;
-	let svgElt: SVGSVGElement | null = null;
-
 	let producers = getProducers();
 	let connectors = getConnectors();
 	let buses = getBuses();
@@ -121,8 +116,8 @@ export const FactoryEditor: TPC<{}> = (_, instance) => {
 		const transform = `transform: translate(-50%, -50%) scale(${viewport.zoom}) ${toTranslation(viewport.center)}`;
 
 		return (
-			<div class="viewport" tabIndex={-1} ref={viewportRef} onWheelCapture={onWheel}>
-				<svg viewBox={viewBox} style={transform} ref={svgRef}>
+			<div class="viewport" tabIndex={-1} onWheelCapture={onWheel}>
+				<svg viewBox={viewBox} style={transform}>
 					<g
 						class="backgrid"
 						onMouseDown={(ev) => initiateDrag(ev, handlePan)}

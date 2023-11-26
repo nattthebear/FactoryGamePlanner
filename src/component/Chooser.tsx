@@ -1,6 +1,8 @@
 import { LayerInstance, VNode, effect, scheduleUpdate } from "vdomk";
 import scrollIntoView from "scroll-into-view-if-needed";
 import { highlightText, makeSearchRegexes } from "../util";
+import { autoFocus } from "../hook/autoFocus";
+
 import "./Chooser.css";
 
 export interface ChooserItem {
@@ -22,12 +24,8 @@ export function Chooser<T extends ChooserItem>(_: Props<T>, instance: LayerInsta
 	let tentative: T | null = null;
 	let lastTentative: T | null = null;
 
-	const inputRef = (value: HTMLInputElement | null) => (inputElt = value);
 	const scrollRef = (value: HTMLDivElement | null) => (scrollElt = value);
-	let inputElt: HTMLInputElement | null = null;
 	let scrollElt: HTMLDivElement | null = null;
-
-	effect(instance, () => inputElt!.focus());
 
 	return ({ items, value, changeValue, onTentative }: Props<T>) => {
 		const { testRegex, highlightRegex } = makeSearchRegexes(search);
@@ -72,7 +70,7 @@ export function Chooser<T extends ChooserItem>(_: Props<T>, instance: LayerInsta
 				>
 					<input
 						type="text"
-						ref={inputRef}
+						ref={autoFocus}
 						value={search}
 						onInput={(ev) => {
 							const newSearch = ev.currentTarget.value;

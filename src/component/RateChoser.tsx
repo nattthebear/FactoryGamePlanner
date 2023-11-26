@@ -1,14 +1,15 @@
-import { TPC, effect, scheduleUpdate } from "vdomk";
+import { TPC, scheduleUpdate } from "vdomk";
 import { produce } from "../immer";
 import { BigRat } from "../math/BigRat";
 import { evaluate } from "../math/Expression";
 import { ProductionBuilding, Sink, Source } from "../editor/store/Producers";
 import { prompt } from "./Prompt";
-
-import "./RateChooser.css";
 import { Flow } from "../util";
 import { Item } from "../../data/types";
 import { FakePower } from "../../data/power";
+import { autoFocus } from "../hook/autoFocus";
+
+import "./RateChooser.css";
 
 function evaluateAndVerify(text: string) {
 	if (!text) {
@@ -43,10 +44,6 @@ const ExpressionInput: TPC<{ onChange: (value: BigRat) => void }> = (_, instance
 	let text = "";
 	let evalRes = evaluateAndVerify("");
 
-	const inputRef = (value: HTMLInputElement | null) => (inputElt = value);
-	let inputElt: HTMLInputElement | null = null;
-	effect(instance, () => inputElt!.focus());
-
 	return ({ onChange }) => {
 		const underlay = evalRes.offset != null && (
 			<span class="underlay">
@@ -66,7 +63,7 @@ const ExpressionInput: TPC<{ onChange: (value: BigRat) => void }> = (_, instance
 				{underlay}
 				<input
 					type="text"
-					ref={inputRef}
+					ref={autoFocus}
 					value={text}
 					onInput={(ev) => {
 						const newText = ev.currentTarget.value;
