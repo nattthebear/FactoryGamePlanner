@@ -65,7 +65,6 @@ const makeRecipeFilter = (
 							<input
 								type="checkbox"
 								checked={someChecked}
-								// @ts-ignore https://github.com/preactjs/preact/issues/3836
 								indeterminate={someChecked && someUnchecked}
 								onClick={() => {
 									const newValue = someUnchecked && !someChecked;

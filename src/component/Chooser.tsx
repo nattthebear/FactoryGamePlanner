@@ -73,11 +73,10 @@ export function Chooser<T extends ChooserItem>(_: Props<T>, instance: LayerInsta
 						ref={autoFocus}
 						value={search}
 						onInput={(ev) => {
-							const newSearch = ev.currentTarget.value;
-							search = newSearch;
+							search = ev.currentTarget.value;
 							scheduleUpdate(instance);
-							const { testRegex: newTestRegex } = makeSearchRegexes(newSearch);
-							if (tentative && !newTestRegex.test(newSearch)) {
+							const { testRegex: newTestRegex } = makeSearchRegexes(search);
+							if (tentative && !newTestRegex.test(search)) {
 								tentative = null;
 								onTentative?.(null);
 							}

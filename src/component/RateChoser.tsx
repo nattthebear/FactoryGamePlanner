@@ -66,13 +66,11 @@ const ExpressionInput: TPC<{ onChange: (value: BigRat) => void }> = (_, instance
 					ref={autoFocus}
 					value={text}
 					onInput={(ev) => {
-						const newText = ev.currentTarget.value;
-						const newEvalResult = evaluateAndVerify(newText);
-						text = newText;
-						evalRes = newEvalResult;
+						text = ev.currentTarget.value;
+						evalRes = evaluateAndVerify(text);
 						scheduleUpdate(instance);
-						if (newEvalResult.value) {
-							onChange(newEvalResult.value);
+						if (evalRes.value) {
+							onChange(evalRes.value);
 						}
 					}}
 				/>
