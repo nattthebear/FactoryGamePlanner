@@ -32,7 +32,7 @@ function evaluateAndVerify(text: string) {
 		return {
 			value: null,
 			error: true,
-			message: `${res.value.toFixed(1)} is negative.`,
+			message: `${res.value.toFixed(1)} is not positive.`,
 			offset: null,
 		};
 	}
