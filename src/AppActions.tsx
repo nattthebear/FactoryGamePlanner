@@ -16,6 +16,9 @@ export function AppActions({
 			<KeyButton keyName="w" disabled={!inPlanner} onAct={() => changeInPlanner(false)}>
 				Editor
 			</KeyButton>
+			<button onClick={() => window.open("https://github.com/nattthebear/FactoryGamePlanner#readme", "_blank")}>
+				Help
+			</button>
 		</div>
 	);
 }
