@@ -503,7 +503,7 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 		const wipConnectorPiped = getWipConnectorPiped();
 
 		return (
-			<div class="hotkey-actions">
+			<div class="hotkey-actions key-actions">
 				{actionRender[currentObject.type](currentObject as any, currentWip, wipConnectorPiped)}
 			</div>
 		);

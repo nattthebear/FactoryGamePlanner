@@ -9,11 +9,11 @@ export function AppActions({
 	changeInPlanner: (newValue: boolean) => void;
 }) {
 	return (
-		<div class="app-actions">
-			<KeyButton keyName="F2" disabled={inPlanner} onAct={() => changeInPlanner(true)}>
+		<div class="app-actions key-actions">
+			<KeyButton keyName="q" disabled={inPlanner} onAct={() => changeInPlanner(true)}>
 				Planner
 			</KeyButton>
-			<KeyButton keyName="F3" disabled={!inPlanner} onAct={() => changeInPlanner(false)}>
+			<KeyButton keyName="w" disabled={!inPlanner} onAct={() => changeInPlanner(false)}>
 				Editor
 			</KeyButton>
 		</div>

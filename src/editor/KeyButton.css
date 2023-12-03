@@ -1,0 +1,6 @@
+.key-actions {
+	display: flex;
+	padding: 1px;
+	gap: 2px;
+	background-color: #669;
+}

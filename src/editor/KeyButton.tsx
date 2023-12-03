@@ -1,6 +1,8 @@
 import { TPC, cleanup } from "vdomk";
 import { isAnyPromptActive } from "../component/Prompt";
 
+import "./KeyButton.css";
+
 interface Props {
 	keyName: string;
 	onAct: (wasClick: boolean) => void;
