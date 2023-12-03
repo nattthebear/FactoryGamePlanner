@@ -7,3 +7,5 @@ src/math/ExpressionParser.js
 docs.json
 /build
 /parcel-bundle-reports
+
+/docs/**/*.map
