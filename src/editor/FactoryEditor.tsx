@@ -1,4 +1,4 @@
-import { TPC } from "vdomk";
+import { TPC, cleanup } from "vdomk";
 import { Recipes } from "../../data/generated/recipes";
 import { initiateDrag } from "../hook/drag";
 import { BigRat } from "../math/BigRat";
@@ -29,6 +29,7 @@ import "./FactoryEditor.css";
 const ZOOM_MAX = 5;
 const ZOOM_MIN = 1 / 10;
 const ZOOM_SPEED = 1.0011;
+const ZOOM_KEYBOARD_SPEED = 1.1;
 
 const viewBox = `${FACTORY_MIN.x} ${FACTORY_MIN.y} ${FACTORY_MAX.x - FACTORY_MIN.x} ${FACTORY_MAX.y - FACTORY_MIN.y}`;
 const backGrid = (() => {
@@ -65,6 +66,23 @@ function handlePan({ x, y }: Point) {
 	return true;
 }
 
+function handleZoom(multiplier: number) {
+	update((draft) => {
+		let { zoom } = draft.viewport;
+		zoom *= multiplier;
+		if (zoom < ZOOM_MIN) {
+			zoom = ZOOM_MIN;
+		}
+		if (zoom > ZOOM_MAX) {
+			zoom = ZOOM_MAX;
+		}
+		if (zoom > 0.94 && zoom < 1.06) {
+			zoom = 1;
+		}
+		draft.viewport.zoom = zoom;
+	});
+}
+
 export const FactoryEditor: TPC<{}> = (_, instance) => {
 	const getProducers = useSelector(instance, selectProducerIds);
 	const getConnectors = useSelector(instance, selectConnectorIds);
@@ -91,19 +109,20 @@ export const FactoryEditor: TPC<{}> = (_, instance) => {
 
 	function onWheel(ev: WheelEvent) {
 		ev.preventDefault();
-		update((draft) => {
-			let { zoom } = draft.viewport;
-			zoom *= ZOOM_SPEED ** -ev.deltaY;
-			if (zoom < ZOOM_MIN) {
-				zoom = ZOOM_MIN;
+		handleZoom(ZOOM_SPEED ** -ev.deltaY);
+	}
+
+	{
+		function zoomListener(ev: KeyboardEvent) {
+			if (ev.key === "PageUp") {
+				handleZoom(ZOOM_KEYBOARD_SPEED);
+			} else if (ev.key === "PageDown") {
+				handleZoom(1 / ZOOM_KEYBOARD_SPEED);
 			}
-			if (zoom > ZOOM_MAX) {
-				zoom = ZOOM_MAX;
-			}
-			if (zoom > 0.94 && zoom < 1.06) {
-				zoom = 1;
-			}
-			draft.viewport.zoom = zoom;
+		}
+		document.addEventListener("keydown", zoomListener, { passive: true, capture: true });
+		cleanup(instance, () => {
+			document.removeEventListener("keydown", zoomListener, { capture: true });
 		});
 	}
 

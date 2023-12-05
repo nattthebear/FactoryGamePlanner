@@ -6,7 +6,7 @@
 	"license": "GPL-3.0-or-later",
 	"scripts": {
 		"start": "parcel serve ./src/index.html --dist-dir .parcel-dev --public-url / --port 3000",
-		"build": "tsc && rimraf ./build && parcel build ./src/index.html --public-url . --dist-dir build --reporter @parcel/reporter-bundle-analyzer --log-level verbose",
+		"build": "tsc && rimraf ./build && parcel build ./src/index.html --public-url . --dist-dir build --reporter @parcel/reporter-bundle-analyzer --log-level verbose && node --experimental-loader ts-node/esm bundleDiff.ts",
 		"import": "ts-node-esm --experimental-specifier-resolution=node scripts/importer.ts",
 		"peggify": "peggy --format es -o src/math/ExpressionParser.js src/math/expression.peggy",
 		"test": "node --experimental-loader ts-node/esm --experimental-loader ./test/mock-url-loader.mjs --test src/math/BigRat.test.ts src/math/Expression.test.ts src/base64.test.ts src/editor/store/Serializer.test.ts src/solver/Dictionary.test.ts src/solver/Solver.test.ts",

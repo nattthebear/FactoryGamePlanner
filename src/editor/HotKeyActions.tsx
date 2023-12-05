@@ -37,8 +37,19 @@ import { chooseBuildingRate, chooseSourceSinkRate } from "../component/RateChose
 import { reflowConnectors } from "./store/ReflowConnector";
 import { Bus } from "./store/Bus";
 
+let currentScreenCoords: Point | null = null;
+document.documentElement.addEventListener("mouseleave", (_) => (currentScreenCoords = null), { passive: true });
+document.addEventListener(
+	"mousemove",
+	(ev) =>
+		(currentScreenCoords = {
+			x: ev.clientX,
+			y: ev.clientY,
+		}),
+	{ capture: true, passive: true },
+);
+
 export const HotKeyActions: TPC<{}> = (_, instance) => {
-	let currentScreenCoords: Point | null = null;
 	const getCurrentObject = useSelector(instance, selectMouseOverObject);
 	const getCurrentWip = useSelector(instance, (s) => s.wip);
 	const getWipConnectorPiped = useSelector(
@@ -46,37 +57,19 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 		(s) => s.wip.type === "connector:bus" && s.connectors.get(s.wip.connectorId)!.item.IsPiped,
 	);
 
-	effect(instance, () => {
-		function listener(ev: KeyboardEvent) {
+	{
+		function escapeListener(ev: KeyboardEvent) {
 			if (ev.key === "Escape") {
 				update((draft) => {
 					draft.wip = { type: "none" };
 				});
 			}
 		}
-		document.addEventListener("keydown", listener, { passive: true, capture: true });
+		document.addEventListener("keydown", escapeListener, { passive: true, capture: true });
 		cleanup(instance, () => {
-			document.removeEventListener("keydown", listener, { capture: true });
+			document.removeEventListener("keydown", escapeListener, { capture: true });
 		});
-	});
-
-	effect(instance, () => {
-		function mouseMove(ev: MouseEvent) {
-			currentScreenCoords = {
-				x: ev.clientX,
-				y: ev.clientY,
-			};
-		}
-		function mouseLeave() {
-			currentScreenCoords = null;
-		}
-		document.documentElement.addEventListener("mouseleave", mouseLeave, { passive: true });
-		document.addEventListener("mousemove", mouseMove, { capture: true, passive: true });
-		cleanup(instance, () => {
-			window.removeEventListener("blur", mouseLeave, { capture: true });
-			document.documentElement.removeEventListener("mouseleave", mouseLeave);
-		});
-	});
+	}
 
 	function calculateActionPosition(wasClick: boolean) {
 		const screen = currentScreenCoords;
