@@ -53,16 +53,6 @@ const DisplayItems = ItemsWithFakePower.map((item) => ({
 }));
 type DisplayItem = (typeof DisplayItems)[number];
 
-/** Hack:  Add a way to choose power for the recipe by outputs chooser */
-const FakePowerItem: DisplayItem = {
-	adornment: itemImage(FakePower),
-	name: FakePower.DisplayName,
-	item: FakePower,
-	consumingRecipes: [],
-	producingRecipes: Recipes.filter((r) => r.Building.PowerConsumption.sign() < 0).map(formatRecipe),
-};
-DisplayItems.push(FakePowerItem);
-
 const RecipeChooser: TPC<{ type: "input" | "output"; onConfirm: (value: Recipe | null) => void }> = (
 	{ type, onConfirm },
 	instance,
