@@ -22,7 +22,7 @@ The planner uses linear algebra to calculate the optimal choice of recipes for a
 The editor allows you to organize your production line like a flowchart.
 Most functionality is implemented through hotkey-activated buttons that appear at the bottom right.
 
--   The mousewheel zooms in and out.
+-   The mousewheel, or PageUp / PageDown, zooms in and out.
 -   When hovering over empty space, you can click and drag to pan the viewport.
 -   When hovering over empty space, the actions will show new things you can add to the factory.
     -   **Add Builder** adds a new production building or power building.

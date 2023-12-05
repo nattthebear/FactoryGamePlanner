@@ -31,23 +31,12 @@ import {
 	chooseRecipeForOutput,
 } from "../component/ItemChooser";
 import { KeyButton } from "./KeyButton";
-
-import "./HotKeyActions.css";
 import { chooseBuildingRate, chooseSourceSinkRate } from "../component/RateChoser";
 import { reflowConnectors } from "./store/ReflowConnector";
 import { Bus } from "./store/Bus";
+import { getPointerLocationOrCenter } from "./PointerLocation";
 
-let currentScreenCoords: Point | null = null;
-document.documentElement.addEventListener("mouseleave", (_) => (currentScreenCoords = null), { passive: true });
-document.addEventListener(
-	"mousemove",
-	(ev) =>
-		(currentScreenCoords = {
-			x: ev.clientX,
-			y: ev.clientY,
-		}),
-	{ capture: true, passive: true },
-);
+import "./HotKeyActions.css";
 
 export const HotKeyActions: TPC<{}> = (_, instance) => {
 	const getCurrentObject = useSelector(instance, selectMouseOverObject);
@@ -71,25 +60,6 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 		});
 	}
 
-	function calculateActionPosition(wasClick: boolean) {
-		const screen = currentScreenCoords;
-		if (wasClick || !screen) {
-			return getStateRaw().viewport.center;
-		}
-		const { zoom, center } = getStateRaw().viewport;
-
-		const screenCenterX = window.innerWidth / 2;
-		const screenCenterY = window.innerHeight / 2;
-
-		const sdx = screen.x - screenCenterX;
-		const sdy = screen.y - screenCenterY;
-
-		return {
-			x: sdx / zoom - center.x,
-			y: sdy / zoom - center.y,
-		};
-	}
-
 	const actionRender: {
 		[K in MouseOverObject["type"]]: (
 			o: MouseOverObject & { type: K },
@@ -109,7 +79,7 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 					<KeyButton
 						keyName="b"
 						onAct={async (wasClick) => {
-							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const p = clampp(getPointerLocationOrCenter(wasClick), BUILDING_MIN, BUILDING_MAX);
 							const recipe = await chooseRecipeByOutput();
 							if (recipe) {
 								update(addProducer(new ProductionBuilding(p.x, p.y, BigRat.ONE, recipe)));
@@ -121,7 +91,7 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 					<KeyButton
 						keyName="u"
 						onAct={async (wasClick) => {
-							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const p = clampp(getPointerLocationOrCenter(wasClick), BUILDING_MIN, BUILDING_MAX);
 							const item = await chooseItem("Choose item for source:");
 							if (item) {
 								update(addProducer(new Source(p.x, p.y, SIXTY, item)));
@@ -133,7 +103,7 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 					<KeyButton
 						keyName="k"
 						onAct={async (wasClick) => {
-							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const p = clampp(getPointerLocationOrCenter(wasClick), BUILDING_MIN, BUILDING_MAX);
 							const item = await chooseItem("Choose item for sink:");
 							if (item) {
 								update(addProducer(new Sink(p.x, p.y, SIXTY, item)));
@@ -145,7 +115,7 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 					<KeyButton
 						keyName="s"
 						onAct={(wasClick) => {
-							const p = clampp(calculateActionPosition(wasClick), BUILDING_MIN, BUILDING_MAX);
+							const p = clampp(getPointerLocationOrCenter(wasClick), BUILDING_MIN, BUILDING_MAX);
 							const INITIAL_WIDTH = 300;
 							const bus = new Bus(p.x, p.y, INITIAL_WIDTH);
 							update(addBus(bus));
@@ -409,7 +379,7 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 						keyName="f"
 						onAct={(wasClick) => {
 							const { connector } = o;
-							const p = calculateActionPosition(wasClick);
+							const p = getPointerLocationOrCenter(wasClick);
 							update(adjustConnectorClosest(connector.id, p));
 						}}
 					>
@@ -419,7 +389,7 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 						keyName="s"
 						onAct={(wasClick) => {
 							const { connector } = o;
-							const p = calculateActionPosition(wasClick);
+							const p = getPointerLocationOrCenter(wasClick);
 							update(splitOffConnectorClosest(connector.id, p));
 						}}
 					>

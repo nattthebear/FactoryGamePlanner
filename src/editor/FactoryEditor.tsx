@@ -25,6 +25,7 @@ import { Producer } from "./Producer";
 import { Bus } from "./Bus";
 
 import "./FactoryEditor.css";
+import { getMouseLocationOrCenter, getPointerLocationOrCenter } from "./PointerLocation";
 
 const ZOOM_MAX = 5;
 const ZOOM_MIN = 1 / 10;
@@ -68,18 +69,25 @@ function handlePan({ x, y }: Point) {
 
 function handleZoom(multiplier: number) {
 	update((draft) => {
-		let { zoom } = draft.viewport;
-		zoom *= multiplier;
-		if (zoom < ZOOM_MIN) {
-			zoom = ZOOM_MIN;
+		const { center, zoom } = draft.viewport;
+		let newZoom = zoom * multiplier;
+		if (newZoom < ZOOM_MIN) {
+			newZoom = ZOOM_MIN;
 		}
-		if (zoom > ZOOM_MAX) {
-			zoom = ZOOM_MAX;
+		if (newZoom > ZOOM_MAX) {
+			newZoom = ZOOM_MAX;
 		}
-		if (zoom > 0.94 && zoom < 1.06) {
-			zoom = 1;
+		if (newZoom > 0.94 && newZoom < 1.06) {
+			newZoom = 1;
 		}
-		draft.viewport.zoom = zoom;
+
+		const { x: mx, y: my } = getMouseLocationOrCenter(false);
+
+		draft.viewport.zoom = newZoom;
+		const nx = clamp(center.x + mx / newZoom - mx / zoom, FACTORY_MIN.x, FACTORY_MAX.x);
+		const ny = clamp(center.y + my / newZoom - my / zoom, FACTORY_MIN.y, FACTORY_MAX.y);
+		center.x = nx;
+		center.y = ny;
 	});
 }
 
