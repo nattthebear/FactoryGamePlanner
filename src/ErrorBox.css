@@ -1,0 +1,36 @@
+.error-backdrop {
+	position: fixed;
+	z-index: 9999999;
+	inset: 0;
+	background-color: #fffa;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	.error {
+		width: 360px;
+		padding: 10px;
+		background-color: #fee;
+		box-shadow: 0 0 30px 10px #000a;
+		color: #b00;
+
+		.title {
+			font-size: 20px;
+			padding-bottom: 10px;
+		}
+
+		.buttons {
+			padding-top: 10px;
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+
+			button {
+				flex: 0 0 80px;
+				height: 25px;
+				padding: 0;
+			}
+		}
+	}
+}

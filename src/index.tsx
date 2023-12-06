@@ -23,8 +23,9 @@ if (!window.requestIdleCallback) {
 	};
 }
 
+import { installErrorHandler } from "./ErrorBox";
+installErrorHandler();
+
 import "./immer";
-
 import "modern-normalize/modern-normalize.css";
-
 import "./App";
