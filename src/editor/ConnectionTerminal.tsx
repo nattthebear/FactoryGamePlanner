@@ -14,10 +14,10 @@ export const ConnectionTerminal: TPC<{
 	const getProducer = useSelector(instance, (s) => s.producers.get(producerId)!);
 	let producer = getProducer();
 	const { rate, item } = (isOutput ? producer.outputFlows() : producer.inputFlows())[index];
-	const connectionIds = (isOutput ? producer.outputs : producer.inputs)[index];
-	const getConnectionSum = useSelector(instance, (s) =>
-		connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO),
-	);
+	const getConnectionSum = useSelector(instance, (s) => {
+		const connectionIds = (isOutput ? producer.outputs : producer.inputs)[index];
+		return connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO);
+	});
 	const getActiveConnectionAttempt = useSelector(instance, (s) => {
 		if (s.wip.type === "connector:input") {
 			if (isOutput && s.wip.producerId === producerId && s.wip.index === index) {
