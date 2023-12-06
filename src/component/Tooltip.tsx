@@ -55,7 +55,7 @@ export function installTooltip() {
 
 	const root = createRoot(tooltip, null);
 
-	document.addEventListener("mouseover", (event) => {
+	document.addEventListener("mouseover", async (event) => {
 		let target = event.target as Element | null;
 		let label: string | null = null;
 		while (target && (label = target.getAttribute("data-tooltip")) == null) {
@@ -64,7 +64,7 @@ export function installTooltip() {
 		if (anchor !== target) {
 			anchor = target;
 			if (label) {
-				root.render(<TooltipContent value={label} />);
+				await root.render(<TooltipContent value={label} />);
 				tooltip.style.display = "";
 				updateStyles();
 			} else {

@@ -6,7 +6,7 @@ export function initiateDrag(ev: MouseEvent, onDrag: (diff: Point) => boolean) {
 	ev.preventDefault();
 	let last = { x: ev.clientX, y: ev.clientY };
 
-	function mouseMove(ev: MouseEvent) {
+	async function mouseMove(ev: MouseEvent) {
 		const p = { x: ev.clientX, y: ev.clientY };
 		const dx = p.x - last.x;
 		const dy = p.y - last.y;
@@ -14,6 +14,7 @@ export function initiateDrag(ev: MouseEvent, onDrag: (diff: Point) => boolean) {
 			stop();
 		}
 		last = p;
+		await 0;
 		updateStyles();
 	}
 

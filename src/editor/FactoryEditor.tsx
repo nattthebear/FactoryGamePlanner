@@ -23,9 +23,10 @@ import { HotKeyActions } from "./HotKeyActions";
 import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
 import { Bus } from "./Bus";
+import { getMouseLocationOrCenter, getPointerLocationOrCenter } from "./PointerLocation";
+import { updateStyles } from "../component/Tooltip";
 
 import "./FactoryEditor.css";
-import { getMouseLocationOrCenter, getPointerLocationOrCenter } from "./PointerLocation";
 
 const ZOOM_MAX = 5;
 const ZOOM_MIN = 1 / 10;
@@ -67,7 +68,7 @@ function handlePan({ x, y }: Point) {
 	return true;
 }
 
-function handleZoom(multiplier: number) {
+async function handleZoom(multiplier: number) {
 	update((draft) => {
 		const { center, zoom } = draft.viewport;
 		let newZoom = zoom * multiplier;
@@ -89,6 +90,8 @@ function handleZoom(multiplier: number) {
 		center.x = nx;
 		center.y = ny;
 	});
+	await 0;
+	updateStyles();
 }
 
 export const FactoryEditor: TPC<{}> = (_, instance) => {
