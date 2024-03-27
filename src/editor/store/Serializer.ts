@@ -192,7 +192,7 @@ export function deserialize(encoded: string) {
 		producers.push(producer);
 	}
 
-	const connectors: (Connector| null)[] = [];
+	const connectors: (Connector | null)[] = [];
 	for (const temp of tempConnectors) {
 		const inputp = producers[temp.inId];
 		const outputp = producers[temp.outId];

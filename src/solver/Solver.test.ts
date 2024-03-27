@@ -26,14 +26,8 @@ describe("setupDictionary", () => {
 	it("test 1", () => {
 		const problem: Problem = {
 			constraints: new Map([
-				[
-					ItemsByClassName.get("Desc_OreIron_C")!,
-					{ constraint: "available", rate: BigRat.fromInteger(10000) },
-				],
-				[
-					ItemsByClassName.get("Desc_IronIngot_C")!,
-					{ constraint: "produced", rate: BigRat.fromInteger(500) },
-				],
+				[ItemsByClassName.get("Desc_OreIron_C")!, { constraint: "available", rate: BigRat.fromInteger(10000) }],
+				[ItemsByClassName.get("Desc_IronIngot_C")!, { constraint: "produced", rate: BigRat.fromInteger(500) }],
 			]),
 			power: { constraint: "available", rate: null },
 			clockFactor: BigRat.ONE,
@@ -86,14 +80,8 @@ describe("setupDictionary", () => {
 	describe("power tests", () => {
 		const makeProblem = (power: Constraint | null): Problem => ({
 			constraints: new Map([
-				[
-					ItemsByClassName.get("Desc_OreIron_C")!,
-					{ constraint: "available", rate: BigRat.fromInteger(10000) },
-				],
-				[
-					ItemsByClassName.get("Desc_IronIngot_C")!,
-					{ constraint: "produced", rate: BigRat.fromInteger(500) },
-				],
+				[ItemsByClassName.get("Desc_OreIron_C")!, { constraint: "available", rate: BigRat.fromInteger(10000) }],
+				[ItemsByClassName.get("Desc_IronIngot_C")!, { constraint: "produced", rate: BigRat.fromInteger(500) }],
 			]),
 			power,
 			clockFactor: BigRat.ONE,

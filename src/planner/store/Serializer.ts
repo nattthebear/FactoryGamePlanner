@@ -57,11 +57,11 @@ export function deserialize(encoded: string) {
 			if (!item) {
 				console.warn(`Decode: Missing item`);
 			} else {
-			ret[i] = {
-				rate: rate.sign() <= 0 ? null : rate,
-				item,
-			};
-		}
+				ret[i] = {
+					rate: rate.sign() <= 0 ? null : rate,
+					item,
+				};
+			}
 		}
 		return ret;
 	}

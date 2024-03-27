@@ -1,6 +1,6 @@
 import type { VNode } from "vdomk";
-import type{ Item } from "../data/types";
-import type{ BigRat } from "./math/BigRat";
+import type { Item } from "../data/types";
+import type { BigRat } from "./math/BigRat";
 
 export interface Point {
 	x: number;
@@ -84,4 +84,4 @@ export function highlightText(text: string, regex: RegExp) {
 	return textNodes;
 }
 
-export const filterNulls = <T extends object>(input: (T | null)[]) => input.filter(i => i) as T[]
+export const filterNulls = <T extends object>(input: (T | null)[]) => input.filter((i) => i) as T[];
