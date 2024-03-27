@@ -1,8 +1,5 @@
-import { Items, ItemsByClassName } from "../../data/generated/items";
-import { Recipes, RecipesByClassName } from "../../data/generated/recipes";
+import { ItemsByClassName, RecipesByClassName } from "../../data/lookups";
 import { Item, Recipe } from "../../data/types";
-import { SIXTY } from "../editor/store/Common";
-import { produce } from "../immer";
 import { BigRat } from "../math/BigRat";
 import { Dictionary, solveStandardFormMutate, solveStandardFormMutateCoop } from "./Dictionary";
 import { calculateOverclockedPowerRatio, generateNetResults } from "./GenerateNetResults";
@@ -20,7 +17,7 @@ const WP_RATES = new Map<Item, BigRat>(
 		{ className: "Desc_OreBauxite_C", wp: "1.02" },
 		{ className: "Desc_OreUranium_C", wp: "4.76" },
 		{ className: "Desc_NitrogenGas_C", wp: "0.83" },
-	].map(({ className, wp }) => [Items.find((i) => i.ClassName === className)!, BigRat.parse(wp).neg()]),
+	].map(({ className, wp }) => [ItemsByClassName.get(className)!, BigRat.parse(wp).neg()]),
 );
 
 /*

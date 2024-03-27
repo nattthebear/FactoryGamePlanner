@@ -1,33 +1,33 @@
-import { Items } from "../../../data/generated/items";
-import { Recipes } from "../../../data/generated/recipes";
+import { defaultResourceData } from "../../../data/defaultResources";
+import { RawItems } from "../../../data/generated/items";
+import {RawRecipes } from "../../../data/generated/recipes";
+import { ItemsByClassName } from "../../../data/lookups";
 import { FakePower } from "../../../data/power";
 import { Item } from "../../../data/types";
 import { makeStoreWithHashRouter, ROUTER_PLANNER_STORE } from "../../MakeHashRouterStore";
 import { BigRat } from "../../math/BigRat";
 import { Problem } from "../../solver/Solver";
-import { Flow } from "../../util";
+import { filterNulls } from "../../util";
 import { deserialize, serialize } from "./Serializer";
 
-export const BasicRecipes = Recipes.filter((r) => !r.Alternate);
-export const AlternateRecipes = Recipes.filter((r) => r.Alternate);
-export const Resources = Items.filter((r) => r.IsResource);
+// When recipies have been retired, remember whether they were advanced or not to place
+// the right holes in basic and alternate lists for serialization
+const wasAlternate = new Map([
+	[136,true],
+	[175,false]
+]);
 
-export const defaultResourceData = new Map<Item, BigRat>(
-	[
-		{ className: "Desc_OreIron_C", rate: 70380 },
-		{ className: "Desc_OreCopper_C", rate: 28860 },
-		{ className: "Desc_Stone_C", rate: 52860 },
-		{ className: "Desc_Coal_C", rate: 30900 },
-		{ className: "Desc_OreGold_C", rate: 11040 },
-		{ className: "Desc_LiquidOil_C", rate: 11700 },
-		{ className: "Desc_RawQuartz_C", rate: 10500 },
-		{ className: "Desc_Sulfur_C", rate: 6840 },
-		{ className: "Desc_OreBauxite_C", rate: 9780 },
-		{ className: "Desc_OreUranium_C", rate: 2100 },
-		{ className: "Desc_NitrogenGas_C", rate: 12000 },
-	].map(({ className, rate }) => [Items.find((i) => i.ClassName === className)!, BigRat.fromInteger(rate)]),
-);
-const Water = Items.find((i) => i.ClassName === "Desc_Water_C")!;
+const makeRecipeSublist = (desiredAlternate:boolean)=> RawRecipes.filter((r, index) => {
+	const alternate = r?.Alternate ?? wasAlternate.get(index);
+	if (alternate == null) {throw new Error}
+	return alternate === desiredAlternate;
+})
+
+export const RawBasicRecipes = makeRecipeSublist(false);
+export const RawAlternateRecipes = makeRecipeSublist(true);
+export const Resources = filterNulls (RawItems ).filter((i) => i.IsResource);
+
+const Water = ItemsByClassName.get("Desc_Water_C")!;
 
 export interface NullableFlow {
 	rate: BigRat | null;
@@ -50,8 +50,8 @@ export interface State {
 }
 
 export const makeEmptyState = (): State => ({
-	basicRecipes: BasicRecipes.map(() => true),
-	alternateRecipes: AlternateRecipes.map(() => false),
+	basicRecipes: RawBasicRecipes.map(() => true),
+	alternateRecipes: RawAlternateRecipes.map(() => false),
 	products: [],
 	inputs: [],
 });
@@ -90,14 +90,16 @@ export function makeProblem(state: State): Problem {
 		availableRecipes: new Set(),
 	};
 
-	for (let i = 0; i < BasicRecipes.length; i++) {
-		if (state.basicRecipes[i]) {
-			res.availableRecipes.add(BasicRecipes[i]);
+	for (let i = 0; i < RawBasicRecipes.length; i++) {
+		const recipe = RawBasicRecipes[i];
+		if (recipe && state.basicRecipes[i]) {
+			res.availableRecipes.add(recipe);
 		}
 	}
-	for (let i = 0; i < AlternateRecipes.length; i++) {
-		if (state.alternateRecipes[i]) {
-			res.availableRecipes.add(AlternateRecipes[i]);
+	for (let i = 0; i < RawAlternateRecipes.length; i++) {
+		const recipe = RawAlternateRecipes[i];
+		if (recipe && state.alternateRecipes[i]) {
+			res.availableRecipes.add(recipe);
 		}
 	}
 

@@ -1,7 +1,7 @@
 import { LayerInstance, TPC, scheduleUpdate } from "vdomk";
 import { Recipe } from "../../data/types";
 import { highlightText, makeSearchRegexes } from "../util";
-import { AlternateRecipes, BasicRecipes, update, useSelector } from "./store/Store";
+import { RawAlternateRecipes, RawBasicRecipes, update, useSelector } from "./store/Store";
 import { FakePower } from "../../data/power";
 
 import "./RecipeFilter.css";
@@ -32,7 +32,7 @@ const setAllAlternate = (newValue: boolean) =>
 
 const makeRecipeFilter = (
 	useActive: (instance: LayerInstance) => () => boolean[],
-	list: Recipe[],
+	list: (Recipe|null)[],
 	toggle: (index: number) => void,
 	setAll: (newValue: boolean) => void,
 	titleText: string,
@@ -78,7 +78,7 @@ const makeRecipeFilter = (
 					<div class="scrollable">
 						{list.map(
 							(recipe, index) =>
-								testRegex.test(recipe.DisplayName) && (
+								recipe && testRegex.test(recipe.DisplayName) && (
 									<div class="entry">
 										<label data-has-checkbox data-tooltip={recipe.ClassName}>
 											<input
@@ -100,14 +100,14 @@ const makeRecipeFilter = (
 
 export const RecipeFilterBasic = makeRecipeFilter(
 	(instance) => useSelector(instance, (state) => state.basicRecipes),
-	BasicRecipes,
+	RawBasicRecipes,
 	toggleBasic,
 	setAllBasic,
 	"Basic Recipes",
 );
 export const RecipeFilterAlternate = makeRecipeFilter(
 	(instance) => useSelector(instance, (state) => state.alternateRecipes),
-	AlternateRecipes,
+	RawAlternateRecipes,
 	toggleAlternate,
 	setAllAlternate,
 	"Alternate Recipes",

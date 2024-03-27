@@ -12,9 +12,22 @@ import {
 	useSelector,
 } from "./store/Store";
 import { Item } from "../../data/types";
-import { FakePower, ItemsWithFakePower } from "../../data/power";
+import { FakePower, RawItemsWithFakePower } from "../../data/power";
 
 import "./ConstraintEditor.css";
+
+function computePossibleItems(currentItem?: Item) {
+	const { products, inputs } = getStateRaw();
+	const possibleItems = RawItemsWithFakePower.filter(
+		(i) =>
+			i != null && (i ===currentItem ||
+			(!products.find((r) => r.item === i) &&
+				!inputs.find((r) => r.item === i))
+			)
+	);
+	return possibleItems as Item[];
+}
+
 
 const makeRateList = (
 	useData: (instance: LayerInstance) => () => NullableFlow[],
@@ -41,14 +54,7 @@ const makeRateList = (
 								<td>
 									<a
 										onClick={async () => {
-											const { products, inputs } = getStateRaw();
-											const possibleItems = ItemsWithFakePower.filter(
-												(i) =>
-													i === d.item ||
-													(!products.find((r) => r.item === i) &&
-														!inputs.find((r) => r.item === i)),
-											);
-											const newItem = await chooseItem("Select new item:", possibleItems);
+											const newItem = await chooseItem("Select new item:", computePossibleItems(d.item));
 											if (newItem) {
 												updateData((draft) => {
 													draft[index].item = newItem;
@@ -95,13 +101,7 @@ const makeRateList = (
 							<td colSpan={3}>
 								<a
 									onClick={async () => {
-										const { products, inputs } = getStateRaw();
-										const possibleItems = ItemsWithFakePower.filter(
-											(i) =>
-												!products.find((r) => r.item === i) &&
-												!inputs.find((r) => r.item === i),
-										);
-										const newItem = await chooseItem("Select new item:", possibleItems);
+										const newItem = await chooseItem("Select new item:", computePossibleItems());
 										if (newItem) {
 											updateData((draft) => {
 												draft.push({
