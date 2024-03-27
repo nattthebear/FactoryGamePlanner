@@ -737,7 +737,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			};
 		});
 
-	const recipeView = recipes.map((x) => {
+	const recipeView = recipes.map((x, i) => {
 		const duration =
 			typeof x.mManufactoringDuration === "number"
 				? BigRat.fromInteger(x.mManufactoringDuration)
@@ -745,6 +745,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 
 		return {
 			...x,
+			SerializeId: i,
 			Inputs: mapIngredients(x.mIngredients, duration),
 			Outputs: mapIngredients(x.mProduct, duration),
 			Building: (() => {
@@ -831,8 +832,9 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		itemClassesToSortOrders.set("BP_ItemDescriptorPortableMiner_C", nextSortOrder++);
 	}
 
-	const itemsView = items.map((x) => ({
+	const itemsView = items.map((x, i) => ({
 		...x,
+		SerializeId: i,
 		Color: {
 			RF_SOLID: "#fff",
 			RF_LIQUID: formatColor(x.mFluidColor),

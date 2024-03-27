@@ -12,6 +12,7 @@ const FakePowerUrl = `data:image/svg+xml,${escape(FakePowerImage)}`;
 export const FakePower: Item = {
 	ClassName: "FakePower",
 	DisplayName: "Power",
+	SerializeId: 116,
 	Description: "",
 	IsResource: false,
 	Icon: FakePowerUrl,
