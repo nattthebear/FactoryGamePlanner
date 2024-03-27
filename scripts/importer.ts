@@ -737,34 +737,44 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			};
 		});
 
-	const recipeView = recipes.map((x, i) => {
-		const duration =
-			typeof x.mManufactoringDuration === "number"
-				? BigRat.fromInteger(x.mManufactoringDuration)
-				: x.mManufactoringDuration;
+	const recipeView = (() => {
+		const isAlternate = (r: (typeof recipes)[number]) => alternateUnlockData.has(r.ClassName);
+		let nextBasic = 0;
+		let nextAlternate = recipes.filter((r) => !isAlternate(r)).length;
 
-		return {
-			...x,
-			SerializeId: i,
-			Inputs: mapIngredients(x.mIngredients, duration),
-			Outputs: mapIngredients(x.mProduct, duration),
-			Building: (() => {
-				const results = (x.mProducedIn as string[])
-					.map((clazz) => buildingClazzes.get(clazz))
-					.filter((n) => n != null);
-				if (results.length !== 1) {
-					console.log("MORE THAN ONE BUILDING?");
-					throw new Error();
-				}
-				return results[0];
-			})(),
-			Alternate: alternateUnlockData.has(x.ClassName),
-			PowerConsumptionExpr: x.mVariablePowerConsumptionConstant
-				? `BigRat.fromInteger(${x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2})`
-				: "null",
-			DisplayName: x.mDisplayName.split("Alternate: ")[1] ?? x.mDisplayName,
-		};
-	});
+		return recipes.map((x, i) => {
+			const duration =
+				typeof x.mManufactoringDuration === "number"
+					? BigRat.fromInteger(x.mManufactoringDuration)
+					: x.mManufactoringDuration;
+			const Alternate = isAlternate(x);
+
+			return {
+				...x,
+				SerializeId: i,
+				PlannerSerializeId: Alternate ? nextAlternate++ : nextBasic++,
+				Inputs: mapIngredients(x.mIngredients, duration),
+				Outputs: mapIngredients(x.mProduct, duration),
+				Building: (() => {
+					const results = (x.mProducedIn as string[])
+						.map((clazz) => buildingClazzes.get(clazz))
+						.filter((n) => n != null);
+					if (results.length !== 1) {
+						console.log("MORE THAN ONE BUILDING?");
+						throw new Error();
+					}
+					return results[0];
+				})(),
+				Alternate,
+				PowerConsumptionExpr: x.mVariablePowerConsumptionConstant
+					? `BigRat.fromInteger(${
+							x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2
+					  })`
+					: "null",
+				DisplayName: x.mDisplayName.split("Alternate: ")[1] ?? x.mDisplayName,
+			};
+		});
+	})();
 
 	const itemClassesToSortOrders = new Map<string, number>();
 	{
