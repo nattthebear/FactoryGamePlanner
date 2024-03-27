@@ -1,12 +1,13 @@
 import { TPC, scheduleUpdate } from "vdomk";
-import { Items } from "../../data/generated/items";
-import { Recipes } from "../../data/generated/recipes";
+import { RawItems } from "../../data/generated/items";
+import { RawRecipes } from "../../data/generated/recipes";
 import { Item, Recipe } from "../../data/types";
 import { Chooser } from "./Chooser";
 import { prompt } from "../component/Prompt";
 
 import "./ItemChooser.css";
-import { FakePower, ItemsWithFakePower } from "../../data/power";
+import { FakePower, RawItemsWithFakePower } from "../../data/power";
+import { filterNulls } from "../util";
 
 function fillMultiMap<K, V>(map: Map<K, V[]>, key: K, value: V) {
 	let array = map.get(key);
@@ -18,7 +19,7 @@ function fillMultiMap<K, V>(map: Map<K, V[]>, key: K, value: V) {
 
 const recipeToOutputs = new Map<Item, Recipe[]>();
 const recipeToInputs = new Map<Item, Recipe[]>();
-for (const recipe of Recipes) {
+for (const recipe of filterNulls(RawRecipes)) {
 	for (const flow of recipe.Inputs) {
 		fillMultiMap(recipeToInputs, flow.Item, recipe);
 	}
@@ -41,13 +42,13 @@ const formatRecipe = (recipe: Recipe) => ({
 	recipe,
 });
 
-const DisplayItems = ItemsWithFakePower.map((item) => ({
+const DisplayItems = filterNulls(RawItemsWithFakePower).map((item) => ({
 	adornment: itemImage(item),
 	name: item.DisplayName,
 	item,
 	consumingRecipes: recipeToInputs.get(item)?.map(formatRecipe),
 	producingRecipes: (item === FakePower
-		? Recipes.filter((r) => r.Building.PowerConsumption.sign() < 0)
+		? RawRecipes.filter((r) => r && r.Building.PowerConsumption.sign() < 0) as Recipe[]
 		: recipeToOutputs.get(item)
 	)?.map(formatRecipe),
 }));
@@ -105,11 +106,13 @@ const RecipeChooser: TPC<{ type: "input" | "output"; onConfirm: (value: Recipe |
 	};
 };
 
+const AllItemChoices = filterNulls(RawItems);
+
 /** Choose an item.
  * @param options If not provided, choice will be taken from all items.
  */
 export const chooseItem = async (title: string, options?: Item[]) => {
-	const chooserItems = (options ?? Items).map((item) => ({
+	const chooserItems = (options ?? AllItemChoices).map((item) => ({
 		adornment: itemImage(item),
 		name: item.DisplayName,
 		item,

@@ -8,7 +8,7 @@ import { serialize, deserialize } from "./Serializer";
 import { makeEmptyState, State } from "./Store";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { BigRat } from "../../math/BigRat";
-import { Recipes } from "../../../data/generated/recipes";
+import { RawRecipes } from "../../../data/generated/recipes";
 import { addProducer, emptyToSink } from "./Actions";
 import { Connector } from "./Connectors";
 import { Bus } from "./Bus";
@@ -88,10 +88,10 @@ describe("serialize + deserialize", () => {
 			assertStateEqual(u, t);
 		});
 	dit("basic test", (draft) => {
-		addProducer(new ProductionBuilding(1000, 300, BigRat.fromIntegers(7, 2), Recipes[50]))(draft);
+		addProducer(new ProductionBuilding(1000, 300, BigRat.fromIntegers(7, 2), RawRecipes[50]!))(draft);
 	});
 	dit("basic test 2", (draft) => {
-		const p = new ProductionBuilding(49, 96, BigRat.fromIntegers(20, 1), Recipes[2]);
+		const p = new ProductionBuilding(49, 96, BigRat.fromIntegers(20, 1), RawRecipes[2]!);
 		addProducer(p)(draft);
 		emptyToSink(p.id, 0)(draft);
 	});

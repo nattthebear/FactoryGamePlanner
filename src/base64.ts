@@ -1,6 +1,5 @@
-import { Items } from "../data/generated/items";
-import { Recipes } from "../data/generated/recipes";
-import { ItemsWithFakePower } from "../data/power";
+import { RawRecipes } from "../data/generated/recipes";
+import { RawItemsWithFakePower } from "../data/power";
 import { BigRat } from "./math/BigRat";
 
 const BASE64_URL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -123,11 +122,14 @@ export function readBigRat(r: RStream) {
 }
 
 /** Makes a compressing map to store a set of ids with the minimum number of bits */
-export function makeWMap<T>(keys: Iterable<T>) {
+export function makeWMap<T extends object>(keys: Iterable<T | null>) {
 	const map = new Map<T, number>();
 	let i = 0;
 	for (const k of keys) {
-		map.set(k, i++);
+		if (k) {
+			map.set(k, i);
+		}
+		i++;
 	}
 	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
 	function write(w: WStream, v: T) {
@@ -141,7 +143,7 @@ export function makeWMap<T>(keys: Iterable<T>) {
 	return write;
 }
 /** Make a reading map to reverse `makeWMap` */
-export function makeRMap<T>(data: T[]) {
+export function makeRMap<T extends object>(data: (T | null)[]) {
 	const i = data.length;
 	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
 	function read(r: RStream) {
@@ -155,7 +157,7 @@ export function makeRMap<T>(data: T[]) {
 	return read;
 }
 
-export const writeRecipe = makeWMap(Recipes);
-export const writeItem = makeWMap(ItemsWithFakePower);
-export const readRecipe = makeRMap(Recipes);
-export const readItem = makeRMap(ItemsWithFakePower);
+export const writeRecipe = makeWMap(RawRecipes);
+export const writeItem = makeWMap(RawItemsWithFakePower);
+export const readRecipe = makeRMap(RawRecipes);
+export const readItem = makeRMap(RawItemsWithFakePower);

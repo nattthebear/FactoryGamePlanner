@@ -1,11 +1,11 @@
 import { createRoot } from "vdomk";
 import { computePosition, shift, flip } from "@floating-ui/dom";
-import { RecipesByClassName } from "../../data/generated/recipes";
 import { Recipe } from "../../data/types";
 import "./Tooltip.css";
 import { FakePower } from "../../data/power";
 import { toId } from "../editor/store/Common";
 import { ProducerTooltip } from "../editor/ProducerTooltip";
+import { RecipesByClassName } from "../../data/lookups";
 
 const tooltip = document.createElement("div");
 tooltip.className = "tooltip";

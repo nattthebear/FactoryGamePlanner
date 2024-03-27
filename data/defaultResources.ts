@@ -1,6 +1,6 @@
 import { BigRat } from "../src/math/BigRat";
-import { Items } from "./generated/items";
-import { Item } from "./types";
+import { ItemsByClassName } from "./lookups";
+import type { Item } from "./types";
 
 export const defaultResourceData = new Map<Item, BigRat>(
 	[
@@ -15,5 +15,5 @@ export const defaultResourceData = new Map<Item, BigRat>(
 		{ className: "Desc_OreBauxite_C", rate: 9780 },
 		{ className: "Desc_OreUranium_C", rate: 2100 },
 		{ className: "Desc_NitrogenGas_C", rate: 12000 },
-	].map(({ className, rate }) => [Items.find((i) => i.ClassName === className)!, BigRat.fromInteger(rate)])
+	].map(({ className, rate }) => [ItemsByClassName.get(className)!, BigRat.fromInteger(rate)])
 );
