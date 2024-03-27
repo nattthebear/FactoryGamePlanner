@@ -1,12 +1,15 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { Recipes } from "../../data/generated/recipes";
-import { Items } from "../../data/generated/items";
+import { RawRecipes } from "../../data/generated/recipes";
 import { Item } from "../../data/types";
 import { BigRat } from "../math/BigRat";
 import { Constraint, Problem, setupDictionary, Solution, solve, unstringifyProblem } from "./Solver";
 import { Dictionary } from "./Dictionary";
+import { ItemsByClassName, RecipesByClassName } from "../../data/lookups";
+import { filterNulls } from "../util";
+
+const Recipes = filterNulls(RawRecipes);
 
 const defaultMapResources: Record<string, number> = {
 	Desc_OreIron_C: 70380,
@@ -27,17 +30,17 @@ describe("setupDictionary", () => {
 		const problem: Problem = {
 			constraints: new Map([
 				[
-					Items.find((i) => i.ClassName === "Desc_OreIron_C")!,
+					ItemsByClassName.get("Desc_OreIron_C")!,
 					{ constraint: "available", rate: BigRat.fromInteger(10000) },
 				],
 				[
-					Items.find((i) => i.ClassName === "Desc_IronIngot_C")!,
+					ItemsByClassName.get("Desc_IronIngot_C")!,
 					{ constraint: "produced", rate: BigRat.fromInteger(500) },
 				],
 			]),
 			power: { constraint: "available", rate: null },
 			clockFactor: BigRat.ONE,
-			availableRecipes: new Set([Recipes.find((r) => r.ClassName === "Recipe_IngotIron_C")!]),
+			availableRecipes: new Set([RecipesByClassName.get("Recipe_IngotIron_C")!]),
 		};
 
 		const dictionary = setupDictionary(problem);
@@ -50,23 +53,23 @@ describe("setupDictionary", () => {
 		const problem: Problem = {
 			constraints: new Map([
 				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
-					Items.find((i) => i.ClassName === k)!,
+					ItemsByClassName.get(k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
 				[
-					Items.find((i) => i.ClassName === "Desc_ModularFrame_C")!,
+					ItemsByClassName.get("Desc_ModularFrame_C")!,
 					{ constraint: "produced", rate: BigRat.fromInteger(10) },
 				],
 			]),
 			power: { constraint: "available", rate: null },
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set([
-				Recipes.find((r) => r.ClassName === "Recipe_IngotIron_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_IronRod_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_Screw_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_IronPlate_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_IronPlateReinforced_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_ModularFrame_C")!,
+				RecipesByClassName.get("Recipe_IngotIron_C")!,
+				RecipesByClassName.get("Recipe_IronRod_C")!,
+				RecipesByClassName.get("Recipe_Screw_C")!,
+				RecipesByClassName.get("Recipe_IronPlate_C")!,
+				RecipesByClassName.get("Recipe_IronPlateReinforced_C")!,
+				RecipesByClassName.get("Recipe_ModularFrame_C")!,
 			]),
 		};
 
@@ -87,17 +90,17 @@ describe("setupDictionary", () => {
 		const makeProblem = (power: Constraint | null): Problem => ({
 			constraints: new Map([
 				[
-					Items.find((i) => i.ClassName === "Desc_OreIron_C")!,
+					ItemsByClassName.get("Desc_OreIron_C")!,
 					{ constraint: "available", rate: BigRat.fromInteger(10000) },
 				],
 				[
-					Items.find((i) => i.ClassName === "Desc_IronIngot_C")!,
+					ItemsByClassName.get("Desc_IronIngot_C")!,
 					{ constraint: "produced", rate: BigRat.fromInteger(500) },
 				],
 			]),
 			power,
 			clockFactor: BigRat.ONE,
-			availableRecipes: new Set([Recipes.find((r) => r.ClassName === "Recipe_IngotIron_C")!]),
+			availableRecipes: new Set([RecipesByClassName.get("Recipe_IngotIron_C")!]),
 		});
 
 		it("no power available", () => {
@@ -127,19 +130,19 @@ describe("setupDictionary", () => {
 			const problem: Problem = {
 				constraints: new Map([
 					[
-						Items.find((i) => i.ClassName === "Desc_OreIron_C")!,
+						ItemsByClassName.get("Desc_OreIron_C")!,
 						{ constraint: "available", rate: BigRat.fromInteger(10000) },
 					],
 					[
-						Items.find((i) => i.ClassName === "Desc_IronPlate_C")!,
+						ItemsByClassName.get("Desc_IronPlate_C")!,
 						{ constraint: "produced", rate: BigRat.fromInteger(500) },
 					],
 				]),
 				power: { constraint: "available", rate: BigRat.fromInteger(888) },
 				clockFactor: BigRat.ONE,
 				availableRecipes: new Set([
-					Recipes.find((r) => r.ClassName === "Recipe_IngotIron_C")!,
-					Recipes.find((r) => r.ClassName === "Recipe_IronPlate_C")!,
+					RecipesByClassName.get("Recipe_IngotIron_C")!,
+					RecipesByClassName.get("Recipe_IronPlate_C")!,
 				]),
 			};
 			const dictionary = setupDictionary(problem);
@@ -199,23 +202,23 @@ describe("solve", () => {
 		const problem: Problem = {
 			constraints: new Map([
 				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
-					Items.find((i) => i.ClassName === k)!,
+					ItemsByClassName.get(k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
 				[
-					Items.find((i) => i.ClassName === "Desc_ModularFrame_C")!,
+					ItemsByClassName.get("Desc_ModularFrame_C")!,
 					{ constraint: "produced", rate: BigRat.fromInteger(10) },
 				],
 			]),
 			power: { constraint: "available", rate: null },
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set([
-				Recipes.find((r) => r.ClassName === "Recipe_IngotIron_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_IronRod_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_Screw_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_IronPlate_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_IronPlateReinforced_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_ModularFrame_C")!,
+				RecipesByClassName.get("Recipe_IngotIron_C")!,
+				RecipesByClassName.get("Recipe_IronRod_C")!,
+				RecipesByClassName.get("Recipe_Screw_C")!,
+				RecipesByClassName.get("Recipe_IronPlate_C")!,
+				RecipesByClassName.get("Recipe_IronPlateReinforced_C")!,
+				RecipesByClassName.get("Recipe_ModularFrame_C")!,
 			]),
 		};
 		const solution = solve(problem);
@@ -230,12 +233,12 @@ describe("solve", () => {
 		const problem: Problem = {
 			constraints: new Map([
 				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
-					Items.find((i) => i.ClassName === k)!,
+					ItemsByClassName.get(k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
-				[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "available", rate: null }],
+				[ItemsByClassName.get("Desc_Water_C")!, { constraint: "available", rate: null }],
 				[
-					Items.find((i) => i.ClassName === "Desc_ModularFrame_C")!,
+					ItemsByClassName.get("Desc_ModularFrame_C")!,
 					{ constraint: "produced", rate: BigRat.fromInteger(10) },
 				],
 			]),
@@ -255,12 +258,12 @@ describe("solve", () => {
 		const problem: Problem = {
 			constraints: new Map([
 				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
-					Items.find((i) => i.ClassName === k)!,
+					ItemsByClassName.get(k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
-				[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "available", rate: null }],
+				[ItemsByClassName.get("Desc_Water_C")!, { constraint: "available", rate: null }],
 				[
-					Items.find((i) => i.ClassName === "Desc_SpaceElevatorPart_7_C")!,
+					ItemsByClassName.get("Desc_SpaceElevatorPart_7_C")!,
 					{ constraint: "produced", rate: BigRat.fromIntegers(3, 2) },
 				],
 			]),
@@ -280,23 +283,23 @@ describe("solve", () => {
 		const problem: Problem = {
 			constraints: new Map([
 				[
-					Items.find((i) => i.ClassName === "Desc_LiquidOil_C")!,
+					ItemsByClassName.get("Desc_LiquidOil_C")!,
 					{ constraint: "available", rate: BigRat.fromInteger(11700) },
 				],
-				[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "available", rate: null }],
+				[ItemsByClassName.get("Desc_Water_C")!, { constraint: "available", rate: null }],
 				[
-					Items.find((i) => i.ClassName === "Desc_Plastic_C")!,
+					ItemsByClassName.get("Desc_Plastic_C")!,
 					{ constraint: "produced", rate: BigRat.fromIntegers(600, 1) },
 				],
 			]),
 			power: { constraint: "available", rate: null },
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set([
-				Recipes.find((r) => r.ClassName === "Recipe_Alternate_HeavyOilResidue_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_ResidualRubber_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_Alternate_DilutedFuel_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_Alternate_RecycledRubber_C")!,
-				Recipes.find((r) => r.ClassName === "Recipe_Alternate_Plastic_1_C")!,
+				RecipesByClassName.get("Recipe_Alternate_HeavyOilResidue_C")!,
+				RecipesByClassName.get("Recipe_ResidualRubber_C")!,
+				RecipesByClassName.get("Recipe_Alternate_DilutedFuel_C")!,
+				RecipesByClassName.get("Recipe_Alternate_RecycledRubber_C")!,
+				RecipesByClassName.get("Recipe_Alternate_Plastic_1_C")!,
 			]),
 		};
 		const solution = solve(problem);
@@ -311,12 +314,12 @@ describe("solve", () => {
 		const problem: Problem = {
 			constraints: new Map([
 				...Object.entries(defaultMapResources).map(([k, v]): [Item, Constraint] => [
-					Items.find((i) => i.ClassName === k)!,
+					ItemsByClassName.get(k)!,
 					{ constraint: "available", rate: BigRat.fromInteger(v) },
 				]),
-				[Items.find((i) => i.ClassName === "Desc_Water_C")!, { constraint: "available", rate: null }],
+				[ItemsByClassName.get("Desc_Water_C")!, { constraint: "available", rate: null }],
 				[
-					Items.find((i) => i.ClassName === "Desc_AluminumIngot_C")!,
+					ItemsByClassName.get("Desc_AluminumIngot_C")!,
 					{ constraint: "produced", rate: BigRat.fromIntegers(1000, 1) },
 				],
 			]),
