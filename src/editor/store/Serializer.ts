@@ -1,6 +1,4 @@
-import { Items } from "../../../data/generated/items";
-import { Recipes } from "../../../data/generated/recipes";
-import { Item, Recipe } from "../../../data/types";
+import type { Item, Recipe } from "../../../data/types";
 import {
 	bitsNeeded,
 	makeWMap,
@@ -16,9 +14,8 @@ import {
 	WStream,
 } from "../../base64";
 import { BigRat } from "../../math/BigRat";
-import { FACTORY_MAX, FACTORY_MIN } from "../../util";
+import { FACTORY_MAX, FACTORY_MIN, filterNulls } from "../../util";
 import { Bus, BusTerminal } from "./Bus";
-import { generateId, NodeId } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { reflowConnectors } from "./ReflowConnector";
@@ -124,7 +121,7 @@ export function deserialize(encoded: string) {
 	const P_BITS = Number(readBigPos(r));
 	const C_BITS = Number(readBigPos(r));
 
-	const producers: Producer[] = [];
+	const producers: (Producer | null)[] = [];
 
 	const tempConnectors: {
 		inId: number;
@@ -170,19 +167,22 @@ export function deserialize(encoded: string) {
 		if (type === 0) {
 			if (!recipe) {
 				console.warn(`Decode: missing recipe`);
-				return null;
+				producers.push(null);
+				continue;
 			}
 			producer = new ProductionBuilding(x, y, rate, recipe);
 		} else if (type === 1) {
 			if (!item) {
 				console.warn(`Decode: missing item`);
-				return null;
+				producers.push(null);
+				continue;
 			}
 			producer = new Sink(x, y, rate, item);
 		} else if (type === 2) {
 			if (!item) {
 				console.warn(`Decode: missing item`);
-				return null;
+				producers.push(null);
+				continue;
 			}
 			producer = new Source(x, y, rate, item);
 		} else {
@@ -192,19 +192,21 @@ export function deserialize(encoded: string) {
 		producers.push(producer);
 	}
 
-	const connectors: Connector[] = [];
+	const connectors: (Connector| null)[] = [];
 	for (const temp of tempConnectors) {
 		const inputp = producers[temp.inId];
 		const outputp = producers[temp.outId];
 		if (!inputp || !outputp) {
 			console.warn(`Decode: bad producer ref`);
-			return null;
+			connectors.push(null);
+			continue;
 		}
 		const inputItem = inputp.outputFlows()[temp.inputIndex].item;
 		const outputItem = outputp.inputFlows()[temp.outputIndex].item;
 		if (inputItem !== outputItem) {
 			console.warn(`Decode: Connection item mismatch ${inputItem.ClassName} !== ${outputItem.ClassName}`);
-			return null;
+			connectors.push(null);
+			continue;
 		}
 		const c = new Connector(BigRat.ZERO, inputItem, inputp.id, outputp.id, temp.inputIndex, temp.outputIndex);
 		connectors.push(c);
@@ -226,11 +228,14 @@ export function deserialize(encoded: string) {
 			const v1 = Number(readBigPos(r));
 			const v2 = Number(readBigPos(r));
 			const connectorIndex = r.read(C_BITS);
-			terminals.push({
-				rxIn: dx + v1,
-				rxOut: dx + v1 + v2,
-				id: connectors[connectorIndex].id,
-			});
+			const connector = connectors[connectorIndex];
+			if (connector) {
+				terminals.push({
+					rxIn: dx + v1,
+					rxOut: dx + v1 + v2,
+					id: connector.id,
+				});
+			}
 			dx += v1;
 		}
 
@@ -240,8 +245,8 @@ export function deserialize(encoded: string) {
 		buses.push(bus);
 	}
 
-	state.connectors = new Map(connectors.map((c) => [c.id, c]));
-	state.producers = new Map(producers.map((p) => [p.id, p]));
+	state.connectors = new Map(filterNulls(connectors).map((c) => [c.id, c]));
+	state.producers = new Map(filterNulls(producers).map((p) => [p.id, p]));
 	state.buses = new Map(buses.map((b) => [b.id, b]));
 	reflowConnectors(state, state.connectors.keys());
 

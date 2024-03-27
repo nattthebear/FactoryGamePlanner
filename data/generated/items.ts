@@ -1,4 +1,4 @@
-import { Item } from "../types";
+import type { Item } from "../types";
 import { BigRat } from "../../src/math/BigRat";
 
 import Desc_Coal_C from "url:./images/Desc_Coal_C.png";
@@ -1396,5 +1396,3 @@ export const Items: Item[] = [
 		SortOrder: 115,
 	},
 ];
-
-export const ItemsByClassName = new Map(Items.map(i => [i.ClassName, i]));

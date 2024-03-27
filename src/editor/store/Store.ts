@@ -1,5 +1,3 @@
-import { Draft } from "../../immer";
-import { BigRat } from "../../math/BigRat";
 import { Flow, Point } from "../../util";
 import { NodeId, pointAdd, pointEqual } from "./Common";
 import { Connector } from "./Connectors";

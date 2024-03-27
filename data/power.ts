@@ -1,6 +1,7 @@
 import { BigRat } from "../src/math/BigRat";
-import { Items, ItemsByClassName } from "./generated/items";
-import { Item } from "./types";
+import { Items } from "./generated/items";
+import { ItemsByClassName } from "./lookups";
+import type { Item } from "./types";
 
 import TXUI_MIcon_Power from "data-url:./generated/images/TXUI_MIcon_Power.png";
 
@@ -17,7 +18,7 @@ export const FakePower: Item = {
 	IsPiped: false,
 	Color: "",
 	SinkPoints: BigRat.ZERO,
-	SortOrder: ItemsByClassName.get("Desc_Water_C")!.SortOrder! + 0.5,
+	SortOrder: ItemsByClassName.get("Desc_Water_C")!.SortOrder + 0.5,
 };
 
 export const ItemsWithFakePower = [...Items, FakePower];

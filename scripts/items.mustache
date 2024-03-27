@@ -1,4 +1,4 @@
-import { Item } from "../types";
+import type { Item } from "../types";
 import { BigRat } from "../../src/math/BigRat";
 
 {{#.}}
@@ -20,5 +20,3 @@ export const Items: Item[] = [
 	},
 	{{/.}}
 ];
-
-export const ItemsByClassName = new Map(Items.map(i => [i.ClassName, i]));

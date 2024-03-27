@@ -50,18 +50,18 @@ export function deserialize(encoded: string) {
 
 	function readFlows() {
 		const length = Number(readBigPos(r));
-		const ret = Array<NullableFlow>(length);
+		const ret: NullableFlow[] = [];
 		for (let i = 0; i < length; i++) {
 			const rate = readBigRat(r);
 			const item = readItem(r);
 			if (!item) {
 				console.warn(`Decode: Missing item`);
-				return null;
-			}
+			} else {
 			ret[i] = {
 				rate: rate.sign() <= 0 ? null : rate,
 				item,
 			};
+		}
 		}
 		return ret;
 	}
