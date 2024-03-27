@@ -1,11 +1,11 @@
 import { Items } from "../../../data/generated/items";
 import { Recipes } from "../../../data/generated/recipes";
+import { ItemsByClassName } from "../../../data/lookups";
 import { FakePower } from "../../../data/power";
-import { Item } from "../../../data/types";
+import { Item, Recipe } from "../../../data/types";
 import { makeStoreWithHashRouter, ROUTER_PLANNER_STORE } from "../../MakeHashRouterStore";
 import { BigRat } from "../../math/BigRat";
 import { Problem } from "../../solver/Solver";
-import { Flow } from "../../util";
 import { deserialize, serialize } from "./Serializer";
 
 export const BasicRecipes = Recipes.filter((r) => !r.Alternate);
@@ -25,9 +25,9 @@ export const defaultResourceData = new Map<Item, BigRat>(
 		{ className: "Desc_OreBauxite_C", rate: 9780 },
 		{ className: "Desc_OreUranium_C", rate: 2100 },
 		{ className: "Desc_NitrogenGas_C", rate: 12000 },
-	].map(({ className, rate }) => [Items.find((i) => i.ClassName === className)!, BigRat.fromInteger(rate)]),
+	].map(({ className, rate }) => [ItemsByClassName.get(className)!, BigRat.fromInteger(rate)]),
 );
-const Water = Items.find((i) => i.ClassName === "Desc_Water_C")!;
+const Water = ItemsByClassName.get("Desc_Water_C")!;
 
 export interface NullableFlow {
 	rate: BigRat | null;
@@ -39,10 +39,8 @@ export function sortNullableFlowsMutate(flows: NullableFlow[]) {
 }
 
 export interface State {
-	/** Is each basic recipe available? */
-	basicRecipes: boolean[];
-	/** Is each alternate recipe available? */
-	alternateRecipes: boolean[];
+	/** What recipes are available? */
+	recipes: Set<Recipe>;
 	/** Every requested output. */
 	products: NullableFlow[];
 	/** Every available input. */
@@ -50,8 +48,7 @@ export interface State {
 }
 
 export const makeEmptyState = (): State => ({
-	basicRecipes: BasicRecipes.map(() => true),
-	alternateRecipes: AlternateRecipes.map(() => false),
+	recipes: new Set(BasicRecipes),
 	products: [],
 	inputs: [],
 });
@@ -87,19 +84,8 @@ export function makeProblem(state: State): Problem {
 		constraints: new Map(),
 		power: null,
 		clockFactor: BigRat.ONE,
-		availableRecipes: new Set(),
+		availableRecipes: new Set(state.recipes),
 	};
-
-	for (let i = 0; i < BasicRecipes.length; i++) {
-		if (state.basicRecipes[i]) {
-			res.availableRecipes.add(BasicRecipes[i]);
-		}
-	}
-	for (let i = 0; i < AlternateRecipes.length; i++) {
-		if (state.alternateRecipes[i]) {
-			res.availableRecipes.add(AlternateRecipes[i]);
-		}
-	}
 
 	for (const { rate, item } of state.inputs) {
 		if (item !== FakePower) {

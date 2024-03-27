@@ -1,19 +1,35 @@
+import { Recipes } from "../../../data/generated/recipes";
+import type { Recipe } from "../../../data/types";
 import { readBigPos, readBigRat, readItem, RStream, writeBigPos, writeBigRat, writeItem, WStream } from "../../base64";
 import { BigRat } from "../../math/BigRat";
 import { makeEmptyState, NullableFlow, sortNullableFlowsMutate, State } from "./Store";
 
 const VERSION = 0;
 
+/** Recipes in the order they appear in the serialized output, including any holes */
+const orderedRecipeList = (() => {
+	const ret: (Recipe | null)[] = [];
+	const sorted = Recipes.slice().sort((x, y) => x.PlannerSerializeId - y.PlannerSerializeId);
+	for (const r of sorted) {
+		const desiredIndex = r.PlannerSerializeId;
+		if (desiredIndex < ret.length) {
+			throw new Error("Duplicate PlannerSerializeId");
+		}
+		while (desiredIndex > ret.length) {
+			ret.push(null);
+		}
+		ret.push(r);
+	}
+	return ret;
+})();
+
 export function serialize(state: State) {
 	const w = new WStream();
 
 	w.write(6, VERSION);
 
-	for (const b of state.basicRecipes) {
-		w.write(1, +b);
-	}
-	for (const b of state.alternateRecipes) {
-		w.write(1, +b);
+	for (const recipe of orderedRecipeList) {
+		w.write(1, +(!!recipe && state.recipes.has(recipe)));
 	}
 
 	function writeFlows(data: NullableFlow[]) {
@@ -41,11 +57,15 @@ export function deserialize(encoded: string) {
 
 	const state = makeEmptyState();
 
-	for (let i = 0; i < state.basicRecipes.length; i++) {
-		state.basicRecipes[i] = !!r.read(1);
-	}
-	for (let i = 0; i < state.alternateRecipes.length; i++) {
-		state.alternateRecipes[i] = !!r.read(1);
+	for (const recipe of orderedRecipeList) {
+		const b = !!r.read(1);
+		if (recipe) {
+			if (b) {
+				state.recipes.add(recipe);
+			} else {
+				state.recipes.delete(recipe);
+			}
+		}
 	}
 
 	function readFlows() {
@@ -67,16 +87,10 @@ export function deserialize(encoded: string) {
 	}
 
 	const products = readFlows();
-	if (!products) {
-		return null;
-	}
 	sortNullableFlowsMutate(products);
 	state.products = products;
 
 	const inputs = readFlows();
-	if (!inputs) {
-		return null;
-	}
 	sortNullableFlowsMutate(inputs);
 	state.inputs = inputs;
 
