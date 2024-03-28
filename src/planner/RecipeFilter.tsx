@@ -13,40 +13,59 @@ function imageForRecipe(recipe: Recipe) {
 	return recipe.Outputs[0].Item.Icon;
 }
 
-const toggleBasic = (index: number) =>
-	update((draft) => {
-		draft.basicRecipes[index] = !draft.basicRecipes[index];
-	});
-const toggleAlternate = (index: number) =>
-	update((draft) => {
-		draft.alternateRecipes[index] = !draft.alternateRecipes[index];
-	});
-const setAllBasic = (newValue: boolean) =>
-	update((draft) => {
-		draft.basicRecipes.fill(newValue);
-	});
-const setAllAlternate = (newValue: boolean) =>
-	update((draft) => {
-		draft.alternateRecipes.fill(newValue);
-	});
-
-const makeRecipeFilter = (
-	useActive: (instance: LayerInstance) => () => boolean[],
-	list: Recipe[],
-	toggle: (index: number) => void,
-	setAll: (newValue: boolean) => void,
-	titleText: string,
-): TPC<{}> =>
+const makeRecipeFilter = (list: Recipe[], titleText: string): TPC<{}> =>
 	function RecipeFilter(_, instance) {
-		const getActive = useActive(instance);
+		const getActive = useSelector(instance, (state) => state.recipes);
+		const toggle = (recipe: Recipe) =>
+			update((draft) => {
+				const { recipes } = draft;
+				if (recipes.has(recipe)) {
+					recipes.delete(recipe);
+				} else {
+					recipes.add(recipe);
+				}
+			});
+		const setAll = (newValue: boolean) =>
+			update((draft) => {
+				const { recipes } = draft;
+				if (newValue) {
+					for (const recipe of list) {
+						recipes.add(recipe);
+					}
+				} else {
+					for (const recipe of list) {
+						recipes.delete(recipe);
+					}
+				}
+			});
+
 		let search = "";
 
 		return () => {
 			const active = getActive();
 
 			const { testRegex, highlightRegex } = makeSearchRegexes(search);
-			const someChecked = active.some((b) => b);
-			const someUnchecked = active.some((b) => !b);
+
+			let someChecked = false;
+			let someUnchecked = false;
+
+			const recipeBoxes = list.map((recipe) => {
+				const checked = active.has(recipe);
+				someChecked ||= checked;
+				someUnchecked ||= !checked;
+
+				return (
+					testRegex.test(recipe.DisplayName) && (
+						<div class="entry">
+							<label data-has-checkbox data-tooltip={recipe.ClassName}>
+								<input type="checkbox" checked={checked} onChange={() => toggle(recipe)} />
+								<img class="icon" src={imageForRecipe(recipe)} />
+								<span>{highlightText(recipe.DisplayName, highlightRegex)}</span>
+							</label>
+						</div>
+					)
+				);
+			});
 
 			return (
 				<div class="recipe-filter">
@@ -75,40 +94,11 @@ const makeRecipeFilter = (
 							<span>Select all</span>
 						</label>
 					</div>
-					<div class="scrollable">
-						{list.map(
-							(recipe, index) =>
-								testRegex.test(recipe.DisplayName) && (
-									<div class="entry">
-										<label data-has-checkbox data-tooltip={recipe.ClassName}>
-											<input
-												type="checkbox"
-												checked={active[index]}
-												onChange={() => toggle(index)}
-											/>
-											<img class="icon" src={imageForRecipe(recipe)} />
-											<span>{highlightText(recipe.DisplayName, highlightRegex)}</span>
-										</label>
-									</div>
-								),
-						)}
-					</div>
+					<div class="scrollable">{recipeBoxes}</div>
 				</div>
 			);
 		};
 	};
 
-export const RecipeFilterBasic = makeRecipeFilter(
-	(instance) => useSelector(instance, (state) => state.basicRecipes),
-	BasicRecipes,
-	toggleBasic,
-	setAllBasic,
-	"Basic Recipes",
-);
-export const RecipeFilterAlternate = makeRecipeFilter(
-	(instance) => useSelector(instance, (state) => state.alternateRecipes),
-	AlternateRecipes,
-	toggleAlternate,
-	setAllAlternate,
-	"Alternate Recipes",
-);
+export const RecipeFilterBasic = makeRecipeFilter(BasicRecipes, "Basic Recipes");
+export const RecipeFilterAlternate = makeRecipeFilter(AlternateRecipes, "Alternate Recipes");

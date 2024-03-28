@@ -1,10 +1,6 @@
 import { TPC, cleanup } from "vdomk";
-import { Recipes } from "../../data/generated/recipes";
 import { initiateDrag } from "../hook/drag";
-import { BigRat } from "../math/BigRat";
-import { addProducer } from "./store/Actions";
 import { SIXTY, toTranslation } from "./store/Common";
-import { ProductionBuilding, Sink, Source } from "./store/Producers";
 import { selectBusIds, selectConnectorIds, selectProducerIds, update, useSelector } from "./store/Store";
 import {
 	BUILDING_MAX,
@@ -20,7 +16,6 @@ import {
 import { Connector } from "./Connector";
 import { createMemo } from "../hook/createMemo";
 import { HotKeyActions } from "./HotKeyActions";
-import { KeyButton } from "./KeyButton";
 import { Producer } from "./Producer";
 import { Bus } from "./Bus";
 import { getMouseLocationOrCenter, getPointerLocationOrCenter } from "./PointerLocation";

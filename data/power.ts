@@ -1,6 +1,7 @@
 import { BigRat } from "../src/math/BigRat";
-import { Items, ItemsByClassName } from "./generated/items";
-import { Item } from "./types";
+import { Items } from "./generated/items";
+import { ItemsByClassName } from "./lookups";
+import type { Item } from "./types";
 
 import TXUI_MIcon_Power from "data-url:./generated/images/TXUI_MIcon_Power.png";
 
@@ -11,13 +12,14 @@ const FakePowerUrl = `data:image/svg+xml,${escape(FakePowerImage)}`;
 export const FakePower: Item = {
 	ClassName: "FakePower",
 	DisplayName: "Power",
+	SerializeId: 116,
 	Description: "",
 	IsResource: false,
 	Icon: FakePowerUrl,
 	IsPiped: false,
 	Color: "",
 	SinkPoints: BigRat.ZERO,
-	SortOrder: ItemsByClassName.get("Desc_Water_C")!.SortOrder! + 0.5,
+	SortOrder: ItemsByClassName.get("Desc_Water_C")!.SortOrder + 0.5,
 };
 
 export const ItemsWithFakePower = [...Items, FakePower];

@@ -1,4 +1,4 @@
-import { Item } from "../types";
+import type { Item } from "../types";
 import { BigRat } from "../../src/math/BigRat";
 
 import Desc_Coal_C from "url:./images/Desc_Coal_C.png";
@@ -122,6 +122,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Coal_C",
 		DisplayName: "Coal",
+		SerializeId: 0,
 		Description: "Mainly used as fuel for vehicles & coal generators and for steel production.",
 		IsResource: true,
 		Icon: Desc_Coal_C,
@@ -133,6 +134,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_OreCopper_C",
 		DisplayName: "Copper Ore",
+		SerializeId: 1,
 		Description: "Used for crafting.\nBasic resource mainly used for electricity.",
 		IsResource: true,
 		Icon: Desc_OreCopper_C,
@@ -144,6 +146,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_OreGold_C",
 		DisplayName: "Caterium Ore",
+		SerializeId: 2,
 		Description: "Caterium Ore is smelted into Caterium Ingots. Caterium Ingots are mostly used for advanced electronics.",
 		IsResource: true,
 		Icon: Desc_OreGold_C,
@@ -155,6 +158,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_OreIron_C",
 		DisplayName: "Iron Ore",
+		SerializeId: 3,
 		Description: "Used for crafting.\nThe most essential basic resource.",
 		IsResource: true,
 		Icon: Desc_OreIron_C,
@@ -166,6 +170,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_RawQuartz_C",
 		DisplayName: "Raw Quartz",
+		SerializeId: 4,
 		Description: "Raw Quartz can be processed into Quartz Crystals and Silica, which both offer a variety of applications.",
 		IsResource: true,
 		Icon: Desc_RawQuartz_C,
@@ -177,6 +182,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Stone_C",
 		DisplayName: "Limestone",
+		SerializeId: 5,
 		Description: "Used for crafting.\nBasic resource mainly used for stable foundations.",
 		IsResource: true,
 		Icon: Desc_Stone_C,
@@ -188,6 +194,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Sulfur_C",
 		DisplayName: "Sulfur",
+		SerializeId: 6,
 		Description: "Sulfur is primarily used for Black Powder.",
 		IsResource: true,
 		Icon: Desc_Sulfur_C,
@@ -199,6 +206,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_LiquidOil_C",
 		DisplayName: "Crude Oil",
+		SerializeId: 7,
 		Description: "Crude Oil is refined into all kinds of Oil-based resources, like Fuel and Plastic.",
 		IsResource: true,
 		Icon: Desc_LiquidOil_C,
@@ -210,6 +218,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NitrogenGas_C",
 		DisplayName: "Nitrogen Gas",
+		SerializeId: 8,
 		Description: "Nitrogen can be used in a variety of ways, such as metallurgy, cooling, and Nitric Acid production. On Massage-2(AB)b, it can be extracted from underground gas wells.",
 		IsResource: true,
 		Icon: Desc_NitrogenGas_C,
@@ -221,6 +230,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Water_C",
 		DisplayName: "Water",
+		SerializeId: 9,
 		Description: "It's water.",
 		IsResource: true,
 		Icon: Desc_Water_C,
@@ -232,6 +242,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_OreBauxite_C",
 		DisplayName: "Bauxite",
+		SerializeId: 10,
 		Description: "Bauxite is used to produce Alumina, which can be further refined into the Aluminum Scrap required to produce Aluminum Ingots.",
 		IsResource: true,
 		Icon: Desc_OreBauxite_C,
@@ -243,6 +254,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_OreUranium_C",
 		DisplayName: "Uranium",
+		SerializeId: 11,
 		Description: "Uranium is a radioactive element. \nUsed to produce Encased Uranium Cells for Uranium Fuel Rods.\n\nCaution: Moderately Radioactive.",
 		IsResource: true,
 		Icon: Desc_OreUranium_C,
@@ -254,6 +266,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NuclearWaste_C",
 		DisplayName: "Uranium Waste",
+		SerializeId: 12,
 		Description: "The by-product of consuming Uranium Fuel Rods in the Nuclear Power Plant.\nNon-fissile Uranium can be extracted. Handle with caution.\n\nCaution: HIGHLY Radioactive.",
 		IsResource: false,
 		Icon: Desc_NuclearWaste_C,
@@ -265,6 +278,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PlutoniumWaste_C",
 		DisplayName: "Plutonium Waste",
+		SerializeId: 13,
 		Description: "The by-product of consuming Plutonium Fuel Rods in the Nuclear Power Plant.\nNeeds to be stored in a safe location. Handle with caution.\n\nCaution: EXTREMELY Radioactive.",
 		IsResource: false,
 		Icon: Desc_PlutoniumWaste_C,
@@ -276,6 +290,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Battery_C",
 		DisplayName: "Battery",
+		SerializeId: 14,
 		Description: "Primarily used as fuel for Drones and Vehicles.",
 		IsResource: false,
 		Icon: Desc_Battery_C,
@@ -287,6 +302,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_AluminumIngot_C",
 		DisplayName: "Aluminum Ingot",
+		SerializeId: 15,
 		Description: "Aluminum Ingots are made from Aluminum Scrap, which is refined from Alumina Solution.\nUsed to produce specialized aluminum-based parts.",
 		IsResource: false,
 		Icon: Desc_AluminumIngot_C,
@@ -298,6 +314,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NonFissibleUranium_C",
 		DisplayName: "Non-fissile Uranium",
+		SerializeId: 16,
 		Description: "The isotope Uranium-238 is non-fissile, meaning it cannot be used for nuclear fission. It can, however, be converted into fissile Plutonium in the Particle Accelerator.\n\nCaution: Mildly Radioactive.",
 		IsResource: false,
 		Icon: Desc_NonFissibleUranium_C,
@@ -309,6 +326,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PlutoniumPellet_C",
 		DisplayName: "Plutonium Pellet",
+		SerializeId: 17,
 		Description: "Produced in the Particle Accelerator through conversion of Non-fissile Uranium.\nUsed to produce Encased Plutonium Cells for Plutonium Fuel Rods.\n\nPower Usage: 250-750 MW (500 MW average).\nCaution: Moderately Radioactive.",
 		IsResource: false,
 		Icon: Desc_PlutoniumPellet_C,
@@ -320,6 +338,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PlutoniumCell_C",
 		DisplayName: "Encased Plutonium Cell",
+		SerializeId: 18,
 		Description: "Plutonium Cells are concrete encased Plutonium Pellets.\nUsed to produce Plutonium Fuel Rods for Nuclear Power production.\n\nCaution: Moderately Radioactive.",
 		IsResource: false,
 		Icon: Desc_PlutoniumCell_C,
@@ -331,6 +350,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_IronRod_C",
 		DisplayName: "Iron Rod",
+		SerializeId: 19,
 		Description: "Used for crafting.\nOne of the most basic parts.",
 		IsResource: false,
 		Icon: Desc_IronRod_C,
@@ -342,6 +362,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_IronScrew_C",
 		DisplayName: "Screw",
+		SerializeId: 20,
 		Description: "Used for crafting.\nOne of the most basic parts.",
 		IsResource: false,
 		Icon: Desc_IronScrew_C,
@@ -353,6 +374,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Wire_C",
 		DisplayName: "Wire",
+		SerializeId: 21,
 		Description: "Used for crafting.\nOne of the most basic parts.",
 		IsResource: false,
 		Icon: Desc_Wire_C,
@@ -364,6 +386,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Cement_C",
 		DisplayName: "Concrete",
+		SerializeId: 22,
 		Description: "Used for building.\nGood for stable foundations.",
 		IsResource: false,
 		Icon: Desc_Cement_C,
@@ -375,6 +398,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Silica_C",
 		DisplayName: "Silica",
+		SerializeId: 23,
 		Description: "Derived from Raw Quartz. Commonly used to create glass structures, advanced refinement processes, and alternative production of electronics.",
 		IsResource: false,
 		Icon: Desc_Silica_C,
@@ -386,6 +410,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_IronPlate_C",
 		DisplayName: "Iron Plate",
+		SerializeId: 24,
 		Description: "Used for crafting.\nOne of the most basic parts.",
 		IsResource: false,
 		Icon: Desc_IronPlate_C,
@@ -397,6 +422,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SteelPlate_C",
 		DisplayName: "Steel Beam",
+		SerializeId: 25,
 		Description: "Steel Beams are used most often when constructing a little more advanced buildings.",
 		IsResource: false,
 		Icon: Desc_SteelPlate_C,
@@ -408,6 +434,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Cable_C",
 		DisplayName: "Cable",
+		SerializeId: 26,
 		Description: "Used for crafting.\nPrimarily used to build power lines.",
 		IsResource: false,
 		Icon: Desc_Cable_C,
@@ -419,6 +446,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_ModularFrame_C",
 		DisplayName: "Modular Frame",
+		SerializeId: 27,
 		Description: "Used for crafting.\nMulti-purpose building block.",
 		IsResource: false,
 		Icon: Desc_ModularFrame_C,
@@ -430,6 +458,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Fuel_C",
 		DisplayName: "Packaged Fuel",
+		SerializeId: 28,
 		Description: "Fuel, packaged for alternative transport. Can be used as fuel for Vehicles and the Jetpack.",
 		IsResource: false,
 		Icon: Desc_Fuel_C,
@@ -441,6 +470,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_TurboFuel_C",
 		DisplayName: "Packaged Turbofuel",
+		SerializeId: 29,
 		Description: "Turbofuel, packaged for alternative transport. Can be used as fuel for Vehicles and the Jetpack.",
 		IsResource: false,
 		Icon: Desc_TurboFuel_C,
@@ -452,6 +482,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_HazmatFilter_C",
 		DisplayName: "Iodine Infused Filter",
+		SerializeId: 30,
 		Description: "Used in the Hazmat Suit to absorb radioactive particles.",
 		IsResource: false,
 		Icon: Desc_HazmatFilter_C,
@@ -463,6 +494,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Filter_C",
 		DisplayName: "Gas Filter",
+		SerializeId: 31,
 		Description: "Used in the Gas Mask to filter out toxins and pollutants from the air.",
 		IsResource: false,
 		Icon: Desc_Filter_C,
@@ -474,6 +506,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_IronPlateReinforced_C",
 		DisplayName: "Reinforced Iron Plate",
+		SerializeId: 32,
 		Description: "Used for crafting.\nA sturdier and more durable Iron Plate.",
 		IsResource: false,
 		Icon: Desc_IronPlateReinforced_C,
@@ -485,6 +518,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CopperIngot_C",
 		DisplayName: "Copper Ingot",
+		SerializeId: 33,
 		Description: "Used for crafting.\nCrafted into the most basic parts.",
 		IsResource: false,
 		Icon: Desc_CopperIngot_C,
@@ -496,6 +530,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_ModularFrameFused_C",
 		DisplayName: "Fused Modular Frame",
+		SerializeId: 34,
 		Description: "A corrosion resistant, nitride hardened, highly robust, yet lightweight modular frame.",
 		IsResource: false,
 		Icon: Desc_ModularFrameFused_C,
@@ -507,6 +542,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CircuitBoard_C",
 		DisplayName: "Circuit Board",
+		SerializeId: 35,
 		Description: "Circuit Boards are advanced electronics that are used in a plethora of different ways.",
 		IsResource: false,
 		Icon: Desc_CircuitBoard_C,
@@ -518,6 +554,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CopperSheet_C",
 		DisplayName: "Copper Sheet",
+		SerializeId: 36,
 		Description: "Used for crafting.\nPrimarily used for pipelines due to its high corrosion resistance.",
 		IsResource: false,
 		Icon: Desc_CopperSheet_C,
@@ -529,6 +566,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CrystalOscillator_C",
 		DisplayName: "Crystal Oscillator",
+		SerializeId: 37,
 		Description: "A crystal oscillator is an electronic oscillator circuit that uses the mechanical resonance of a vibrating crystal to create an electrical signal with a precise frequency.",
 		IsResource: false,
 		Icon: Desc_CrystalOscillator_C,
@@ -540,6 +578,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_1_C",
 		DisplayName: "Smart Plating",
+		SerializeId: 38,
 		Description: "Project Part #1. Ship with the Space Elevator to complete phases of Project Assembly.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_1_C,
@@ -551,6 +590,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_2_C",
 		DisplayName: "Versatile Framework",
+		SerializeId: 39,
 		Description: "Project Part #2. Ship with the Space Elevator to complete phases of Project Assembly.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_2_C,
@@ -562,6 +602,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_3_C",
 		DisplayName: "Automated Wiring",
+		SerializeId: 40,
 		Description: "Project Part #3. Ship with the Space Elevator to complete phases of Project Assembly.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_3_C,
@@ -573,6 +614,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_4_C",
 		DisplayName: "Modular Engine",
+		SerializeId: 41,
 		Description: "Project Part #4. Ship with the Space Elevator to complete phases of Project Assembly.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_4_C,
@@ -584,6 +626,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedWater_C",
 		DisplayName: "Packaged Water",
+		SerializeId: 42,
 		Description: "Water, packaged for alternative transport.",
 		IsResource: false,
 		Icon: Desc_PackagedWater_C,
@@ -595,6 +638,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_HighSpeedConnector_C",
 		DisplayName: "High-Speed Connector",
+		SerializeId: 43,
 		Description: "The high-speed connector connects several cables and wires in a very efficient way. Uses a standard pattern so its applications are many and varied.",
 		IsResource: false,
 		Icon: Desc_HighSpeedConnector_C,
@@ -606,6 +650,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Motor_C",
 		DisplayName: "Motor",
+		SerializeId: 44,
 		Description: "The Motor creates a mechanical force that is used to move things from machines to vehicles.",
 		IsResource: false,
 		Icon: Desc_Motor_C,
@@ -617,6 +662,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_5_C",
 		DisplayName: "Adaptive Control Unit",
+		SerializeId: 45,
 		Description: "Project Part #5. Ship with the Space Elevator to complete phases of Project Assembly.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_5_C,
@@ -628,6 +674,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_6_C",
 		DisplayName: "Magnetic Field Generator",
+		SerializeId: 46,
 		Description: "Project Part #7. Ship with the Space Elevator to complete phases of Project Assembly.\n\nThese modular generators use superconducting magnets and vast amounts of electricity to produce an easily expandable and powerful magnetic field.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_6_C,
@@ -639,6 +686,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_7_C",
 		DisplayName: "Assembly Director System",
+		SerializeId: 47,
 		Description: "Project Part #6. Ship with the Space Elevator to complete phases of Project Assembly.\n\nThis extremely fast and precise computing system is specifically designed to direct the Project Assembly: Assembly Phase.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_7_C,
@@ -650,6 +698,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_8_C",
 		DisplayName: "Thermal Propulsion Rocket",
+		SerializeId: 48,
 		Description: "Project Part #8. Ship with the Space Elevator to complete phases of Project Assembly.\n\nUses extreme heat to produce the high-pressure plasma required to get Project Assembly into motion.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_8_C,
@@ -661,6 +710,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_9_C",
 		DisplayName: "Nuclear Pasta",
+		SerializeId: 49,
 		Description: "Project Part #9. Ship with the Space Elevator to complete phases of Project Assembly.\nPower Usage: 500-1500 MW (1000 MW average).\n\nNuclear Pasta is extremely dense degenerate matter, formed when extreme pressure forces protons and electrons together into neutrons. It is theorized to exist naturally within the crust of neutron stars.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_9_C,
@@ -672,6 +722,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_IronIngot_C",
 		DisplayName: "Iron Ingot",
+		SerializeId: 50,
 		Description: "Used for crafting.\nCrafted into the most basic parts.",
 		IsResource: false,
 		Icon: Desc_IronIngot_C,
@@ -683,6 +734,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_AluminumPlate_C",
 		DisplayName: "Alclad Aluminum Sheet",
+		SerializeId: 51,
 		Description: "Thin, lightweight, and highly durable sheets mainly used for products that require high heat conduction or a high specific strength.",
 		IsResource: false,
 		Icon: Desc_AluminumPlate_C,
@@ -694,6 +746,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Rotor_C",
 		DisplayName: "Rotor",
+		SerializeId: 52,
 		Description: "Used for crafting.\nThe moving parts of a motor.",
 		IsResource: false,
 		Icon: Desc_Rotor_C,
@@ -705,6 +758,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Rubber_C",
 		DisplayName: "Rubber",
+		SerializeId: 53,
 		Description: "Rubber is a material that is very flexible and has a lot of friction.",
 		IsResource: false,
 		Icon: Desc_Rubber_C,
@@ -716,6 +770,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Plastic_C",
 		DisplayName: "Plastic",
+		SerializeId: 54,
 		Description: "A versatile and easy to manufacture material that can be used for a lot of things.",
 		IsResource: false,
 		Icon: Desc_Plastic_C,
@@ -727,6 +782,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SteelPlateReinforced_C",
 		DisplayName: "Encased Industrial Beam",
+		SerializeId: 55,
 		Description: "Encased Industrial Beams utilizes the compressive strength of concrete and tensile strength of steel simultaneously.\nMostly used as a stable basis for constructing buildings.",
 		IsResource: false,
 		Icon: Desc_SteelPlateReinforced_C,
@@ -738,6 +794,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SteelPipe_C",
 		DisplayName: "Steel Pipe",
+		SerializeId: 56,
 		Description: "Steel Pipes are used most often when constructing a little more advanced buildings.",
 		IsResource: false,
 		Icon: Desc_SteelPipe_C,
@@ -749,6 +806,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_LiquidFuel_C",
 		DisplayName: "Fuel",
+		SerializeId: 57,
 		Description: "Fuel can be used to generate power or packaged to be used as fuel for Vehicles or the Jetpack.",
 		IsResource: false,
 		Icon: Desc_LiquidFuel_C,
@@ -760,6 +818,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PolymerResin_C",
 		DisplayName: "Polymer Resin",
+		SerializeId: 58,
 		Description: "Used for crafting.\nA by-product of oil refinement into fuel. Commonly used to manufacture plastics.",
 		IsResource: false,
 		Icon: Desc_PolymerResin_C,
@@ -771,6 +830,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_HeavyOilResidue_C",
 		DisplayName: "Heavy Oil Residue",
+		SerializeId: 59,
 		Description: "A by-product of Plastic and Rubber production. Can be further refined into Fuel and Petroleum Coke.",
 		IsResource: false,
 		Icon: Desc_HeavyOilResidue_C,
@@ -782,6 +842,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PetroleumCoke_C",
 		DisplayName: "Petroleum Coke",
+		SerializeId: 60,
 		Description: "Used for crafting.\nA carbon-rich material distilled from Heavy Oil Residue. \nUsed as a less efficient coal replacement.",
 		IsResource: false,
 		Icon: Desc_PetroleumCoke_C,
@@ -793,6 +854,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_FluidCanister_C",
 		DisplayName: "Empty Canister",
+		SerializeId: 61,
 		Description: "Used to package fluids for transportation.",
 		IsResource: false,
 		Icon: Desc_FluidCanister_C,
@@ -804,6 +866,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_ModularFrameHeavy_C",
 		DisplayName: "Heavy Modular Frame",
+		SerializeId: 62,
 		Description: "A more robust multi-purpose frame.",
 		IsResource: false,
 		Icon: Desc_ModularFrameHeavy_C,
@@ -815,6 +878,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedOil_C",
 		DisplayName: "Packaged Oil",
+		SerializeId: 63,
 		Description: "Crude Oil, packaged for alternative transport. Can be used as fuel for Vehicles.",
 		IsResource: false,
 		Icon: Desc_PackagedOil_C,
@@ -826,6 +890,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedOilResidue_C",
 		DisplayName: "Packaged Heavy Oil Residue",
+		SerializeId: 64,
 		Description: "Heavy Oil Residue, packaged for alternative transport. Can be used as fuel for Vehicles.",
 		IsResource: false,
 		Icon: Desc_PackagedOilResidue_C,
@@ -837,6 +902,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SteelIngot_C",
 		DisplayName: "Steel Ingot",
+		SerializeId: 65,
 		Description: "Steel Ingots are made from Iron Ore that's been smelted with Coal. They are made into several parts used in building construction.",
 		IsResource: false,
 		Icon: Desc_SteelIngot_C,
@@ -848,6 +914,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_AluminaSolution_C",
 		DisplayName: "Alumina Solution",
+		SerializeId: 66,
 		Description: "Dissolved Alumina, extracted from Bauxite. Can be further refined into Aluminum Scrap for Aluminum Ingot production.",
 		IsResource: false,
 		Icon: Desc_AluminaSolution_C,
@@ -859,6 +926,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_AluminumScrap_C",
 		DisplayName: "Aluminum Scrap",
+		SerializeId: 67,
 		Description: "Aluminum Scrap is pure aluminum refined from Alumina. Can be smelted down to Aluminum Ingots for industrial usage.",
 		IsResource: false,
 		Icon: Desc_AluminumScrap_C,
@@ -870,6 +938,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SulfuricAcid_C",
 		DisplayName: "Sulfuric Acid",
+		SerializeId: 68,
 		Description: "A mineral acid produced by combining Sulfur and Water in a complex reaction. Primarily used in refinement processes and Battery production.",
 		IsResource: false,
 		Icon: Desc_SulfuricAcid_C,
@@ -881,6 +950,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_UraniumCell_C",
 		DisplayName: "Encased Uranium Cell",
+		SerializeId: 69,
 		Description: "Uranium Cells are produced from Uranium Ore. \nUsed to produce Uranium Fuel Rods for Nuclear Power production.\n\nCaution: Mildly Radioactive.",
 		IsResource: false,
 		Icon: Desc_UraniumCell_C,
@@ -892,6 +962,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_AluminumPlateReinforced_C",
 		DisplayName: "Heat Sink",
+		SerializeId: 70,
 		Description: "Used to dissipate heat faster.",
 		IsResource: false,
 		Icon: Desc_AluminumPlateReinforced_C,
@@ -903,6 +974,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CoolingSystem_C",
 		DisplayName: "Cooling System",
+		SerializeId: 71,
 		Description: "Used to keep temperatures of advanced parts and buildings from exceeding to inefficient levels.",
 		IsResource: false,
 		Icon: Desc_CoolingSystem_C,
@@ -914,6 +986,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NitricAcid_C",
 		DisplayName: "Nitric Acid",
+		SerializeId: 72,
 		Description: "Produced by reaction of Nitrogen Gas with Water. Its high corrosiveness and oxidizing properties make it an excellent choice for refinement and fuel production processes.",
 		IsResource: false,
 		Icon: Desc_NitricAcid_C,
@@ -925,6 +998,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_AluminumCasing_C",
 		DisplayName: "Aluminum Casing",
+		SerializeId: 73,
 		Description: "A versatile container cast from Aluminum Ingots.",
 		IsResource: false,
 		Icon: Desc_AluminumCasing_C,
@@ -936,6 +1010,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_ModularFrameLightweight_C",
 		DisplayName: "Radio Control Unit",
+		SerializeId: 74,
 		Description: "Enhances and directs radio signals.",
 		IsResource: false,
 		Icon: Desc_ModularFrameLightweight_C,
@@ -947,6 +1022,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Computer_C",
 		DisplayName: "Computer",
+		SerializeId: 75,
 		Description: "A Computer is a complex logic machine that is used to control advanced behavior in machines.",
 		IsResource: false,
 		Icon: Desc_Computer_C,
@@ -958,6 +1034,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_QuartzCrystal_C",
 		DisplayName: "Quartz Crystal",
+		SerializeId: 76,
 		Description: "Derived from Raw Quartz. Used in the production of advanced radar technology and high-quality display screens.",
 		IsResource: false,
 		Icon: Desc_QuartzCrystal_C,
@@ -969,6 +1046,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_GoldIngot_C",
 		DisplayName: "Caterium Ingot",
+		SerializeId: 77,
 		Description: "Caterium Ingots are smelted from Caterium Ore. Caterium Ingots are mostly used for advanced electronics.",
 		IsResource: false,
 		Icon: Desc_GoldIngot_C,
@@ -980,6 +1058,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Stator_C",
 		DisplayName: "Stator",
+		SerializeId: 78,
 		Description: "Used for crafting.\nThe static parts of a motor.",
 		IsResource: false,
 		Icon: Desc_Stator_C,
@@ -991,6 +1070,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CircuitBoardHighSpeed_C",
 		DisplayName: "AI Limiter",
+		SerializeId: 79,
 		Description: "AI Limiters are super advanced electronics that are used to control AIs and keep them from evolving in malicious ways.",
 		IsResource: false,
 		Icon: Desc_CircuitBoardHighSpeed_C,
@@ -1002,6 +1082,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_HighSpeedWire_C",
 		DisplayName: "Quickwire",
+		SerializeId: 80,
 		Description: "Caterium's high conductivity and resistance to corrosion makes it ideal for small, advanced electronics.",
 		IsResource: false,
 		Icon: Desc_HighSpeedWire_C,
@@ -1013,6 +1094,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CompactedCoal_C",
 		DisplayName: "Compacted Coal",
+		SerializeId: 81,
 		Description: "A much more efficient alternative to Coal. Used as fuel for vehicles and coal generators.",
 		IsResource: false,
 		Icon: Desc_CompactedCoal_C,
@@ -1024,6 +1106,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_LiquidTurboFuel_C",
 		DisplayName: "Turbofuel",
+		SerializeId: 82,
 		Description: "A more efficient alternative to Fuel. Can be used to generate power or packaged to be used as fuel for Vehicles.",
 		IsResource: false,
 		Icon: Desc_LiquidTurboFuel_C,
@@ -1035,6 +1118,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_ComputerSuper_C",
 		DisplayName: "Supercomputer",
+		SerializeId: 83,
 		Description: "The supercomputer is the next-gen version of the computer.",
 		IsResource: false,
 		Icon: Desc_ComputerSuper_C,
@@ -1046,6 +1130,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_GasTank_C",
 		DisplayName: "Empty Fluid Tank",
+		SerializeId: 84,
 		Description: "Used to package gases and volatile liquids for transportation.",
 		IsResource: false,
 		Icon: Desc_GasTank_C,
@@ -1057,6 +1142,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_ElectromagneticControlRod_C",
 		DisplayName: "Electromagnetic Control Rod",
+		SerializeId: 85,
 		Description: "Control Rods regulate power output via electromagnetism.",
 		IsResource: false,
 		Icon: Desc_ElectromagneticControlRod_C,
@@ -1068,6 +1154,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PressureConversionCube_C",
 		DisplayName: "Pressure Conversion Cube",
+		SerializeId: 86,
 		Description: "Converts outgoing force into internal pressure. Required to contain unstable, high-energy matter.",
 		IsResource: false,
 		Icon: Desc_PressureConversionCube_C,
@@ -1079,6 +1166,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_MotorLightweight_C",
 		DisplayName: "Turbo Motor",
+		SerializeId: 87,
 		Description: "The Turbo Motor is a more complex and more powerful version of the regular Motor.",
 		IsResource: false,
 		Icon: Desc_MotorLightweight_C,
@@ -1090,6 +1178,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CopperDust_C",
 		DisplayName: "Copper Powder",
+		SerializeId: 88,
 		Description: "Ground down Copper Ingots.\nThe high natural density of Copper, combined with the granularity of the powder, makes this part fit for producing Nuclear Pasta in the Particle Accelerator.",
 		IsResource: false,
 		Icon: Desc_CopperDust_C,
@@ -1101,6 +1190,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Gunpowder_C",
 		DisplayName: "Black Powder",
+		SerializeId: 89,
 		Description: "An explosive powder that is commonly used to produce simple explosives.",
 		IsResource: false,
 		Icon: Desc_Gunpowder_C,
@@ -1112,6 +1202,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_GunpowderMK2_C",
 		DisplayName: "Smokeless Powder",
+		SerializeId: 90,
 		Description: "An explosive powder that is commonly used to produce modern firearms.",
 		IsResource: false,
 		Icon: Desc_GunpowderMK2_C,
@@ -1123,6 +1214,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Biofuel_C",
 		DisplayName: "Solid Biofuel",
+		SerializeId: 91,
 		Description: "The most energy-efficient form of solid biomass. Can be used as fuel for the Chainsaw.",
 		IsResource: false,
 		Icon: Desc_Biofuel_C,
@@ -1134,6 +1226,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedBiofuel_C",
 		DisplayName: "Packaged Liquid Biofuel",
+		SerializeId: 92,
 		Description: "Liquid Biofuel, packaged for alternative transport. Can be used as fuel for Vehicles and the Jetpack.",
 		IsResource: false,
 		Icon: Desc_PackagedBiofuel_C,
@@ -1145,6 +1238,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_GenericBiomass_C",
 		DisplayName: "Biomass",
+		SerializeId: 93,
 		Description: "Primarily used as fuel.\nBiomass burners and vehicles can use it for power.\nBiomass is much more energy-efficient than raw biological matter.",
 		IsResource: false,
 		Icon: Desc_GenericBiomass_C,
@@ -1156,6 +1250,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_LiquidBiofuel_C",
 		DisplayName: "Liquid Biofuel",
+		SerializeId: 94,
 		Description: "Liquid Biofuel can be used to generate power or packaged to be used as fuel for Vehicles.",
 		IsResource: false,
 		Icon: Desc_LiquidBiofuel_C,
@@ -1167,6 +1262,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedAlumina_C",
 		DisplayName: "Packaged Alumina Solution",
+		SerializeId: 95,
 		Description: "Alumina Solution, packaged for alternative transport.",
 		IsResource: false,
 		Icon: Desc_PackagedAlumina_C,
@@ -1178,6 +1274,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedSulfuricAcid_C",
 		DisplayName: "Packaged Sulfuric Acid",
+		SerializeId: 96,
 		Description: "Sulfuric Acid, packaged for alternative transport.",
 		IsResource: false,
 		Icon: Desc_PackagedSulfuricAcid_C,
@@ -1189,6 +1286,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedNitrogenGas_C",
 		DisplayName: "Packaged Nitrogen Gas",
+		SerializeId: 97,
 		Description: "Nitrogen Gas, packaged for alternative transport.",
 		IsResource: false,
 		Icon: Desc_PackagedNitrogenGas_C,
@@ -1200,6 +1298,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedNitricAcid_C",
 		DisplayName: "Packaged Nitric Acid",
+		SerializeId: 98,
 		Description: "Nitric Acid, packaged for alternative transport.",
 		IsResource: false,
 		Icon: Desc_PackagedNitricAcid_C,
@@ -1211,6 +1310,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Fabric_C",
 		DisplayName: "Fabric",
+		SerializeId: 99,
 		Description: "Used for equipment crafting.\nFlexible but durable fabric.",
 		IsResource: false,
 		Icon: Desc_Fabric_C,
@@ -1222,6 +1322,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Rebar_Explosive_C",
 		DisplayName: "Explosive Rebar",
+		SerializeId: 100,
 		Description: "Explodes on impact, dealing heavy damage.",
 		IsResource: false,
 		Icon: Desc_Rebar_Explosive_C,
@@ -1233,6 +1334,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Rebar_Stunshot_C",
 		DisplayName: "Stun Rebar",
+		SerializeId: 101,
 		Description: "Electrocutes the target on impact, stunning it for a short time.\n\nStun duration: 5 seconds",
 		IsResource: false,
 		Icon: Desc_Rebar_Stunshot_C,
@@ -1244,6 +1346,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpikedRebar_C",
 		DisplayName: "Iron Rebar",
+		SerializeId: 102,
 		Description: "A simple iron rebar that can be shot using the Rebar Gun, for self-defense purposes.",
 		IsResource: false,
 		Icon: Desc_SpikedRebar_C,
@@ -1255,6 +1358,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CartridgeSmartProjectile_C",
 		DisplayName: "Homing Rifle Ammo",
+		SerializeId: 103,
 		Description: "The bullet guidance system built into this ammunition allows it to accurately hit any target within the reticle area.\nEspecially useful when dealing with agile threats, or for Pioneers who can't be bothered to aim properly.",
 		IsResource: false,
 		Icon: Desc_CartridgeSmartProjectile_C,
@@ -1266,6 +1370,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NobeliskCluster_C",
 		DisplayName: "Cluster Nobelisk",
+		SerializeId: 104,
 		Description: "A Nobelisk that detonates into multiple smaller explosions. Practical when clearing out large areas of vegetation and other inconveniences.",
 		IsResource: false,
 		Icon: Desc_NobeliskCluster_C,
@@ -1277,6 +1382,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NobeliskExplosive_C",
 		DisplayName: "Nobelisk",
+		SerializeId: 105,
 		Description: "A simple explosive, useful for clearing boulders, vegetation, and other obstacles.",
 		IsResource: false,
 		Icon: Desc_NobeliskExplosive_C,
@@ -1288,6 +1394,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NobeliskGas_C",
 		DisplayName: "Gas Nobelisk",
+		SerializeId: 106,
 		Description: "Instead of a regular explosion, this Nobelisk creates a deadly gas cloud.",
 		IsResource: false,
 		Icon: Desc_NobeliskGas_C,
@@ -1299,6 +1406,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NobeliskNuke_C",
 		DisplayName: "Nuke Nobelisk",
+		SerializeId: 107,
 		Description: "This Nobelisk uses a nuclear fission reaction to generate a massive explosion.\n\nWARNING: Ensure all FICSIT property is clear of the blast zone before detonation.\n",
 		IsResource: false,
 		Icon: Desc_NobeliskNuke_C,
@@ -1310,6 +1418,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NobeliskShockwave_C",
 		DisplayName: "Pulse Nobelisk",
+		SerializeId: 108,
 		Description: "Instead of a regular explosion, this Nobelisk generates a powerful shockwave.",
 		IsResource: false,
 		Icon: Desc_NobeliskShockwave_C,
@@ -1321,6 +1430,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CartridgeChaos_C",
 		DisplayName: "Turbo Rifle Ammo",
+		SerializeId: 109,
 		Description: "Lightweight, compact, and volatile. These rounds provide extreme capacity and fire rates, at the cost of accuracy.",
 		IsResource: false,
 		Icon: Desc_CartridgeChaos_C,
@@ -1332,6 +1442,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_CartridgeStandard_C",
 		DisplayName: "Rifle Ammo",
+		SerializeId: 110,
 		Description: "Standard issue Rifle ammunition, useful for establishing dominance.",
 		IsResource: false,
 		Icon: Desc_CartridgeStandard_C,
@@ -1343,6 +1454,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_NuclearFuelRod_C",
 		DisplayName: "Uranium Fuel Rod",
+		SerializeId: 111,
 		Description: "Used as fuel for the Nuclear Power Plant.\n\nCaution: Produces radioactive Uranium Waste when consumed.\nCaution: Moderately Radioactive.",
 		IsResource: false,
 		Icon: Desc_NuclearFuelRod_C,
@@ -1354,6 +1466,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PlutoniumFuelRod_C",
 		DisplayName: "Plutonium Fuel Rod",
+		SerializeId: 112,
 		Description: "Used as fuel for the Nuclear Power Plant.\n\nCaution: Produces radioactive Plutonium Waste when consumed.\nCaution: HIGHLY Radioactive.",
 		IsResource: false,
 		Icon: Desc_PlutoniumFuelRod_C,
@@ -1365,6 +1478,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Rebar_Spreadshot_C",
 		DisplayName: "Shatter Rebar",
+		SerializeId: 113,
 		Description: "This rebar fractures when shot, launching deadly debris in a wide spread but with limited range.",
 		IsResource: false,
 		Icon: Desc_Rebar_Spreadshot_C,
@@ -1376,6 +1490,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "BP_EquipmentDescriptorBeacon_C",
 		DisplayName: "Beacon",
+		SerializeId: 114,
 		Description: "PENDING REMOVAL\nThis item will (likely) be removed in a future update.\n\nCurrently only used as an ingredient in an alternative recipe.",
 		IsResource: false,
 		Icon: BP_EquipmentDescriptorBeacon_C,
@@ -1387,6 +1502,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "BP_ItemDescriptorPortableMiner_C",
 		DisplayName: "Portable Miner",
+		SerializeId: 115,
 		Description: "Can be set up on a resource node to automatically extract the resource. Note that it has limited storage space.",
 		IsResource: false,
 		Icon: BP_ItemDescriptorPortableMiner_C,
@@ -1396,5 +1512,3 @@ export const Items: Item[] = [
 		SortOrder: 115,
 	},
 ];
-
-export const ItemsByClassName = new Map(Items.map(i => [i.ClassName, i]));

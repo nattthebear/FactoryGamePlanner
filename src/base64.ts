@@ -122,32 +122,25 @@ export function readBigRat(r: RStream) {
 	return BigRat.fromBigInts(p, q);
 }
 
-/** Makes a compressing map to store a set of ids with the minimum number of bits */
-export function makeWMap<T>(keys: Iterable<T>) {
-	const map = new Map<T, number>();
-	let i = 0;
-	for (const k of keys) {
-		map.set(k, i++);
-	}
-	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
+function makeWMapImpl<T>(map: Map<T, number>, maxValue: number) {
+	const BITS = maxValue > 0 ? bitsNeeded(maxValue) : 0;
 	function write(w: WStream, v: T) {
 		const n = map.get(v);
 		if (n == null) {
-			throw new Error("Internal ID error");
+			throw new Error("Passed value was not part of original map set");
 		}
 		w.write(BITS, n);
 	}
 	write.BITS = BITS;
 	return write;
 }
-/** Make a reading map to reverse `makeWMap` */
-export function makeRMap<T>(data: T[]) {
-	const i = data.length;
-	const BITS = i > 0 ? bitsNeeded(i - 1) : 0;
+
+function makeRMapImpl<T>(map: Map<number, T>, maxValue: number) {
+	const BITS = maxValue > 0 ? bitsNeeded(maxValue) : 0;
 	function read(r: RStream) {
 		const value = r.read(BITS);
-		if (value < data.length) {
-			return data[value];
+		if (map.has(value)) {
+			return map.get(value)!;
 		}
 		return null;
 	}
@@ -155,7 +148,42 @@ export function makeRMap<T>(data: T[]) {
 	return read;
 }
 
-export const writeRecipe = makeWMap(Recipes);
-export const writeItem = makeWMap(ItemsWithFakePower);
-export const readRecipe = makeRMap(Recipes);
-export const readItem = makeRMap(ItemsWithFakePower);
+/** Makes a compressing map to store a set of ids with the minimum number of bits */
+export function makeWMap<T>(keys: Iterable<T>) {
+	const map = new Map<T, number>();
+	let i = 0;
+	for (const k of keys) {
+		map.set(k, i++);
+	}
+	const maxValue = Math.max(i - 1, 0);
+	return makeWMapImpl(map, maxValue);
+}
+
+/** Makes a pair of functions to store and load objects by predetermined ids */
+export function makeStableReversibleMap<T extends { SerializeId: number }>(data: Iterable<T>) {
+	const wmap = new Map<T, number>();
+	const rmap = new Map<number, T>();
+	let maxId = 0;
+	for (const item of data) {
+		const id = item.SerializeId;
+		if (id > maxId) {
+			maxId = id;
+		}
+		if (wmap.has(item)) {
+			throw new Error("Duplicate item");
+		}
+		if (rmap.has(id)) {
+			throw new Error("Duplicate id");
+		}
+		wmap.set(item, id);
+		rmap.set(id, item);
+	}
+
+	return {
+		write: makeWMapImpl(wmap, maxId),
+		read: makeRMapImpl(rmap, maxId),
+	};
+}
+
+export const { write: writeRecipe, read: readRecipe } = makeStableReversibleMap(Recipes);
+export const { write: writeItem, read: readItem } = makeStableReversibleMap(ItemsWithFakePower);
