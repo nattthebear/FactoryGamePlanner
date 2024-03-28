@@ -47,19 +47,25 @@ const makeRecipeFilter = (list: Recipe[], titleText: string): TPC<{}> =>
 			const { testRegex, highlightRegex } = makeSearchRegexes(search);
 
 			let someChecked = false;
-			for (const recipe of list) {
-				if (active.has(recipe)) {
-					someChecked = true;
-					break;
-				}
-			}
 			let someUnchecked = false;
-			for (const recipe of list) {
-				if (!active.has(recipe)) {
-					someUnchecked = true;
-					break;
-				}
-			}
+
+			const recipeBoxes = list.map((recipe) => {
+				const checked = active.has(recipe);
+				someChecked ||= checked;
+				someUnchecked ||= !checked;
+
+				return (
+					testRegex.test(recipe.DisplayName) && (
+						<div class="entry">
+							<label data-has-checkbox data-tooltip={recipe.ClassName}>
+								<input type="checkbox" checked={active.has(recipe)} onChange={() => toggle(recipe)} />
+								<img class="icon" src={imageForRecipe(recipe)} />
+								<span>{highlightText(recipe.DisplayName, highlightRegex)}</span>
+							</label>
+						</div>
+					)
+				);
+			});
 
 			return (
 				<div class="recipe-filter">
@@ -88,24 +94,7 @@ const makeRecipeFilter = (list: Recipe[], titleText: string): TPC<{}> =>
 							<span>Select all</span>
 						</label>
 					</div>
-					<div class="scrollable">
-						{list.map(
-							(recipe) =>
-								testRegex.test(recipe.DisplayName) && (
-									<div class="entry">
-										<label data-has-checkbox data-tooltip={recipe.ClassName}>
-											<input
-												type="checkbox"
-												checked={active.has(recipe)}
-												onChange={() => toggle(recipe)}
-											/>
-											<img class="icon" src={imageForRecipe(recipe)} />
-											<span>{highlightText(recipe.DisplayName, highlightRegex)}</span>
-										</label>
-									</div>
-								),
-						)}
-					</div>
+					<div class="scrollable">{recipeBoxes}</div>
 				</div>
 			);
 		};
