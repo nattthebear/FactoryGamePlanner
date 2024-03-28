@@ -58,7 +58,7 @@ const makeRecipeFilter = (list: Recipe[], titleText: string): TPC<{}> =>
 					testRegex.test(recipe.DisplayName) && (
 						<div class="entry">
 							<label data-has-checkbox data-tooltip={recipe.ClassName}>
-								<input type="checkbox" checked={active.has(recipe)} onChange={() => toggle(recipe)} />
+								<input type="checkbox" checked={checked} onChange={() => toggle(recipe)} />
 								<img class="icon" src={imageForRecipe(recipe)} />
 								<span>{highlightText(recipe.DisplayName, highlightRegex)}</span>
 							</label>
