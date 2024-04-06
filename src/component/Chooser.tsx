@@ -24,7 +24,9 @@ export function Chooser<T extends ChooserItem>(_: Props<T>, instance: LayerInsta
 	let tentative: T | null = null;
 	let lastTentative: T | null = null;
 
-	const scrollRef = (value: HTMLDivElement | null) => (scrollElt = value);
+	const scrollRef = (value: HTMLDivElement | null) => {
+		scrollElt = value;
+	};
 	let scrollElt: HTMLDivElement | null = null;
 
 	return ({ items, value, changeValue, onTentative }: Props<T>) => {
