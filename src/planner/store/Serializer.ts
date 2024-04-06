@@ -77,10 +77,10 @@ export function deserialize(encoded: string) {
 			if (!item) {
 				console.warn(`Decode: Missing item`);
 			} else {
-				ret[i] = {
+				ret.push({
 					rate: rate.sign() <= 0 ? null : rate,
 					item,
-				};
+				});
 			}
 		}
 		return ret;
