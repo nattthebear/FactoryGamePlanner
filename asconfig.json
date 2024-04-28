@@ -1,0 +1,24 @@
+{
+	"targets": {
+		"debug": {
+			"outFile": "asbuild/debug.wasm",
+			"textFile": "asbuild/debug.wat",
+			"sourceMap": true,
+			"debug": true
+		},
+		"release": {
+			"outFile": "asbuild/release.wasm",
+			"textFile": "asbuild/release.wat",
+			"sourceMap": true,
+			"optimizeLevel": 3,
+			"shrinkLevel": 0,
+			"converge": false,
+			"noAssert": false,
+			"noExportMemory": true,
+			"maximumMemory": 0
+		}
+	},
+	"options": {
+		"bindings": "esm"
+	}
+}

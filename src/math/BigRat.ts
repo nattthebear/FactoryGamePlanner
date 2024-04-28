@@ -1,6 +1,30 @@
 import { immerable } from "../immer";
+import { gcd as gcdu64 } from "../../asbuild/release";
+
+console.log("ZZ WOW", gcdu64(12n, 3n));
+
+// const earl = new URL("../../asbuild/release.wasm", import.meta.url);
+// (async () => {
+// 	const res = await WebAssembly.compileStreaming(fetch(earl));
+// 	console.log(res);
+// 	const res2 = await WebAssembly.instantiate(res);
+// 	console.log("ZZ WOW", res2.exports.gcd(12n, 3n));
+// })();
+
+const U64_MAX = (1n << 64n) - 1n;
+const NEG_U64_MAX = -U64_MAX;
 
 export function gcd(a: bigint, b: bigint) {
+	// if (a >= NEG_U64_MAX && a <= U64_MAX && b >= NEG_U64_MAX && b <= U64_MAX) {
+	// 	if (a < 0) {
+	// 		a = -a;
+	// 	}
+	// 	if (b <0) {
+	// 		b = -b;
+	// 	}
+	// 	return gcdu64(a, b);
+	// }
+
 	while (b !== 0n) {
 		const t = b;
 		b = a % b;
