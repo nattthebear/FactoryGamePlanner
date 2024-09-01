@@ -48,9 +48,15 @@ export interface State {
 }
 
 export const makeEmptyState = (): State => ({
-	recipes: new Set(BasicRecipes),
+	recipes: new Set(),
 	products: [],
 	inputs: [],
+});
+
+export const makeDefaultState = (): State => ({
+	recipes: new Set(BasicRecipes),
+	products: [],
+	inputs: buildDefaultInputs(),
 });
 
 export function buildDefaultInputs() {
@@ -69,11 +75,7 @@ export const { useSelector, update, getStateRaw } = makeStoreWithHashRouter(
 	{
 		serialize,
 		deserialize,
-		makeDefault() {
-			const ret = makeEmptyState();
-			ret.inputs = buildDefaultInputs();
-			return ret;
-		},
+		makeDefault: makeDefaultState,
 	},
 	ROUTER_PLANNER_STORE,
 	"_PlannerStore",

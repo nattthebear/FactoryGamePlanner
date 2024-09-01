@@ -739,8 +739,6 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 
 	const recipeView = (() => {
 		const isAlternate = (r: (typeof recipes)[number]) => alternateUnlockData.has(r.ClassName);
-		let nextBasic = 0;
-		let nextAlternate = recipes.filter((r) => !isAlternate(r)).length;
 
 		return recipes.map((x, i) => {
 			const duration =
@@ -752,7 +750,6 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			return {
 				...x,
 				SerializeId: i,
-				PlannerSerializeId: Alternate ? nextAlternate++ : nextBasic++,
 				Inputs: mapIngredients(x.mIngredients, duration),
 				Outputs: mapIngredients(x.mProduct, duration),
 				Building: (() => {

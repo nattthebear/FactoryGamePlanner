@@ -6,20 +6,40 @@ import { makeEmptyState, NullableFlow, sortNullableFlowsMutate, State } from "./
 
 const VERSION = 0;
 
-/** Recipes in the order they appear in the serialized output, including any holes */
+type RecipeHole = "Basic" | "Alternate";
+
+/** The type of every removed recipe from the game.  This is needed to properly sort VERSION === 0 urls. */
+const removedRecipesById = new Map<number, RecipeHole>([]);
+
+/** Recipes in normal serializer order, including any holes */
 const orderedRecipeList = (() => {
-	const ret: (Recipe | null)[] = [];
-	const sorted = Recipes.slice().sort((x, y) => x.PlannerSerializeId - y.PlannerSerializeId);
-	for (const r of sorted) {
-		const desiredIndex = r.PlannerSerializeId;
+	const ret: (Recipe | RecipeHole)[] = [];
+	for (const r of Recipes) {
+		const desiredIndex = r.SerializeId;
 		if (desiredIndex < ret.length) {
-			throw new Error("Duplicate PlannerSerializeId");
+			throw new Error("Duplicate SerializeId");
 		}
 		while (desiredIndex > ret.length) {
-			ret.push(null);
+			const hole = removedRecipesById.get(ret.length);
+			if (!hole) {
+				throw new Error(`Missing recipe ${ret.length} hole type`);
+			}
+			ret.push(hole);
 		}
 		ret.push(r);
 	}
+	return ret;
+})();
+
+const versionZeroRecipeList = (() => {
+	const ret = orderedRecipeList.slice(0, 204);
+	const sortValue = (r: Recipe | RecipeHole): RecipeHole =>
+		typeof r === "string" ? r : r.Alternate ? "Alternate" : "Basic";
+	ret.sort((a, b) => {
+		const sa = sortValue(a);
+		const sb = sortValue(b);
+		return sa < sb ? 1 : sa > sb ? -1 : 0;
+	});
 	return ret;
 })();
 
@@ -28,8 +48,8 @@ export function serialize(state: State) {
 
 	w.write(6, VERSION);
 
-	for (const recipe of orderedRecipeList) {
-		w.write(1, +(!!recipe && state.recipes.has(recipe)));
+	for (const recipe of versionZeroRecipeList) {
+		w.write(1, +(typeof recipe !== "string" && state.recipes.has(recipe)));
 	}
 
 	function writeFlows(data: NullableFlow[]) {
@@ -57,13 +77,11 @@ export function deserialize(encoded: string) {
 
 	const state = makeEmptyState();
 
-	for (const recipe of orderedRecipeList) {
+	for (const recipe of versionZeroRecipeList) {
 		const b = !!r.read(1);
-		if (recipe) {
+		if (typeof recipe !== "string") {
 			if (b) {
 				state.recipes.add(recipe);
-			} else {
-				state.recipes.delete(recipe);
 			}
 		}
 	}
