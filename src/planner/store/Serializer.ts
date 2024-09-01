@@ -1,19 +1,55 @@
+import { Recipes } from "../../../data/generated/recipes";
+import type { Recipe } from "../../../data/types";
 import { readBigPos, readBigRat, readItem, RStream, writeBigPos, writeBigRat, writeItem, WStream } from "../../base64";
 import { BigRat } from "../../math/BigRat";
 import { makeEmptyState, NullableFlow, sortNullableFlowsMutate, State } from "./Store";
 
 const VERSION = 0;
 
+type RecipeHole = "Basic" | "Alternate";
+
+/** The type of every removed recipe from the game.  This is needed to properly sort VERSION === 0 urls. */
+const removedRecipesById = new Map<number, RecipeHole>([]);
+
+/** Recipes in normal serializer order, including any holes */
+const orderedRecipeList = (() => {
+	const ret: (Recipe | RecipeHole)[] = [];
+	for (const r of Recipes) {
+		const desiredIndex = r.SerializeId;
+		if (desiredIndex < ret.length) {
+			throw new Error("Duplicate SerializeId");
+		}
+		while (desiredIndex > ret.length) {
+			const hole = removedRecipesById.get(ret.length);
+			if (!hole) {
+				throw new Error(`Missing recipe ${ret.length} hole type`);
+			}
+			ret.push(hole);
+		}
+		ret.push(r);
+	}
+	return ret;
+})();
+
+const versionZeroRecipeList = (() => {
+	const ret = orderedRecipeList.slice(0, 204);
+	const sortValue = (r: Recipe | RecipeHole): RecipeHole =>
+		typeof r === "string" ? r : r.Alternate ? "Alternate" : "Basic";
+	ret.sort((a, b) => {
+		const sa = sortValue(a);
+		const sb = sortValue(b);
+		return sa < sb ? 1 : sa > sb ? -1 : 0;
+	});
+	return ret;
+})();
+
 export function serialize(state: State) {
 	const w = new WStream();
 
 	w.write(6, VERSION);
 
-	for (const b of state.basicRecipes) {
-		w.write(1, +b);
-	}
-	for (const b of state.alternateRecipes) {
-		w.write(1, +b);
+	for (const recipe of versionZeroRecipeList) {
+		w.write(1, +(typeof recipe !== "string" && state.recipes.has(recipe)));
 	}
 
 	function writeFlows(data: NullableFlow[]) {
@@ -41,42 +77,38 @@ export function deserialize(encoded: string) {
 
 	const state = makeEmptyState();
 
-	for (let i = 0; i < state.basicRecipes.length; i++) {
-		state.basicRecipes[i] = !!r.read(1);
-	}
-	for (let i = 0; i < state.alternateRecipes.length; i++) {
-		state.alternateRecipes[i] = !!r.read(1);
+	for (const recipe of versionZeroRecipeList) {
+		const b = !!r.read(1);
+		if (typeof recipe !== "string") {
+			if (b) {
+				state.recipes.add(recipe);
+			}
+		}
 	}
 
 	function readFlows() {
 		const length = Number(readBigPos(r));
-		const ret = Array<NullableFlow>(length);
+		const ret: NullableFlow[] = [];
 		for (let i = 0; i < length; i++) {
 			const rate = readBigRat(r);
 			const item = readItem(r);
 			if (!item) {
 				console.warn(`Decode: Missing item`);
-				return null;
+			} else {
+				ret.push({
+					rate: rate.sign() <= 0 ? null : rate,
+					item,
+				});
 			}
-			ret[i] = {
-				rate: rate.sign() <= 0 ? null : rate,
-				item,
-			};
 		}
 		return ret;
 	}
 
 	const products = readFlows();
-	if (!products) {
-		return null;
-	}
 	sortNullableFlowsMutate(products);
 	state.products = products;
 
 	const inputs = readFlows();
-	if (!inputs) {
-		return null;
-	}
 	sortNullableFlowsMutate(inputs);
 	state.inputs = inputs;
 

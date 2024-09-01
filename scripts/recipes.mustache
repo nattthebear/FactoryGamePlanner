@@ -1,4 +1,4 @@
-import { Recipe } from "../types";
+import type { Recipe } from "../types";
 import { Items } from "./items";
 import { Buildings } from "./buildings";
 import { BigRat } from "../../src/math/BigRat";
@@ -8,6 +8,7 @@ export const Recipes: Recipe[] = [
 	{
 		ClassName: {{ClassName}},
 		DisplayName: {{DisplayName}},
+		SerializeId: {{SerializeId}},
 		Inputs: [{{#Inputs}}{ Item: Items[{{Item}}], Rate: {{{RateExpr}}} }, {{/Inputs}}],
 		Outputs: [{{#Outputs}}{ Item: Items[{{Item}}], Rate: {{{RateExpr}}} }, {{/Outputs}}],
 		Building: Buildings[{{Building}}],
@@ -16,5 +17,3 @@ export const Recipes: Recipe[] = [
 	},
 	{{/.}}
 ];
-
-export const RecipesByClassName = new Map(Recipes.map(r => [r.ClassName, r]));

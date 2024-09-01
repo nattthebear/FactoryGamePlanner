@@ -3,6 +3,8 @@ import { BigRat } from "../src/math/BigRat";
 export interface Item {
 	ClassName: string;
 	DisplayName: string;
+	/** When serializing or deserializing to URLs, the exact numeric ID used for this item */
+	SerializeId: number;
 	Description: string;
 	Icon: string;
 	IsResource: boolean;
@@ -21,6 +23,8 @@ export interface RecipeFlow {
 export interface Recipe {
 	ClassName: string;
 	DisplayName: string;
+	/** When serializing or deserializing to URLs, the exact numeric ID used for this recipe (but only in the editor) */
+	SerializeId: number;
 	Inputs: RecipeFlow[];
 	Outputs: RecipeFlow[];
 	Building: Building;

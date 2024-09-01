@@ -12,12 +12,12 @@ interface Props {
 
 export const KeyButton: TPC<Props> = (props, instance) => {
 	const listener = (ev: KeyboardEvent) => {
-		if (!props.disabled && !isAnyPromptActive() && ev.key === props.keyName) {
+		if (!props.disabled && !isAnyPromptActive() && ev.key === props.keyName && ev.target === ev.currentTarget) {
 			props.onAct(false);
 		}
 	};
-	document.addEventListener("keypress", listener, { passive: true });
-	cleanup(instance, () => document.removeEventListener("keypress", listener));
+	document.body.addEventListener("keypress", listener, { passive: true });
+	cleanup(instance, () => document.body.removeEventListener("keypress", listener));
 
 	return (nextProps) => {
 		props = nextProps;

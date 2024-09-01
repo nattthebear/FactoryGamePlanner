@@ -15,3 +15,5 @@ gg.document = {
 		addEventListener() {},
 	},
 };
+
+gg.addEventListener = function addEventListener() {};
