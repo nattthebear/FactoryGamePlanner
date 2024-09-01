@@ -13,11 +13,16 @@ export const ConnectionTerminal: TPC<{
 }> = ({ producerId, isOutput, index }, instance) => {
 	const getProducer = useSelector(instance, (s) => s.producers.get(producerId)!);
 	let producer = getProducer();
-	const { rate, item } = (isOutput ? producer.outputFlows() : producer.inputFlows())[index];
-	const getConnectionSum = useSelector(instance, (s) => {
-		const connectionIds = (isOutput ? producer.outputs : producer.inputs)[index];
-		return connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO);
+	const getFlow = () => (isOutput ? producer.outputFlows() : producer.inputFlows())[index];
+	const { item } = getFlow();
+	const getConnectionSum = useSelector(instance, {
+		select(s) {
+			const connectionIds = (isOutput ? producer.outputs : producer.inputs)[index];
+			return connectionIds.reduce((acc, val) => acc.add(s.connectors.get(val)!.rate), BigRat.ZERO);
+		},
+		equal: BigRat.eq,
 	});
+	const getRate = useSelector(instance, { select: () => getFlow().rate, equal: BigRat.eq });
 	const getActiveConnectionAttempt = useSelector(instance, (s) => {
 		if (s.wip.type === "connector:input") {
 			if (isOutput && s.wip.producerId === producerId && s.wip.index === index) {
@@ -38,6 +43,7 @@ export const ConnectionTerminal: TPC<{
 		producer = getProducer();
 		const connectionSum = getConnectionSum();
 		const activeConnectionAttempt = getActiveConnectionAttempt();
+		const rate = getRate();
 
 		let diff = rate.sub(connectionSum);
 		if (!isOutput) {

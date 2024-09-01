@@ -624,4 +624,8 @@ export class BigRat {
 	static ZERO = BigRat.fromInteger(0);
 	static ONE = BigRat.fromInteger(1);
 	static MINUS_ONE = BigRat.fromInteger(-1);
+
+	static eq(x: BigRat, y: BigRat) {
+		return x.eq(y);
+	}
 }

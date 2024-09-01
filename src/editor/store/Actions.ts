@@ -313,6 +313,7 @@ export const splitOffConnectorOutput = (id: NodeId, p: Point) => (draft: Draft<S
 	newProducer.y = p.y;
 	newProducer.rate = newProducer.rate.mul(rateRatio);
 	producer.rate = producer.rate.sub(newProducer.rate);
+	draft.producers.set(newProducer.id, newProducer);
 
 	inputs.splice(inputs.indexOf(id), 1);
 	connector.output = newProducer.id;
