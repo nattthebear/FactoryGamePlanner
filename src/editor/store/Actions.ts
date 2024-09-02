@@ -295,6 +295,7 @@ export const splitOffConnectorInput = (id: NodeId, p: Point) => (draft: Draft<St
 	outputs.splice(outputs.indexOf(id), 1);
 	connector.input = newProducer.id;
 	newProducer.outputs[connector.inputIndex].push(id);
+	reflowConnectors(draft, [id, ...producer.inputsAndOutputs()]);
 };
 
 /** Split off a producer at a connector's output side */
@@ -318,6 +319,7 @@ export const splitOffConnectorOutput = (id: NodeId, p: Point) => (draft: Draft<S
 	inputs.splice(inputs.indexOf(id), 1);
 	connector.output = newProducer.id;
 	newProducer.inputs[connector.outputIndex].push(id);
+	reflowConnectors(draft, [id, ...producer.inputsAndOutputs()]);
 };
 
 /** Either `splitOffConnectorInput` or `splitOffConnectorOutput` based on distance */

@@ -45,7 +45,13 @@ export function makeStore<S>(initialValue: S, debugName?: string) {
 			subs.add(subscription);
 			cleanup(instance, () => subs.delete(subscription));
 
-			return () => (selected = select(state));
+			return () => {
+				const newSelected = select(state);
+				if (!equal(newSelected, selected)) {
+					selected = newSelected;
+				}
+				return selected;
+			};
 		},
 		replace,
 		update(action: (draft: Draft<S>) => void) {
