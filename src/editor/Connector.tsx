@@ -12,6 +12,17 @@ import {
 import "./Connector.css";
 import { Point } from "../util";
 
+function makeBezierEvaluator(t: number) {
+	const s = 1 - t;
+	const c0 = s * s * s,
+		c1 = 3 * s * s * t,
+		c2 = 3 * s * t * t,
+		c3 = t * t * t;
+	return (p0: number, p1: number, p2: number, p3: number) => c0 * p0 + c1 * p1 + c2 * p2 + c3 * p3;
+}
+const bezierMidpoint = makeBezierEvaluator(0.5);
+const bezierMidpointOffset = makeBezierEvaluator(0.45);
+
 export const Connector: TPC<{ id: NodeId }> = ({ id }, instance) => {
 	const getConnector = useSelector(instance, (s) => s.connectors.get(id)!);
 	const getBusLoc = useSelector(instance, selectConnectorBusTerminal(id));
@@ -26,8 +37,8 @@ export const Connector: TPC<{ id: NodeId }> = ({ id }, instance) => {
 
 		if (busLoc) {
 			function renderPath(p1: Point, d1: Point, p2: Point, d2: Point) {
-				const tx = 0.125 * p1.x + 0.375 * (p1.x + d1.x) + 0.375 * (p2.x + d2.x) + 0.125 * p2.x;
-				const ty = 0.125 * p1.y + 0.375 * (p1.y + d1.y) + 0.375 * (p2.y + d2.y) + 0.125 * p2.y;
+				const tx = bezierMidpoint(p1.x, p1.x + d1.x, p2.x + d2.x, p2.x);
+				const ty = bezierMidpoint(p1.y, p1.y + d1.y, p2.y + d2.y, p2.y);
 
 				return (
 					<>
@@ -72,6 +83,9 @@ export const Connector: TPC<{ id: NodeId }> = ({ id }, instance) => {
 			}
 			const dxc = Math.max(dx * 0.8, slx);
 
+			const tx = bezierMidpointOffset(ip.x, ip.x + dxc, ip.x + dx - dxc, op.x);
+			const ty = bezierMidpointOffset(ip.y, ip.y, ip.y + dy, op.y);
+
 			return (
 				<>
 					<path
@@ -86,7 +100,7 @@ export const Connector: TPC<{ id: NodeId }> = ({ id }, instance) => {
 							})
 						}
 					/>
-					<text class="connector-text" x={(op.x + ip.x) / 2} y={(op.y + ip.y) / 2}>
+					<text class="connector-text" x={tx} y={ty}>
 						{connector.rate.toStringAdaptive()}/min
 					</text>
 				</>
