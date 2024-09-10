@@ -515,12 +515,36 @@ const Data = t.type({
 const ouputNameToPath = (name: string) => `${__dirname}/../data/generated/${name}.ts`;
 const outputNameToTemplate = (name: string) => `${__dirname}/${name}.mustache`;
 
-async function reorderDataMutate(name: string, data: { ClassName: string }[]) {
+async function reorderDataMutate<T extends { ClassName: string }>(name: string, data: T[]) {
 	// use the old data to reorder the new data, to cut down on diffs
 	const oldRawData = await fs.readFile(ouputNameToPath(name), "utf-8");
 	const oldClassNames = [...oldRawData.matchAll(/^\s*ClassName:\s*("[^"]+")/gm)].map(
 		(match) => JSON.parse(match[1]) as string,
 	);
+	const oldSerializeIds = [...oldRawData.matchAll(/^\s*SerializeId:\s*(\d+)/gm)].map(
+		(match) => JSON.parse(match[1]) as number,
+	);
+	if (oldSerializeIds.length > 0) {
+		if (oldSerializeIds.length !== oldClassNames.length) {
+			throw new Error("Old data had SerializeIds, but they were malformed?");
+		}
+		const dataAsIded = data as (T & { SerializeId: number })[];
+		const newDataByClassName = new Map(dataAsIded.map((d) => [d.ClassName, d]));
+		for (let i = 0; i < oldClassNames.length; i += 1) {
+			const oldClassName = oldClassNames[i];
+			const oldSerializeId = oldSerializeIds[i];
+			const newDatum = newDataByClassName.get(oldClassName);
+			if (newDatum) {
+				newDatum.SerializeId = oldSerializeId;
+			}
+		}
+		let nextSerializeId = Math.max(...oldSerializeIds) + 1;
+		for (const datum of dataAsIded) {
+			if (datum.SerializeId == null) {
+				datum.SerializeId = nextSerializeId++;
+			}
+		}
+	}
 	const oldClassMap = new Map(oldClassNames.map((s, i) => [s, i]));
 	data.sort((x, y) => {
 		const oldXIndex = oldClassMap.get(x.ClassName) ?? 99999999;
@@ -776,7 +800,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 	const recipeView = (() => {
 		const isAlternate = (r: (typeof recipes)[number]) => alternateUnlockData.has(r.ClassName);
 
-		return recipes.map((x, i) => {
+		return recipes.map((x) => {
 			const duration =
 				typeof x.mManufactoringDuration === "number"
 					? BigRat.fromInteger(x.mManufactoringDuration)
@@ -785,7 +809,6 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 
 			return {
 				...x,
-				SerializeId: i,
 				Inputs: mapIngredients(x.mIngredients, duration),
 				Outputs: mapIngredients(x.mProduct, duration),
 				Building: (() => {
@@ -875,9 +898,8 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		}
 	}
 
-	const itemsView = items.map((x, i) => ({
+	const itemsView = items.map((x) => ({
 		...x,
-		SerializeId: i,
 		Color: {
 			RF_SOLID: "#fff",
 			RF_LIQUID: formatColor(x.mFluidColor),
