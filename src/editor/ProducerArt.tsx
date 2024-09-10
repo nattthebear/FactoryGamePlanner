@@ -34,6 +34,7 @@ const WIDTH_XL = 400;
 
 const HADRON_EXTRA_HEIGHT = 160;
 const CONSTRUCTOR_EXTRA_HEIGHT = 20;
+const CONVERTER_EXTRA_HEIGHT = 120;
 
 /*
 0corner 1wall 1corner
@@ -395,6 +396,72 @@ export const NuclearPlant = drawShape(() => {
 	draw("z");
 });
 
+export const QuantumEncoder = drawShape(() => {
+	draw("M", -WIDTH_XL / 2 - CORNER_SIZE, CONNECTION_SIZE * 2);
+
+	connection(spots[0].solid, 0);
+	connection(spots[0].solid, 1);
+	connection(spots[0].solid, 2);
+	connection(spots[0].liquid, 0);
+	corners.square(CORNER_SIZE);
+
+	lines.straight(WIDTH_XL);
+	corners.round(CORNER_SIZE);
+
+	lines.straight(CONNECTION_SIZE);
+	connection(spots[1].liquid, 0);
+	connection(spots[1].solid, 0);
+	lines.straight(CONNECTION_SIZE);
+	corners.round(CORNER_SIZE);
+
+	lines.straight(WIDTH_XL);
+	corners.square(CORNER_SIZE);
+
+	draw("z");
+});
+
+export const Converter = drawShape(() => {
+	draw("M", -WIDTH_L / 2 - CORNER_SIZE, (CONNECTION_SIZE * 2 + CONVERTER_EXTRA_HEIGHT) / 2);
+
+	lines.straight(CONVERTER_EXTRA_HEIGHT / 2);
+	connection(spots[0].solid, 0);
+	connection(spots[0].solid, 1);
+	lines.straight(CONVERTER_EXTRA_HEIGHT / 2);
+	corners.square(CORNER_SIZE);
+
+	lines.straight(WIDTH_L);
+	corners.square(CORNER_SIZE);
+
+	lines.straight(CONVERTER_EXTRA_HEIGHT / 2);
+	connection(spots[1].solid, 0);
+	connection(spots[1].liquid, 0);
+	lines.straight(CONVERTER_EXTRA_HEIGHT / 2);
+	corners.square(CORNER_SIZE);
+
+	lines.straight(WIDTH_L);
+	corners.square(CORNER_SIZE);
+
+	draw("z");
+});
+
+export const BiomassBurner = drawShape(() => {
+	draw("M", -WIDTH_S / 2 - POWER_CORNER_SIZE, CONNECTION_SIZE / 2);
+
+	connection(spots[0].solid, 0);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_S);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(CONNECTION_SIZE);
+	corners.angle(POWER_CORNER_SIZE);
+
+	lines.straight(WIDTH_S);
+	corners.angle(POWER_CORNER_SIZE);
+
+	draw("z");
+});
+
 export const BuildingMap: Record<string, ProducerDrawing> = {
 	Build_ConstructorMk1_C: Constructor,
 	Build_SmelterMk1_C: Smelter,
@@ -408,6 +475,9 @@ export const BuildingMap: Record<string, ProducerDrawing> = {
 	Build_GeneratorCoal_C: CoalBurner,
 	Build_GeneratorFuel_C: FuelBurner,
 	Build_GeneratorNuclear_C: NuclearPlant,
+	Build_QuantumEncoder_C: QuantumEncoder,
+	Build_Converter_C: Converter,
+	Build_GeneratorBiomass_Automated_C: BiomassBurner,
 };
 
 export const Sink = drawShape(() => {
