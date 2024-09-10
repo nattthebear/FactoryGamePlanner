@@ -1,10 +1,20 @@
 import { Recipes } from "../../../data/generated/recipes";
 import type { Recipe } from "../../../data/types";
-import { readBigPos, readBigRat, readItem, RStream, writeBigPos, writeBigRat, writeItem, WStream } from "../../base64";
+import {
+	makeReadItem,
+	readBigPos,
+	readBigRat,
+	readItem,
+	RStream,
+	writeBigPos,
+	writeBigRat,
+	writeItem,
+	WStream,
+} from "../../base64";
 import { BigRat } from "../../math/BigRat";
 import { makeEmptyState, NullableFlow, sortNullableFlowsMutate, State } from "./Store";
 
-const VERSION = 0;
+const VERSION = 1;
 
 type RecipeHole = "Basic" | "Alternate";
 
@@ -52,7 +62,7 @@ export function serialize(state: State) {
 
 	w.write(6, VERSION);
 
-	for (const recipe of versionZeroRecipeList) {
+	for (const recipe of orderedRecipeList) {
 		w.write(1, +(typeof recipe !== "string" && state.recipes.has(recipe)));
 	}
 
@@ -74,14 +84,27 @@ export function deserialize(encoded: string) {
 	const r = new RStream(encoded);
 
 	const version = r.read(6);
-	if (version !== VERSION) {
-		console.warn(`Decode: version mismatch ${version} !== ${VERSION}`);
-		return null;
+
+	let vRecipeList: (RecipeHole | Recipe)[];
+	let vReadItem: typeof readItem;
+
+	switch (version) {
+		case 0:
+			vRecipeList = versionZeroRecipeList;
+			vReadItem = makeReadItem(116);
+			break;
+		case 1:
+			vRecipeList = orderedRecipeList;
+			vReadItem = readItem;
+			break;
+		default:
+			console.warn(`Decode: unknown version ${version}`);
+			return null;
 	}
 
 	const state = makeEmptyState();
 
-	for (const recipe of versionZeroRecipeList) {
+	for (const recipe of vRecipeList) {
 		const b = !!r.read(1);
 		if (typeof recipe !== "string") {
 			if (b) {
@@ -95,7 +118,7 @@ export function deserialize(encoded: string) {
 		const ret: NullableFlow[] = [];
 		for (let i = 0; i < length; i++) {
 			const rate = readBigRat(r);
-			const item = readItem(r);
+			const item = vReadItem(r);
 			if (!item) {
 				console.warn(`Decode: Missing item`);
 			} else {

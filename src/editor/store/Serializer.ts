@@ -1,6 +1,8 @@
 import type { Item, Recipe } from "../../../data/types";
 import {
 	bitsNeeded,
+	makeReadItem,
+	makeReadRecipe,
 	makeWMap,
 	readBigPos,
 	readBigRat,
@@ -21,7 +23,7 @@ import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { reflowConnectors } from "./ReflowConnector";
 import { makeEmptyState, State } from "./Store";
 
-const VERSION = 0;
+const VERSION = 1;
 
 const { saveX, saveY, loadX, loadY } = (() => {
 	const xoffs = FACTORY_MIN.x;
@@ -111,9 +113,22 @@ export function deserialize(encoded: string) {
 	const r = new RStream(encoded);
 
 	const version = r.read(6);
-	if (version !== VERSION) {
-		console.warn(`Decode: version mismatch ${version} !== ${VERSION}`);
-		return null;
+
+	let vReadItem: typeof readItem;
+	let vReadRecipe: typeof readRecipe;
+
+	switch (version) {
+		case 0:
+			vReadItem = makeReadItem(116);
+			vReadRecipe = makeReadRecipe(203);
+			break;
+		case 1:
+			vReadItem = readItem;
+			vReadRecipe = readRecipe;
+			break;
+		default:
+			console.warn(`Decode: unknown version ${version}`);
+			return null;
 	}
 
 	const state = makeEmptyState();
@@ -152,9 +167,9 @@ export function deserialize(encoded: string) {
 			break;
 		}
 		if (type === 0) {
-			recipe = readRecipe(r);
+			recipe = vReadRecipe(r);
 		} else {
-			item = readItem(r);
+			item = vReadItem(r);
 		}
 		const x = loadX(r);
 		const y = loadY(r);
