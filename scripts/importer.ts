@@ -623,9 +623,6 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 					if (!suppItem) {
 						throw new Error(`Couldn't find fuel item for ${fuel.mFuelClass}`);
 					}
-					if (suppItem.mForm !== "RF_SOLID") {
-						amount = amount.div(BigRat.fromInteger(1000));
-					}
 					mIngredients.push({
 						ItemClass: fuel.mSupplementalResourceClass,
 						Amount: amount,
