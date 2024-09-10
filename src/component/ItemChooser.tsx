@@ -7,6 +7,7 @@ import { prompt } from "../component/Prompt";
 
 import "./ItemChooser.css";
 import { FakePower, ItemsWithFakePower } from "../../data/power";
+import { BigRat } from "../math/BigRat";
 
 function fillMultiMap<K, V>(map: Map<K, V[]>, key: K, value: V) {
 	let array = map.get(key);
@@ -35,6 +36,7 @@ const formatRecipe = (recipe: Recipe) => ({
 			{recipe.Inputs.map((flow) => itemImage(flow.Item))}
 			<span class="arrow">▶&#xfe0e;</span>
 			{recipe.Outputs.map((flow) => itemImage(flow.Item))}
+			{(recipe.PowerConsumption ?? recipe.Building.PowerConsumption).lt(BigRat.ZERO) && itemImage(FakePower)}
 		</div>
 	),
 	name: recipe.DisplayName,
