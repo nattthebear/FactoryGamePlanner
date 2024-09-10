@@ -9,7 +9,11 @@ const VERSION = 0;
 type RecipeHole = "Basic" | "Alternate";
 
 /** The type of every removed recipe from the game.  This is needed to properly sort VERSION === 0 urls. */
-const removedRecipesById = new Map<number, RecipeHole>([]);
+const removedRecipesById = new Map<number, RecipeHole>([
+	[84, "Alternate"],
+	[136, "Alternate"],
+	[175, "Basic"],
+]);
 
 /** Recipes in normal serializer order, including any holes */
 const orderedRecipeList = (() => {
