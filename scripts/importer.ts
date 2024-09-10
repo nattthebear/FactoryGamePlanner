@@ -90,6 +90,20 @@ function miniobj<A>(type: t.Type<A>) {
 	);
 }
 
+function emptyStringToEmptyArray<E>(type: t.Type<E[]>) {
+	return new t.Type<E[]>(
+		type.name,
+		type.is,
+		(input, context) => {
+			if (input === "") {
+				return t.success([]);
+			}
+			return type.validate(input, context);
+		},
+		type.encode,
+	);
+}
+
 function not(type: t.Type<any>) {
 	return new t.Type<unknown>(
 		`not${type.name}`,
@@ -208,7 +222,9 @@ const Texture2D = new t.Type<Texture>(
 );
 
 const Color = miniobj(t.type({ R: stringInteger, G: stringInteger, B: stringInteger, A: stringInteger }));
-const IngredientList = miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringInteger })));
+const IngredientList = emptyStringToEmptyArray(
+	miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringInteger }))),
+);
 const Form = t.keyof({ RF_SOLID: null, RF_LIQUID: null, RF_GAS: null });
 
 const $ItemDescriptor = makeDescriptor("ItemDescriptor");
@@ -368,6 +384,7 @@ const Schematic = t.type({
 		EST_Milestone: null,
 		EST_Alternate: null,
 		EST_ResourceSink: null,
+		EST_Customization: null,
 	}),
 	mDisplayName: t.string,
 	// "mDescription": "",
