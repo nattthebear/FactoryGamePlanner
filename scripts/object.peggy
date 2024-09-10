@@ -1,5 +1,5 @@
 Value
-	= Array / Object / ClassString / String
+	= Array / Object / ClassString / QuotedString / String
 
 Array
 	= "(" head:Value tail:("," v:Value { return v; })* ")" { return [head, ...tail]; }
@@ -19,6 +19,9 @@ ClassContent
 	= [^'"]+ { return text(); }
 ClassString
 	= clazzPrefix:ClassPrefix "." clazz:Class "'\"" data:ClassContent "\"'" { return clazz + " " + data; }
+
+QuotedString
+	= "\"" @([^"]* { return text(); }) "\""
 
 String
 	= [^()=,]* { return text(); }

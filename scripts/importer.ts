@@ -120,9 +120,9 @@ const stringInteger = new t.Type<number>(
 	t.identity,
 );
 
-const stringFloat = new t.Type<string>(
+const stringFloat = new t.Type<BigRat>(
 	"stringFloat",
-	t.string.is,
+	(obj) => obj instanceof BigRat,
 	(input, context) => {
 		if (typeof input !== "string") {
 			return t.failure(input, context, "Value must be a string");
@@ -130,7 +130,7 @@ const stringFloat = new t.Type<string>(
 		if (!input.match(/^[0-9]+(\.[0-9]+)?$/)) {
 			return t.failure(input, context, `String ${input} doesn't look like an integer`);
 		}
-		return t.success(input);
+		return t.success(BigRat.parse(input));
 	},
 	t.identity,
 );
@@ -149,9 +149,14 @@ const recipeIngredient = new t.Type<string>(
 		if (typeof input !== "string") {
 			return t.failure(input, context, "Value must be a string");
 		}
-		const match = input.match(/^BlueprintGeneratedClass.*\.([A-Za-z0-9_]+)$/);
+		// /Script/Engine.BlueprintGeneratedClass'/Game/FactoryGame/Resource/Parts/Cement/Desc_Cement.Desc_Cement_C'
+		const match = input.match(/^\/Script\/Engine\.BlueprintGeneratedClass'.*\.([A-Za-z0-9_]+)'$/);
 		if (!match) {
-			return t.failure(input, context, `Regex was not matched for ${input}`);
+			return t.failure(
+				input,
+				context,
+				`RecipeIngredient Regex was not matched for ${JSON.stringify(input) satisfies string}`,
+			);
 		}
 		const [, clazz] = match;
 		return t.success(clazz);
@@ -166,9 +171,14 @@ const buildingClass = new t.Type<string>(
 		if (typeof input !== "string") {
 			return t.failure(input, context, "Value must be a string");
 		}
-		const match = input.match(/^"[^.]*\.([^.]*)"$/);
+		// /Game/FactoryGame/Equipment/BuildGun/BP_BuildGun.BP_BuildGun_C
+		const match = input.match(/^[^.]*\.([^.]*)$/);
 		if (!match) {
-			return t.failure(input, context, `Regex was not matched for ${input}`);
+			return t.failure(
+				input,
+				context,
+				`BuildingClass Regex was not matched for ${JSON.stringify(input) satisfies string}`,
+			);
 		}
 		const [, clazz] = match;
 		return t.success(clazz);
@@ -185,7 +195,11 @@ const Texture2D = new t.Type<Texture>(
 		}
 		const match = input.match(/^Texture2D (([A-Za-z0-9_\/\-]+\/)([A-Za-z0-9_\-]+))\.\3$/);
 		if (!match) {
-			return t.failure(input, context, `Regex was not matched for ${input}`);
+			return t.failure(
+				input,
+				context,
+				`Texture2D Regex was not matched for ${JSON.stringify(input) satisfies string}`,
+			);
 		}
 		const [, resource] = match;
 		return t.success(new Texture(resource));
@@ -274,7 +288,7 @@ const Recipe = t.type({
 	mIngredients: IngredientList,
 	mProduct: IngredientList,
 	// "mManufacturingMenuPriority": "11.000000",
-	mManufactoringDuration: stringInteger,
+	mManufactoringDuration: stringFloat,
 	// "mManualManufacturingMultiplier": "1.000000",
 	mProducedIn: miniobj(t.union([t.array(buildingClass), t.literal("")])),
 	// "mRelevantEvents": "",
@@ -512,7 +526,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 (async () => {
 	config = await loadJson(`${__dirname}/../.importerconfig`, Config);
 
-	const rawData = await loadJson(`${config.GameDir}/CommunityResources/Docs/Docs.json`, RawData, "utf16le");
+	const rawData = await loadJson(`${config.GameDir}/CommunityResources/Docs/en-US.json`, RawData, "utf16le");
 	const rawDataToObjects = Object.fromEntries(rawData.map((r) => [r.NativeClass, r.Classes]));
 	const dataRes = Data.decode(rawDataToObjects);
 	if (dataRes._tag === "Left") {
@@ -550,7 +564,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 					throw new Error(`Couldn't find fuel item for ${fuel.mFuelClass}`);
 				}
 				const mDisplayName = `Power from ${fuelItem.mDisplayName}`;
-				let mManufactoringDuration = BigRat.parse(fuelItem.mEnergyValue);
+				let mManufactoringDuration = fuelItem.mEnergyValue;
 				mManufactoringDuration = mManufactoringDuration
 					.mul(BigRat.fromInteger(p.mFuelLoadAmount))
 					.div(BigRat.fromInteger(p.mPowerProduction));
@@ -562,7 +576,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 				];
 				if (fuel.mSupplementalResourceClass) {
 					let amount = BigRat.fromInteger(p.mPowerProduction)
-						.mul(BigRat.parse(p.mSupplementalToPowerRatio))
+						.mul(p.mSupplementalToPowerRatio)
 						.mul(mManufactoringDuration);
 					const suppItem = allItems.find((i) => i.ClassName === fuel.mSupplementalResourceClass);
 					if (!suppItem) {
@@ -605,8 +619,8 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			return {
 				ClassName: p.ClassName,
 				mManufacturingSpeed: "1.000000",
-				mPowerConsumption: "-" + p.mPowerProduction,
-				mPowerConsumptionExponent: "1",
+				mPowerConsumption: BigRat.fromInteger(p.mPowerProduction).neg(),
+				mPowerConsumptionExponent: BigRat.ONE,
 				mDisplayName: p.mDisplayName,
 				mDescription: p.mDescription,
 			};
@@ -857,8 +871,8 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 
 	const buildingsView = buildings.map((x) => ({
 		...x,
-		PowerConsumptionExpr: BigRat.parse(x.mPowerConsumption).uneval(),
-		PowerConsumptionExponentExpr: BigRat.parse(x.mPowerConsumptionExponent).uneval(),
+		PowerConsumptionExpr: x.mPowerConsumption.uneval(),
+		PowerConsumptionExponentExpr: x.mPowerConsumptionExponent.uneval(),
 	}));
 
 	// Eliminate duplicate recipe names
