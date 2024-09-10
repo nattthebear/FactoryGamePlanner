@@ -689,7 +689,8 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			.filter((s) => s.mType === "EST_Alternate")
 			.flatMap((s) => s.mUnlocks.filter((u) => u.Class === "BP_UnlockRecipe_C"))
 			.flatMap((u) => u.mRecipes!)
-			.map((s) => s.split(".")[1]),
+			// /Script/Engine.BlueprintGeneratedClass'/Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_FusedWire.Recipe_Alternate_FusedWire_C'
+			.map((s) => s.split(".").at(-1)!.split("'")[0]),
 	);
 
 	const milestoneView = data[$Schematic]
@@ -726,15 +727,18 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			} else {
 				throw new Error(s.mType);
 			}
+
+			const unlockNames = s.mUnlocks
+				.filter((u) => u.Class === "BP_UnlockRecipe_C")
+				.flatMap((u) => u.mRecipes!)
+				// /Script/Engine.BlueprintGeneratedClass'/Game/FactoryGame/Recipes/Buildings/Recipe_GeneratorCoal.Recipe_GeneratorCoal_C'
+				.map((s) => s.split(".").at(-1)!.split("'")[0]);
+
 			return {
 				...s,
 				Tier,
 				SubTier,
-				Unlocks: s.mUnlocks
-					.filter((u) => u.Class === "BP_UnlockRecipe_C")
-					.flatMap((u) => u.mRecipes!)
-					.map((s) => s.split(".")[1])
-					.filter((r) => recipesLookup.has(r)),
+				Unlocks: unlockNames.filter((r) => recipesLookup.has(r)),
 			};
 		});
 	milestoneView.sort((x, y) => {
@@ -765,6 +769,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			return {
 				Item: itemsLookup.get(x.ItemClass),
 				RateExpr: amountPerMinute.uneval(),
+				Clazz: x.ItemClass,
 			};
 		});
 
@@ -820,6 +825,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			"Desc_OreBauxite_C",
 			"Desc_NitrogenGas_C",
 			"Desc_OreUranium_C",
+			"Desc_SAM_C",
 
 			"Desc_Water_C",
 			// "FakePower",
@@ -863,11 +869,10 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			}
 		}
 
-		// HACK as a buildgun and alternate only, just put this on the end
-		if (itemClassesToSortOrders.has("BP_ItemDescriptorPortableMiner_C")) {
-			throw new Error("BP_ItemDescriptorPortableMiner_C");
+		// HACK There are a few items that are only obtained from alternate recipes, just slap them on the end.
+		for (const recipe of recipes) {
+			processRecipe(recipe);
 		}
-		itemClassesToSortOrders.set("BP_ItemDescriptorPortableMiner_C", nextSortOrder++);
 	}
 
 	const itemsView = items.map((x, i) => ({
