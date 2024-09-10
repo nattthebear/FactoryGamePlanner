@@ -1524,7 +1524,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SAM_C",
 		DisplayName: "SAM",
-		SerializeId: 116,
+		SerializeId: 117,
 		Description: "Strange Alien Matter, commonly referred to as SAM, doesn't seem to follow the known laws of physics. It whispers of new possibilities.",
 		IsResource: true,
 		Icon: Desc_SAM_C,
@@ -1536,7 +1536,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedIonizedFuel_C",
 		DisplayName: "Packaged Ionized Fuel",
-		SerializeId: 117,
+		SerializeId: 118,
 		Description: "Ionized Fuel, packaged for alternative transport. Can be used as fuel for vehicles and the Jetpack.",
 		IsResource: false,
 		Icon: Desc_PackagedIonizedFuel_C,
@@ -1548,7 +1548,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_PackagedRocketFuel_C",
 		DisplayName: "Packaged Rocket Fuel",
-		SerializeId: 118,
+		SerializeId: 119,
 		Description: "Rocket Fuel, packaged for alternative transport. Can be used as fuel for vehicles and the Jetpack.",
 		IsResource: false,
 		Icon: Desc_PackagedRocketFuel_C,
@@ -1560,7 +1560,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_RocketFuel_C",
 		DisplayName: "Rocket Fuel",
-		SerializeId: 119,
+		SerializeId: 120,
 		Description: "A high-impulse compressed gas fuel.\nCan be used as-is to power Fuel-Powered Generators, or packaged to be used as fuel for vehicles or the Jetpack.",
 		IsResource: false,
 		Icon: Desc_RocketFuel_C,
@@ -1572,7 +1572,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_DarkMatter_C",
 		DisplayName: "Dark Matter Crystal",
-		SerializeId: 120,
+		SerializeId: 121,
 		Description: "Concentrated Dark Matter Residue that is isolated within a crystalline vessel. This form of containment allows for utilising Dark Matter reliably in other production processes.\n\nPower Usage: 500-1500 MW (1000 MW average).",
 		IsResource: false,
 		Icon: Desc_DarkMatter_C,
@@ -1584,7 +1584,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_IonizedFuel_C",
 		DisplayName: "Ionized Fuel",
-		SerializeId: 121,
+		SerializeId: 122,
 		Description: "Fuel that has been ionized, allowing it to deliver incredible output.\nCan be used as-is to power Fuel-Powered Generators, or packaged to be used as fuel for vehicles or the Jetpack.",
 		IsResource: false,
 		Icon: Desc_IonizedFuel_C,
@@ -1596,7 +1596,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_FicsiteMesh_C",
 		DisplayName: "Ficsite Trigon",
-		SerializeId: 122,
+		SerializeId: 123,
 		Description: "The Ficsite Trigon, made from Ficsite Ingots, is perfectly shaped for all construction challenges. It's performance is so exceptional, it basically solved structural engineering.",
 		IsResource: false,
 		Icon: Desc_FicsiteMesh_C,
@@ -1608,7 +1608,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_TimeCrystal_C",
 		DisplayName: "Time Crystal",
-		SerializeId: 123,
+		SerializeId: 124,
 		Description: "Time Crystals are Diamonds that have been reconfigured on a sub-atomic level in the Converter to retain a time-periodic self-organizing structure. This allows them to be used in the development of quantum processing and storage technologies.",
 		IsResource: false,
 		Icon: Desc_TimeCrystal_C,
@@ -1620,7 +1620,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_DarkEnergy_C",
 		DisplayName: "Dark Matter Residue",
-		SerializeId: 124,
+		SerializeId: 125,
 		Description: "Produced as a by-product of Quantum Encoding processes and alternatively generated in the Converter.\n\nVarious fields of science are still debating the nature and properties of Dark Matter. Meanwhile, FICSIT has found several applications for it in space-time manipulation.",
 		IsResource: false,
 		Icon: Desc_DarkEnergy_C,
@@ -1632,7 +1632,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SAMIngot_C",
 		DisplayName: "Reanimated SAM",
-		SerializeId: 125,
+		SerializeId: 126,
 		Description: "The active and contained form of the Strange Alien Matter.\n\nProper electromagnetic containment is required, as it appears to be able to manipulate the atomic bonds of any matter it comes into contact with.",
 		IsResource: false,
 		Icon: Desc_SAMIngot_C,
@@ -1644,7 +1644,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_QuantumEnergy_C",
 		DisplayName: "Excited Photonic Matter",
-		SerializeId: 126,
+		SerializeId: 127,
 		Description: "Excited Photonic Matter is essential for all production processes in the Quantum Encoder.\n\nFormed in the Converter by inducing intense photon interactions through exposure to SAM in a high-energy environment.",
 		IsResource: false,
 		Icon: Desc_QuantumEnergy_C,
@@ -1656,7 +1656,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Diamond_C",
 		DisplayName: "Diamonds",
-		SerializeId: 127,
+		SerializeId: 128,
 		Description: "Synthetic Diamonds produced by exposing Coal to extreme heat and pressure.\n\nUsed in the production of Time Crystals and Dark Matter Crystals.\n\nPower Usage: 250-750 MW (500 MW average).",
 		IsResource: false,
 		Icon: Desc_Diamond_C,
@@ -1668,7 +1668,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_QuantumOscillator_C",
 		DisplayName: "Superposition Oscillator",
-		SerializeId: 128,
+		SerializeId: 129,
 		Description: "An oscillator circuit that uses the mechanical resonance of a vibrating crystal to create a string vibration with a precise frequency. Often used in teleportation technology and dimensional manipulation.",
 		IsResource: false,
 		Icon: Desc_QuantumOscillator_C,
@@ -1680,7 +1680,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_TemporalProcessor_C",
 		DisplayName: "Neural-Quantum Processor",
-		SerializeId: 129,
+		SerializeId: 130,
 		Description: "The Neural-Quantum Processor utilizes a combination of neural network architecture and quantum computing techniques to achieve unprecedented performance. This technology has enabled some of FICSIT's biggest advancements in artificial intelligence and relativistic engineering.",
 		IsResource: false,
 		Icon: Desc_TemporalProcessor_C,
@@ -1692,7 +1692,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_12_C",
 		DisplayName: "AI Expansion Server",
-		SerializeId: 130,
+		SerializeId: 131,
 		Description: "Project Part #12. Ship via the Space Elevator to complete phases of Project Assembly.\nPower Usage: 1500-2500 MW (2000 MW average).\n\nGrowth is the metric by which we measure success.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_12_C,
@@ -1704,7 +1704,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SAMFluctuator_C",
 		DisplayName: "SAM Fluctuator",
-		SerializeId: 131,
+		SerializeId: 132,
 		Description: "The SAM Fluctuator is able to regulate and direct the behaviour of Reanimated SAM through the application of electric charges with varying frequencies.\nThis control facilitates technologies such as matter-to-energy conversion and spatiotemporal matter manipulation.",
 		IsResource: false,
 		Icon: Desc_SAMFluctuator_C,
@@ -1716,7 +1716,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_FicsiteIngot_C",
 		DisplayName: "Ficsite Ingot",
-		SerializeId: 132,
+		SerializeId: 133,
 		Description: "Produced by reconstructing other metals on a molecular level using Strange Alien Matter.\n\nSynthesized by FICSIT to be the perfect construction material, and used in the most high-end processes.",
 		IsResource: false,
 		Icon: Desc_FicsiteIngot_C,
@@ -1728,7 +1728,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_10_C",
 		DisplayName: "Biochemical Sculptor",
-		SerializeId: 133,
+		SerializeId: 134,
 		Description: "Project Part #10. Ship via the Space Elevator to complete phases of Project Assembly.\n\nYears ahead of the competition, this top-of-the-line 3D printer is used for the production of synthetic biological resources.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_10_C,
@@ -1740,7 +1740,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_DissolvedSilica_C",
 		DisplayName: "Dissolved Silica",
-		SerializeId: 134,
+		SerializeId: 135,
 		Description: "Silica dissolved in Water, produced as part of the alternative refinement of Raw Quartz.\nThe Silica can be extracted from the Water to complete the refinement process.",
 		IsResource: false,
 		Icon: Desc_DissolvedSilica_C,
@@ -1752,7 +1752,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_Ficsonium_C",
 		DisplayName: "Ficsonium",
-		SerializeId: 135,
+		SerializeId: 136,
 		Description: "Usage and production of this material is strictly prohibited. On Earth, that is. There are no rules in space, only efficiency. \n\nPower Usage: 500-1500 MW (1000 MW average).",
 		IsResource: false,
 		Icon: Desc_Ficsonium_C,
@@ -1764,7 +1764,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SingularityCell_C",
 		DisplayName: "Singularity Cell",
-		SerializeId: 136,
+		SerializeId: 137,
 		Description: "Used to break down space and time. Required to power Portals.",
 		IsResource: false,
 		Icon: Desc_SingularityCell_C,
@@ -1776,7 +1776,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_SpaceElevatorPart_11_C",
 		DisplayName: "Ballistic Warp Drive",
-		SerializeId: 137,
+		SerializeId: 138,
 		Description: "Project Part #11. Ship via the Space Elevator to complete phases of Project Assembly.\nPower Usage: 1000-2000 MW (1500 MW average).\n\nA large amount of force is required for the Warp Drives to activate, so sticking them to rockets was the logical next step. Additionally, results improved immensely when the observers were further removed from the Warp Drives upon activation.",
 		IsResource: false,
 		Icon: Desc_SpaceElevatorPart_11_C,
@@ -1788,7 +1788,7 @@ export const Items: Item[] = [
 	{
 		ClassName: "Desc_FicsoniumFuelRod_C",
 		DisplayName: "Ficsonium Fuel Rod",
-		SerializeId: 138,
+		SerializeId: 139,
 		Description: "Used as fuel for Nuclear Power Plants.\nThe power source that put FICSIT on the map. Literally. The crater is still there.\n\nCaution: Moderately Radioactive.",
 		IsResource: false,
 		Icon: Desc_FicsoniumFuelRod_C,
