@@ -829,6 +829,27 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		});
 	})();
 
+	// Disambiguate recipes which share the same name
+	{
+		const recipeNames = new Map<string, (typeof recipeView)[number][]>();
+		for (const r of recipeView) {
+			const { DisplayName } = r;
+			let bucket = recipeNames.get(DisplayName);
+			if (!bucket) {
+				recipeNames.set(DisplayName, (bucket = []));
+			}
+			bucket.push(r);
+		}
+		for (const bucket of recipeNames.values()) {
+			if (bucket.length < 2) {
+				continue;
+			}
+			for (const r of bucket) {
+				r.DisplayName += ` (${buildings[r.Building].mDisplayName})`;
+			}
+		}
+	}
+
 	const itemClassesToSortOrders = new Map<string, number>();
 	{
 		let nextSortOrder = 0;

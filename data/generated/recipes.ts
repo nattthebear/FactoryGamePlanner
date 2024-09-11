@@ -1916,7 +1916,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_CartridgeChaos_C",
-		DisplayName: "Turbo Rifle Ammo",
+		DisplayName: "Turbo Rifle Ammo (Blender)",
 		SerializeId: 194,
 		Inputs: [{ Item: Items[110 /* Desc_CartridgeStandard_C */], Rate: BigRat.fromInteger(125) }, { Item: Items[73 /* Desc_AluminumCasing_C */], Rate: BigRat.fromInteger(15) }, { Item: Items[82 /* Desc_LiquidTurboFuel_C */], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[109 /* Desc_CartridgeChaos_C */], Rate: BigRat.fromInteger(250) }, ],
@@ -1926,7 +1926,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_CartridgeChaos_Packaged_C",
-		DisplayName: "Turbo Rifle Ammo",
+		DisplayName: "Turbo Rifle Ammo (Manufacturer)",
 		SerializeId: 195,
 		Inputs: [{ Item: Items[110 /* Desc_CartridgeStandard_C */], Rate: BigRat.fromInteger(125) }, { Item: Items[73 /* Desc_AluminumCasing_C */], Rate: BigRat.fromInteger(15) }, { Item: Items[29 /* Desc_TurboFuel_C */], Rate: BigRat.fromInteger(15) }, ],
 		Outputs: [{ Item: Items[109 /* Desc_CartridgeChaos_C */], Rate: BigRat.fromInteger(250) }, ],
