@@ -120,7 +120,7 @@ export function deserialize(encoded: string) {
 			const rate = readBigRat(r);
 			const item = vReadItem(r);
 			if (!item) {
-				console.warn(`Decode: Missing item`);
+				console.warn(`Decode: missing item`);
 			} else {
 				ret.push({
 					rate: rate.sign() <= 0 ? null : rate,
