@@ -6,18 +6,18 @@ import { calculateOverclockedPowerRatio, generateNetResults } from "./GenerateNe
 
 const WP_RATES = new Map<Item, BigRat>(
 	[
-		{ className: "Desc_OreIron_C", wp: "0.14" },
-		{ className: "Desc_OreCopper_C", wp: "0.35" },
-		{ className: "Desc_Stone_C", wp: "0.19" },
-		{ className: "Desc_Coal_C", wp: "0.32" },
-		{ className: "Desc_OreGold_C", wp: "0.91" },
-		{ className: "Desc_LiquidOil_C", wp: "0.85" },
-		{ className: "Desc_RawQuartz_C", wp: "0.95" },
-		{ className: "Desc_Sulfur_C", wp: "1.46" },
-		{ className: "Desc_OreBauxite_C", wp: "1.02" },
+		{ className: "Desc_OreIron_C", wp: "0.11" },
+		{ className: "Desc_OreCopper_C", wp: "0.27" },
+		{ className: "Desc_Stone_C", wp: "0.14" },
+		{ className: "Desc_Coal_C", wp: "0.24" },
+		{ className: "Desc_OreGold_C", wp: "0.67" },
+		{ className: "Desc_LiquidOil_C", wp: "0.79" },
+		{ className: "Desc_RawQuartz_C", wp: "0.74" },
+		{ className: "Desc_Sulfur_C", wp: "0.93" },
+		{ className: "Desc_OreBauxite_C", wp: "0.81" },
 		{ className: "Desc_OreUranium_C", wp: "4.76" },
 		{ className: "Desc_NitrogenGas_C", wp: "0.83" },
-		{ className: "Desc_SAM_C", wp: "1.85" },
+		{ className: "Desc_SAM_C", wp: "0.98" },
 	].map(({ className, wp }) => [ItemsByClassName.get(className)!, BigRat.parse(wp).neg()]),
 );
 

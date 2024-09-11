@@ -13,6 +13,10 @@ export const BasicRecipes = Recipes.filter((r) => !r.Alternate);
 export const AlternateRecipes = Recipes.filter((r) => r.Alternate);
 export const Resources = Items.filter((r) => r.IsResource);
 
+// Conversion recipes can be useful, and the system can handle them, but the way they interact with the
+// default constraints can be confusing.  Turn them off by default.
+const DefaultRecipes = BasicRecipes.filter((r) => !(r.Outputs.length && r.Outputs.every((o) => o.Item.IsResource)));
+
 const Water = ItemsByClassName.get("Desc_Water_C")!;
 
 export interface NullableFlow {
@@ -40,7 +44,7 @@ export const makeEmptyState = (): State => ({
 });
 
 export const makeDefaultState = (): State => ({
-	recipes: new Set(BasicRecipes),
+	recipes: new Set(DefaultRecipes),
 	products: [],
 	inputs: buildDefaultInputs(),
 });
