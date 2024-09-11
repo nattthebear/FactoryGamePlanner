@@ -15,5 +15,6 @@ export const defaultResourceData = new Map<Item, BigRat>(
 		{ className: "Desc_OreBauxite_C", rate: 9780 },
 		{ className: "Desc_OreUranium_C", rate: 2100 },
 		{ className: "Desc_NitrogenGas_C", rate: 12000 },
-	].map(({ className, rate }) => [ItemsByClassName.get(className)!, BigRat.fromInteger(rate)])
+		{ className: "Desc_SAM_C", rate: 5400 },
+	].map(({ className, rate }) => [ItemsByClassName.get(className)!, BigRat.fromInteger(rate)]),
 );

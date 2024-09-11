@@ -17,6 +17,7 @@ const WP_RATES = new Map<Item, BigRat>(
 		{ className: "Desc_OreBauxite_C", wp: "1.02" },
 		{ className: "Desc_OreUranium_C", wp: "4.76" },
 		{ className: "Desc_NitrogenGas_C", wp: "0.83" },
+		{ className: "Desc_SAM_C", wp: "1.85" },
 	].map(({ className, wp }) => [ItemsByClassName.get(className)!, BigRat.parse(wp).neg()]),
 );
 
