@@ -90,6 +90,20 @@ function miniobj<A>(type: t.Type<A>) {
 	);
 }
 
+function emptyStringToEmptyArray<E>(type: t.Type<E[]>) {
+	return new t.Type<E[]>(
+		type.name,
+		type.is,
+		(input, context) => {
+			if (input === "") {
+				return t.success([]);
+			}
+			return type.validate(input, context);
+		},
+		type.encode,
+	);
+}
+
 function not(type: t.Type<any>) {
 	return new t.Type<unknown>(
 		`not${type.name}`,
@@ -120,9 +134,9 @@ const stringInteger = new t.Type<number>(
 	t.identity,
 );
 
-const stringFloat = new t.Type<string>(
+const stringFloat = new t.Type<BigRat>(
 	"stringFloat",
-	t.string.is,
+	(obj) => obj instanceof BigRat,
 	(input, context) => {
 		if (typeof input !== "string") {
 			return t.failure(input, context, "Value must be a string");
@@ -130,7 +144,7 @@ const stringFloat = new t.Type<string>(
 		if (!input.match(/^[0-9]+(\.[0-9]+)?$/)) {
 			return t.failure(input, context, `String ${input} doesn't look like an integer`);
 		}
-		return t.success(input);
+		return t.success(BigRat.parse(input));
 	},
 	t.identity,
 );
@@ -149,9 +163,14 @@ const recipeIngredient = new t.Type<string>(
 		if (typeof input !== "string") {
 			return t.failure(input, context, "Value must be a string");
 		}
-		const match = input.match(/^BlueprintGeneratedClass.*\.([A-Za-z0-9_]+)$/);
+		// /Script/Engine.BlueprintGeneratedClass'/Game/FactoryGame/Resource/Parts/Cement/Desc_Cement.Desc_Cement_C'
+		const match = input.match(/^\/Script\/Engine\.BlueprintGeneratedClass'.*\.([A-Za-z0-9_]+)'$/);
 		if (!match) {
-			return t.failure(input, context, `Regex was not matched for ${input}`);
+			return t.failure(
+				input,
+				context,
+				`RecipeIngredient Regex was not matched for ${JSON.stringify(input) satisfies string}`,
+			);
 		}
 		const [, clazz] = match;
 		return t.success(clazz);
@@ -166,9 +185,14 @@ const buildingClass = new t.Type<string>(
 		if (typeof input !== "string") {
 			return t.failure(input, context, "Value must be a string");
 		}
-		const match = input.match(/^"[^.]*\.([^.]*)"$/);
+		// /Game/FactoryGame/Equipment/BuildGun/BP_BuildGun.BP_BuildGun_C
+		const match = input.match(/^[^.]*\.([^.]*)$/);
 		if (!match) {
-			return t.failure(input, context, `Regex was not matched for ${input}`);
+			return t.failure(
+				input,
+				context,
+				`BuildingClass Regex was not matched for ${JSON.stringify(input) satisfies string}`,
+			);
 		}
 		const [, clazz] = match;
 		return t.success(clazz);
@@ -185,7 +209,11 @@ const Texture2D = new t.Type<Texture>(
 		}
 		const match = input.match(/^Texture2D (([A-Za-z0-9_\/\-]+\/)([A-Za-z0-9_\-]+))\.\3$/);
 		if (!match) {
-			return t.failure(input, context, `Regex was not matched for ${input}`);
+			return t.failure(
+				input,
+				context,
+				`Texture2D Regex was not matched for ${JSON.stringify(input) satisfies string}`,
+			);
 		}
 		const [, resource] = match;
 		return t.success(new Texture(resource));
@@ -194,7 +222,9 @@ const Texture2D = new t.Type<Texture>(
 );
 
 const Color = miniobj(t.type({ R: stringInteger, G: stringInteger, B: stringInteger, A: stringInteger }));
-const IngredientList = miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringInteger })));
+const IngredientList = emptyStringToEmptyArray(
+	miniobj(t.array(t.type({ ItemClass: recipeIngredient, Amount: stringInteger }))),
+);
 const Form = t.keyof({ RF_SOLID: null, RF_LIQUID: null, RF_GAS: null });
 
 const $ItemDescriptor = makeDescriptor("ItemDescriptor");
@@ -274,7 +304,7 @@ const Recipe = t.type({
 	mIngredients: IngredientList,
 	mProduct: IngredientList,
 	// "mManufacturingMenuPriority": "11.000000",
-	mManufactoringDuration: stringInteger,
+	mManufactoringDuration: stringFloat,
 	// "mManualManufacturingMultiplier": "1.000000",
 	mProducedIn: miniobj(t.union([t.array(buildingClass), t.literal("")])),
 	// "mRelevantEvents": "",
@@ -354,6 +384,7 @@ const Schematic = t.type({
 		EST_Milestone: null,
 		EST_Alternate: null,
 		EST_ResourceSink: null,
+		EST_Customization: null,
 	}),
 	mDisplayName: t.string,
 	// "mDescription": "",
@@ -484,12 +515,36 @@ const Data = t.type({
 const ouputNameToPath = (name: string) => `${__dirname}/../data/generated/${name}.ts`;
 const outputNameToTemplate = (name: string) => `${__dirname}/${name}.mustache`;
 
-async function reorderDataMutate(name: string, data: { ClassName: string }[]) {
+async function reorderDataMutate<T extends { ClassName: string }>(name: string, data: T[]) {
 	// use the old data to reorder the new data, to cut down on diffs
 	const oldRawData = await fs.readFile(ouputNameToPath(name), "utf-8");
 	const oldClassNames = [...oldRawData.matchAll(/^\s*ClassName:\s*("[^"]+")/gm)].map(
 		(match) => JSON.parse(match[1]) as string,
 	);
+	const oldSerializeIds = [...oldRawData.matchAll(/^\s*SerializeId:\s*(\d+)/gm)].map(
+		(match) => JSON.parse(match[1]) as number,
+	);
+	if (oldSerializeIds.length > 0) {
+		if (oldSerializeIds.length !== oldClassNames.length) {
+			throw new Error("Old data had SerializeIds, but they were malformed?");
+		}
+		const dataAsIded = data as (T & { SerializeId: number })[];
+		const newDataByClassName = new Map(dataAsIded.map((d) => [d.ClassName, d]));
+		for (let i = 0; i < oldClassNames.length; i += 1) {
+			const oldClassName = oldClassNames[i];
+			const oldSerializeId = oldSerializeIds[i];
+			const newDatum = newDataByClassName.get(oldClassName);
+			if (newDatum) {
+				newDatum.SerializeId = oldSerializeId;
+			}
+		}
+		let nextSerializeId = Math.max(...oldSerializeIds) + 1;
+		for (const datum of dataAsIded) {
+			if (datum.SerializeId == null) {
+				datum.SerializeId = nextSerializeId++;
+			}
+		}
+	}
 	const oldClassMap = new Map(oldClassNames.map((s, i) => [s, i]));
 	data.sort((x, y) => {
 		const oldXIndex = oldClassMap.get(x.ClassName) ?? 99999999;
@@ -512,7 +567,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 (async () => {
 	config = await loadJson(`${__dirname}/../.importerconfig`, Config);
 
-	const rawData = await loadJson(`${config.GameDir}/CommunityResources/Docs/Docs.json`, RawData, "utf16le");
+	const rawData = await loadJson(`${config.GameDir}/CommunityResources/Docs/en-US.json`, RawData, "utf16le");
 	const rawDataToObjects = Object.fromEntries(rawData.map((r) => [r.NativeClass, r.Classes]));
 	const dataRes = Data.decode(rawDataToObjects);
 	if (dataRes._tag === "Left") {
@@ -550,7 +605,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 					throw new Error(`Couldn't find fuel item for ${fuel.mFuelClass}`);
 				}
 				const mDisplayName = `Power from ${fuelItem.mDisplayName}`;
-				let mManufactoringDuration = BigRat.parse(fuelItem.mEnergyValue);
+				let mManufactoringDuration = fuelItem.mEnergyValue;
 				mManufactoringDuration = mManufactoringDuration
 					.mul(BigRat.fromInteger(p.mFuelLoadAmount))
 					.div(BigRat.fromInteger(p.mPowerProduction));
@@ -562,14 +617,11 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 				];
 				if (fuel.mSupplementalResourceClass) {
 					let amount = BigRat.fromInteger(p.mPowerProduction)
-						.mul(BigRat.parse(p.mSupplementalToPowerRatio))
+						.mul(p.mSupplementalToPowerRatio)
 						.mul(mManufactoringDuration);
 					const suppItem = allItems.find((i) => i.ClassName === fuel.mSupplementalResourceClass);
 					if (!suppItem) {
 						throw new Error(`Couldn't find fuel item for ${fuel.mFuelClass}`);
-					}
-					if (suppItem.mForm !== "RF_SOLID") {
-						amount = amount.div(BigRat.fromInteger(1000));
 					}
 					mIngredients.push({
 						ItemClass: fuel.mSupplementalResourceClass,
@@ -605,8 +657,8 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			return {
 				ClassName: p.ClassName,
 				mManufacturingSpeed: "1.000000",
-				mPowerConsumption: "-" + p.mPowerProduction,
-				mPowerConsumptionExponent: "1",
+				mPowerConsumption: BigRat.fromInteger(p.mPowerProduction).neg(),
+				mPowerConsumptionExponent: BigRat.ONE,
 				mDisplayName: p.mDisplayName,
 				mDescription: p.mDescription,
 			};
@@ -658,7 +710,8 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			.filter((s) => s.mType === "EST_Alternate")
 			.flatMap((s) => s.mUnlocks.filter((u) => u.Class === "BP_UnlockRecipe_C"))
 			.flatMap((u) => u.mRecipes!)
-			.map((s) => s.split(".")[1]),
+			// /Script/Engine.BlueprintGeneratedClass'/Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_FusedWire.Recipe_Alternate_FusedWire_C'
+			.map((s) => s.split(".").at(-1)!.split("'")[0]),
 	);
 
 	const milestoneView = data[$Schematic]
@@ -695,15 +748,18 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			} else {
 				throw new Error(s.mType);
 			}
+
+			const unlockNames = s.mUnlocks
+				.filter((u) => u.Class === "BP_UnlockRecipe_C")
+				.flatMap((u) => u.mRecipes!)
+				// /Script/Engine.BlueprintGeneratedClass'/Game/FactoryGame/Recipes/Buildings/Recipe_GeneratorCoal.Recipe_GeneratorCoal_C'
+				.map((s) => s.split(".").at(-1)!.split("'")[0]);
+
 			return {
 				...s,
 				Tier,
 				SubTier,
-				Unlocks: s.mUnlocks
-					.filter((u) => u.Class === "BP_UnlockRecipe_C")
-					.flatMap((u) => u.mRecipes!)
-					.map((s) => s.split(".")[1])
-					.filter((r) => recipesLookup.has(r)),
+				Unlocks: unlockNames.filter((r) => recipesLookup.has(r)),
 			};
 		});
 	milestoneView.sort((x, y) => {
@@ -734,13 +790,14 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			return {
 				Item: itemsLookup.get(x.ItemClass),
 				RateExpr: amountPerMinute.uneval(),
+				Clazz: x.ItemClass,
 			};
 		});
 
 	const recipeView = (() => {
 		const isAlternate = (r: (typeof recipes)[number]) => alternateUnlockData.has(r.ClassName);
 
-		return recipes.map((x, i) => {
+		return recipes.map((x) => {
 			const duration =
 				typeof x.mManufactoringDuration === "number"
 					? BigRat.fromInteger(x.mManufactoringDuration)
@@ -749,7 +806,6 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 
 			return {
 				...x,
-				SerializeId: i,
 				Inputs: mapIngredients(x.mIngredients, duration),
 				Outputs: mapIngredients(x.mProduct, duration),
 				Building: (() => {
@@ -773,6 +829,27 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		});
 	})();
 
+	// Disambiguate recipes which share the same name
+	{
+		const recipeNames = new Map<string, (typeof recipeView)[number][]>();
+		for (const r of recipeView) {
+			const { DisplayName } = r;
+			let bucket = recipeNames.get(DisplayName);
+			if (!bucket) {
+				recipeNames.set(DisplayName, (bucket = []));
+			}
+			bucket.push(r);
+		}
+		for (const bucket of recipeNames.values()) {
+			if (bucket.length < 2) {
+				continue;
+			}
+			for (const r of bucket) {
+				r.DisplayName += ` (${buildings[r.Building].mDisplayName})`;
+			}
+		}
+	}
+
 	const itemClassesToSortOrders = new Map<string, number>();
 	{
 		let nextSortOrder = 0;
@@ -789,6 +866,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			"Desc_OreBauxite_C",
 			"Desc_NitrogenGas_C",
 			"Desc_OreUranium_C",
+			"Desc_SAM_C",
 
 			"Desc_Water_C",
 			// "FakePower",
@@ -832,16 +910,14 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			}
 		}
 
-		// HACK as a buildgun and alternate only, just put this on the end
-		if (itemClassesToSortOrders.has("BP_ItemDescriptorPortableMiner_C")) {
-			throw new Error("BP_ItemDescriptorPortableMiner_C");
+		// HACK There are a few items that are only obtained from alternate recipes, just slap them on the end.
+		for (const recipe of recipes) {
+			processRecipe(recipe);
 		}
-		itemClassesToSortOrders.set("BP_ItemDescriptorPortableMiner_C", nextSortOrder++);
 	}
 
-	const itemsView = items.map((x, i) => ({
+	const itemsView = items.map((x) => ({
 		...x,
-		SerializeId: i,
 		Color: {
 			RF_SOLID: "#fff",
 			RF_LIQUID: formatColor(x.mFluidColor),
@@ -857,8 +933,8 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 
 	const buildingsView = buildings.map((x) => ({
 		...x,
-		PowerConsumptionExpr: BigRat.parse(x.mPowerConsumption).uneval(),
-		PowerConsumptionExponentExpr: BigRat.parse(x.mPowerConsumptionExponent).uneval(),
+		PowerConsumptionExpr: x.mPowerConsumption.uneval(),
+		PowerConsumptionExponentExpr: x.mPowerConsumptionExponent.uneval(),
 	}));
 
 	// Eliminate duplicate recipe names

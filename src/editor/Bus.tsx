@@ -14,7 +14,7 @@ const resizeRect = <rect x={-10} y={-30} width={20} height={60} />;
 const MIN_WIDTH = 200;
 const MAX_WIDTH = 8000;
 
-const MAX_FLOW = BigRat.fromInteger(780);
+const MAX_FLOW = BigRat.fromInteger(1200);
 
 interface RateDiff {
 	x: number;

@@ -50,7 +50,7 @@ partial class Program
 		);
 		var mappingsProvider = new FileUsmapTypeMappingsProvider(usmapDir);
 		var versionContainer = new VersionContainer(
-			game: EGame.GAME_UE5_2,
+			game: EGame.GAME_UE5_3,
 			platform: ETexturePlatform.DesktopMobile,
 			customVersions: fCustomVersions
 		);

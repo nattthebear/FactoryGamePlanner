@@ -1,3 +1,4 @@
+import { defaultResourceData } from "../../../data/defaultResources";
 import { Items } from "../../../data/generated/items";
 import { Recipes } from "../../../data/generated/recipes";
 import { ItemsByClassName } from "../../../data/lookups";
@@ -12,21 +13,10 @@ export const BasicRecipes = Recipes.filter((r) => !r.Alternate);
 export const AlternateRecipes = Recipes.filter((r) => r.Alternate);
 export const Resources = Items.filter((r) => r.IsResource);
 
-export const defaultResourceData = new Map<Item, BigRat>(
-	[
-		{ className: "Desc_OreIron_C", rate: 70380 },
-		{ className: "Desc_OreCopper_C", rate: 28860 },
-		{ className: "Desc_Stone_C", rate: 52860 },
-		{ className: "Desc_Coal_C", rate: 30900 },
-		{ className: "Desc_OreGold_C", rate: 11040 },
-		{ className: "Desc_LiquidOil_C", rate: 11700 },
-		{ className: "Desc_RawQuartz_C", rate: 10500 },
-		{ className: "Desc_Sulfur_C", rate: 6840 },
-		{ className: "Desc_OreBauxite_C", rate: 9780 },
-		{ className: "Desc_OreUranium_C", rate: 2100 },
-		{ className: "Desc_NitrogenGas_C", rate: 12000 },
-	].map(({ className, rate }) => [ItemsByClassName.get(className)!, BigRat.fromInteger(rate)]),
-);
+// Conversion recipes can be useful, and the system can handle them, but the way they interact with the
+// default constraints can be confusing.  Turn them off by default.
+const DefaultRecipes = BasicRecipes.filter((r) => !(r.Outputs.length && r.Outputs.every((o) => o.Item.IsResource)));
+
 const Water = ItemsByClassName.get("Desc_Water_C")!;
 
 export interface NullableFlow {
@@ -54,13 +44,13 @@ export const makeEmptyState = (): State => ({
 });
 
 export const makeDefaultState = (): State => ({
-	recipes: new Set(BasicRecipes),
+	recipes: new Set(DefaultRecipes),
 	products: [],
 	inputs: buildDefaultInputs(),
 });
 
 export function buildDefaultInputs() {
-	const ret = Array<NullableFlow>(defaultResourceData.size + 1);
+	const ret: NullableFlow[] = [];
 	let i = 0;
 	for (const [key, value] of defaultResourceData.entries()) {
 		ret[i++] = { rate: value, item: key };

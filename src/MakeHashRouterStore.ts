@@ -45,7 +45,7 @@ addEventListener("hashchange", () => {
 	if (hash === lastSentHash) {
 		return;
 	}
-	console.log("newhash in");
+	console.log("Loading new hash...");
 
 	const parts = hash.split(".");
 	for (let i = 0; i < stores.length; i++) {

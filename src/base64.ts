@@ -159,8 +159,26 @@ export function makeWMap<T>(keys: Iterable<T>) {
 	return makeWMapImpl(map, maxValue);
 }
 
+interface StableReversibleMap<T extends { SerializeId: number }> {
+	/** Write a value to output */
+	write: {
+		(w: WStream, value: T): void;
+		BITS: number;
+	};
+	/** Read a value from input.  Returns null if the value was not found. */
+	read: {
+		(r: RStream): T | null;
+		BITS: number;
+	};
+	/** Create a read-only map using the same IDs, but up to a lower maximum value */
+	makeReader: (maxValue: number) => {
+		(r: RStream): T | null;
+		BITS: number;
+	};
+}
+
 /** Makes a pair of functions to store and load objects by predetermined ids */
-export function makeStableReversibleMap<T extends { SerializeId: number }>(data: Iterable<T>) {
+export function makeStableReversibleMap<T extends { SerializeId: number }>(data: Iterable<T>): StableReversibleMap<T> {
 	const wmap = new Map<T, number>();
 	const rmap = new Map<number, T>();
 	let maxId = 0;
@@ -182,8 +200,13 @@ export function makeStableReversibleMap<T extends { SerializeId: number }>(data:
 	return {
 		write: makeWMapImpl(wmap, maxId),
 		read: makeRMapImpl(rmap, maxId),
+		makeReader: (maxValue) => makeRMapImpl(rmap, maxValue),
 	};
 }
 
-export const { write: writeRecipe, read: readRecipe } = makeStableReversibleMap(Recipes);
-export const { write: writeItem, read: readItem } = makeStableReversibleMap(ItemsWithFakePower);
+export const { write: writeRecipe, read: readRecipe, makeReader: makeReadRecipe } = makeStableReversibleMap(Recipes);
+export const {
+	write: writeItem,
+	read: readItem,
+	makeReader: makeReadItem,
+} = makeStableReversibleMap(ItemsWithFakePower);
