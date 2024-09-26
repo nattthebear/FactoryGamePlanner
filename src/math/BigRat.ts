@@ -606,6 +606,18 @@ export class BigRat {
 			return 0;
 		}
 	}
+	ceil() {
+		let { pb, qb } = this;
+		if (pb == null) {
+			pb = BigInt(this.ps!);
+			qb = BigInt(this.qs!);
+		}
+		let result = pb / qb!;
+		if (pb > 0 && result * qb! !== pb) {
+			result += 1n;
+		}
+		return result;
+	}
 
 	debug() {
 		return this.toRatioString();

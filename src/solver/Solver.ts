@@ -23,13 +23,12 @@ const WP_RATES = new Map<Item, BigRat>(
 
 /*
 Using the above WP rates, the actual value of 1 MW of power is:
-from coal: 0.064
-from oil (basic fuel recipe): 0.109
-from oil (purple stuff to diluted sunny D): 0.028
-turbofuel: (best alternates): 0.048
-perfect combination of plutonium and uranium, all best alternate recipes: 0.024
+from coal: 0.048
+from oil (purple stuff to diluted sunny D): 0.026
+turbofuel: (best alternates): 0.034
+perfect combination of plutonium and uranium, all best alternate recipes: 0.021
 */
-const POWER_WP = BigRat.parse("-0.03");
+const POWER_WP = BigRat.parse("-0.025");
 
 /** This resource is available as an input */
 export interface AvailableConstraint {

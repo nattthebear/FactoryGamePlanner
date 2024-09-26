@@ -4,7 +4,7 @@ import { update as updateEditor } from "../editor/store/Store";
 import { generateNetResults } from "../solver/GenerateNetResults";
 import { solve, solveCoop } from "../solver/Solver";
 import { makeProblem, State, useSelector } from "./store/Store";
-import { Recipe } from "../../data/types";
+import { Building, Recipe } from "../../data/types";
 import { FakePower } from "../../data/power";
 import { makeAbortablePromise, useAbortableAsynchronousMemo } from "../hook/usePromise";
 import { Spinner } from "../component/Spinner";
@@ -12,6 +12,30 @@ import { promptBoolean } from "../component/PromptBoolean";
 import { changeInPlanner } from "../AppStore";
 
 import "./Results.css";
+import { BigRat } from "../math/BigRat";
+import { Buildings } from "../../data/generated/buildings";
+
+const MAX_OC = BigRat.fromIntegers(5, 2);
+
+// 2 meters are added on each side with an input or output, to give a bare minimum
+// amount of space to run conveyors and pipes
+const FOOTPRINT_BY_BUILDING = [
+	8 * (10 + 4), // Build_ConstructorMk1_C
+	5 * (9 + 4), // Build_SmelterMk1_C
+	10 * (9 + 4), // Build_FoundryMk1_C
+	10 * (20 + 4), // Build_OilRefinery_C
+	10 * (15 + 4), // Build_AssemblerMk1_C
+	8 * (8 + 4), // Build_Packager_C
+	18 * (16 + 4), // Build_Blender_C
+	18 * (20 + 4), // Build_ManufacturerMk1_C
+	24 * (38 + 4), // Build_HadronCollider_C
+	10 * (26 + 2), // Build_GeneratorCoal_C
+	20 * (20 + 2), // Build_GeneratorFuel_C
+	36 * (43 + 2), // Build_GeneratorNuclear_C
+	20 * (20 + 4), // Build_QuantumEncoder_C // ???
+	20 * (20 + 4), // Build_Converter_C // ???
+	8 * (8 + 2), // Build_GeneratorBiomass_Automated_C
+];
 
 function imageForRecipe(recipe: Recipe) {
 	if (recipe.Building.PowerConsumption.sign() < 0) {
@@ -36,27 +60,36 @@ function* solveAndRender(state: State) {
 	const net = generateNetResults(problem, solution);
 	yield;
 
-	function renderRecipes() {
-		const nodes: Array<VNode> = [];
+	const buildingCounts = new Map<Building, number>();
+	const buildingCountsOC = new Map<Building, number>();
+	let recipeNodes: VNode[] = [];
+
+	{
 		let index = 0;
 		for (const recipe of problem.availableRecipes) {
 			let rate = solution!.recipes[index++];
 			if (rate.sign() > 0) {
-				nodes.push(
+				recipeNodes.push(
 					<tr>
-						<th data-tooltip={rate.toRatioString() + "/min"}>{rate.toFixed(2)}x</th>
+						<th data-tooltip={rate.toRatioString()}>{rate.toFixed(2)}x</th>
 						<td>
 							<img class="icon" src={imageForRecipe(recipe)} />
 						</td>
 						<td data-tooltip={recipe.ClassName}>{recipe.DisplayName}</td>
 					</tr>,
 				);
+				const { Building } = recipe;
+				buildingCounts.set(Building, (buildingCounts.get(Building) ?? 0) + Number(rate.ceil()));
+				buildingCountsOC.set(Building, (buildingCountsOC.get(Building) ?? 0) + Number(rate.div(MAX_OC).ceil()));
 			}
 		}
+	}
+
+	function renderRecipes() {
 		return (
 			<div class="pane">
 				<h3 class="title">Recipes used</h3>
-				<table>{nodes}</table>
+				<table>{recipeNodes}</table>
 			</div>
 		);
 	}
@@ -109,6 +142,57 @@ function* solveAndRender(state: State) {
 		);
 	}
 
+	function renderBuildingCounts() {
+		const breakdown = (map: Map<Building, number>) => {
+			let tooltip = "";
+			let total = 0;
+			for (const building of Buildings) {
+				const value = map.get(building);
+				if (value) {
+					if (tooltip) {
+						tooltip += "\n";
+					}
+					tooltip += `${building.DisplayName}: ${value}`;
+					total += value;
+				}
+			}
+			return <strong data-tooltip={tooltip}>{total}</strong>;
+		};
+
+		return (
+			<div>
+				Building count: {breakdown(buildingCounts)}, overclocked: {breakdown(buildingCountsOC)}
+			</div>
+		);
+	}
+
+	function renderFootprint() {
+		const breakdown = (map: Map<Building, number>) => {
+			let tooltip = "";
+			let total = 0;
+			let index = 0;
+			for (const building of Buildings) {
+				const value = map.get(building);
+				if (value) {
+					const footprint = value * FOOTPRINT_BY_BUILDING[index];
+					if (tooltip) {
+						tooltip += "\n";
+					}
+					tooltip += `${building.DisplayName}: ${footprint} m²`;
+					total += footprint;
+				}
+				index += 1;
+			}
+			return <strong data-tooltip={tooltip}>{total} m²</strong>;
+		};
+
+		return (
+			<div>
+				Footprint: {breakdown(buildingCounts)}, overclocked: {breakdown(buildingCountsOC)}
+			</div>
+		);
+	}
+
 	return (
 		<>
 			<div class="pane">
@@ -120,6 +204,8 @@ function* solveAndRender(state: State) {
 							WP: <strong data-tooltip={solution.wp.toRatioString()}>{solution.wp.toFixed(2)}</strong>
 						</div>
 						{renderPower()}
+						{renderBuildingCounts()}
+						{renderFootprint()}
 					</div>
 					<div>
 						<button
