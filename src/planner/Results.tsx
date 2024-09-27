@@ -3,7 +3,7 @@ import { connectSolution } from "../editor/store/ConnectSolution";
 import { update as updateEditor } from "../editor/store/Store";
 import { generateNetResults } from "../solver/GenerateNetResults";
 import { solve, solveCoop } from "../solver/Solver";
-import { makeProblem, State, useSelector } from "./store/Store";
+import { makeProblem, State, update, useSelector } from "./store/Store";
 import { Building, Recipe } from "../../data/types";
 import { FakePower } from "../../data/power";
 import { makeAbortablePromise, useAbortableAsynchronousMemo } from "../hook/usePromise";
@@ -14,6 +14,7 @@ import { changeInPlanner } from "../AppStore";
 import "./Results.css";
 import { BigRat } from "../math/BigRat";
 import { Buildings } from "../../data/generated/buildings";
+import { Recipes } from "../../data/generated/recipes";
 
 const MAX_OC = BigRat.fromIntegers(5, 2);
 
@@ -63,12 +64,14 @@ function* solveAndRender(state: State) {
 	const buildingCounts = new Map<Building, number>();
 	const buildingCountsOC = new Map<Building, number>();
 	let recipeNodes: VNode[] = [];
+	const usedRecipes = new Set<Recipe>();
 
 	{
 		let index = 0;
 		for (const recipe of problem.availableRecipes) {
 			let rate = solution!.recipes[index++];
 			if (rate.sign() > 0) {
+				usedRecipes.add(recipe);
 				recipeNodes.push(
 					<tr>
 						<th data-tooltip={rate.toRatioString()}>{rate.toFixed(2)}x</th>
@@ -76,6 +79,17 @@ function* solveAndRender(state: State) {
 							<img class="icon" src={imageForRecipe(recipe)} />
 						</td>
 						<td data-tooltip={recipe.ClassName}>{recipe.DisplayName}</td>
+						<td>
+							<button
+								onClick={() =>
+									update((draft) => {
+										draft.recipes.delete(recipe);
+									})
+								}
+							>
+								Disable
+							</button>
+						</td>
 					</tr>,
 				);
 				const { Building } = recipe;
@@ -88,7 +102,24 @@ function* solveAndRender(state: State) {
 	function renderRecipes() {
 		return (
 			<div class="pane">
-				<h3 class="title">Recipes used</h3>
+				<h3 class="title">
+					Recipes used{" "}
+					<span data-tooltip={"Disable any recipe not\nused in this solution"}>
+						<button
+							onClick={() =>
+								update((draft) => {
+									for (const recipe of Recipes) {
+										if (!usedRecipes.has(recipe)) {
+											draft.recipes.delete(recipe);
+										}
+									}
+								})
+							}
+						>
+							Disable others
+						</button>
+					</span>
+				</h3>
 				<table>{recipeNodes}</table>
 			</div>
 		);
