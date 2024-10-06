@@ -126,7 +126,6 @@ function makeRangeArray(n: number, first: number) {
 
 export function setupDictionary({ constraints, power, clockFactor, availableRecipes }: Problem) {
 	const itemsToConstraintRows = new Map<Item, number>();
-	const normalObjectives = new Set<Item>();
 	const maxiObjectives = new Set<Item>();
 	const plentiful = new Set<Item>();
 	let powerRow = -1;
@@ -145,12 +144,13 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 			if (rate != null) {
 				itemsToConstraintRows.set(item, a++);
 			} else {
-				plentiful.add(item);
 				if (constraint === "produced") {
 					maxiObjectives.add(item);
 					isDualObjective = true;
+					// For maximized production, constrain that we're not actually consuming; that's just weird.
+					itemsToConstraintRows.set(item, a++);
 				} else {
-					normalObjectives.add(item);
+					plentiful.add(item);
 				}
 			}
 		}
@@ -183,8 +183,8 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 	{
 		let a = pitch - 1;
 		for (const { constraint, rate } of constraints.values()) {
-			if (rate != null) {
-				let adjustedRate = rate;
+			if (rate != null || constraint === "produced") {
+				let adjustedRate = rate ?? BigRat.ZERO;
 				if (constraint === "produced") {
 					adjustedRate = adjustedRate.neg();
 				}
