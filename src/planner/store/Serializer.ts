@@ -14,7 +14,7 @@ import {
 import { BigRat } from "../../math/BigRat";
 import { makeEmptyState, NullableFlow, sortNullableFlowsMutate, State } from "./Store";
 
-const VERSION = 2;
+const VERSION = 3;
 
 type RecipeHole = "Basic" | "Alternate";
 
@@ -100,6 +100,10 @@ export function deserialize(encoded: string) {
 		case 2:
 			vRecipeList = orderedRecipeList.slice(0, 277 + 1);
 			vReadItem = makeReadItem(140);
+			break;
+		case 3:
+			vRecipeList = orderedRecipeList.slice(0, 278 + 1);
+			vReadItem = makeReadItem(141);
 			break;
 		default:
 			console.warn(`Decode: unknown version ${version}`);

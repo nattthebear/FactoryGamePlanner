@@ -2754,4 +2754,14 @@ export const Recipes: Recipe[] = [
 		Alternate: false,
 		PowerConsumption: null,
 	},
+	{
+		ClassName: "Recipe_AlienPowerFuel_C",
+		DisplayName: "Alien Power Matrix",
+		SerializeId: 278,
+		Inputs: [{ Item: Items[130 /* Desc_SAMFluctuator_C */], Rate: BigRat.fromIntegers(25, 2) }, { Item: Items[138 /* Desc_CrystalShard_C */], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[127 /* Desc_QuantumOscillator_C */], Rate: BigRat.fromIntegers(15, 2) }, { Item: Items[125 /* Desc_QuantumEnergy_C */], Rate: BigRat.fromInteger(60) }, ],
+		Outputs: [{ Item: Items[139 /* Desc_AlienPowerFuel_C */], Rate: BigRat.fromIntegers(5, 2) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Rate: BigRat.fromInteger(60) }, ],
+		Building: Buildings[12],
+		Alternate: false,
+		PowerConsumption: null,
+	},
 ];

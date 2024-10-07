@@ -23,7 +23,7 @@ import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { reflowConnectors } from "./ReflowConnector";
 import { makeEmptyState, State } from "./Store";
 
-const VERSION = 2;
+const VERSION = 3;
 
 const { saveX, saveY, loadX, loadY } = (() => {
 	const xoffs = FACTORY_MIN.x;
@@ -129,6 +129,10 @@ export function deserialize(encoded: string) {
 		case 2:
 			vReadItem = makeReadItem(140);
 			vReadRecipe = makeReadRecipe(277);
+			break;
+		case 3:
+			vReadItem = makeReadItem(141);
+			vReadRecipe = makeReadRecipe(278);
 			break;
 		default:
 			console.warn(`Decode: unknown version ${version}`);

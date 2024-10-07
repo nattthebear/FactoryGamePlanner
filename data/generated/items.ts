@@ -140,6 +140,7 @@ import Desc_SingularityCell_C from "url:./images/Desc_SingularityCell_C.png";
 import Desc_SpaceElevatorPart_11_C from "url:./images/Desc_SpaceElevatorPart_11_C.png";
 import Desc_FicsoniumFuelRod_C from "url:./images/Desc_FicsoniumFuelRod_C.png";
 import Desc_CrystalShard_C from "url:./images/Desc_CrystalShard_C.png";
+import Desc_AlienPowerFuel_C from "url:./images/Desc_AlienPowerFuel_C.png";
 
 export const Items: Item[] = [
 	{
@@ -1520,7 +1521,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(56),
-		SortOrder: 137,
+		SortOrder: 138,
 	},
 	{
 		ClassName: "Desc_SAM_C",
@@ -1688,7 +1689,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(248034),
-		SortOrder: 131,
+		SortOrder: 132,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_12_C",
@@ -1700,7 +1701,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(597652),
-		SortOrder: 132,
+		SortOrder: 133,
 	},
 	{
 		ClassName: "Desc_SAMFluctuator_C",
@@ -1748,7 +1749,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#e2beee",
 		SinkPoints: BigRat.fromInteger(0),
-		SortOrder: 138,
+		SortOrder: 139,
 	},
 	{
 		ClassName: "Desc_Ficsonium_C",
@@ -1760,7 +1761,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
-		SortOrder: 135,
+		SortOrder: 136,
 	},
 	{
 		ClassName: "Desc_SingularityCell_C",
@@ -1772,7 +1773,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(114675),
-		SortOrder: 133,
+		SortOrder: 134,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_11_C",
@@ -1784,7 +1785,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(2895334),
-		SortOrder: 134,
+		SortOrder: 135,
 	},
 	{
 		ClassName: "Desc_FicsoniumFuelRod_C",
@@ -1796,7 +1797,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
-		SortOrder: 136,
+		SortOrder: 137,
 	},
 	{
 		ClassName: "Desc_CrystalShard_C",
@@ -1809,5 +1810,17 @@ export const Items: Item[] = [
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
 		SortOrder: 127,
+	},
+	{
+		ClassName: "Desc_AlienPowerFuel_C",
+		DisplayName: "Alien Power Matrix",
+		SerializeId: 141,
+		Description: "This intricate condensed-matter matrix is used to enhance the output of the Alien Power Augmenter. \n\nInitially developed in efforts to create a human-made Somersloop, the Alien Power Matrix cannot sustain the extra-dimensional energy connection on its own. However, it can effectively stabilize the energy stream of the Somersloop.",
+		IsResource: false,
+		Icon: Desc_AlienPowerFuel_C,
+		IsPiped: false,
+		Color: "#fff",
+		SinkPoints: BigRat.fromInteger(210),
+		SortOrder: 131,
 	},
 ];

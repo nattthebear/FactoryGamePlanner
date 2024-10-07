@@ -236,6 +236,7 @@ const $ItemDescriptorNuclearFuel = makeDescriptor("ItemDescriptorNuclearFuel");
 const $ConsumableDescriptor = makeDescriptor("ConsumableDescriptor");
 const $EquipmentDescriptor = makeDescriptor("EquipmentDescriptor");
 const $PowerShardDescriptor = makeDescriptor("PowerShardDescriptor");
+const $ItemDescriptorPowerBoosterFuel = makeDescriptor("ItemDescriptorPowerBoosterFuel");
 const ItemDescriptor = t.type({
 	ClassName: t.string,
 	mDisplayName: t.string,
@@ -505,6 +506,7 @@ const Data = t.type({
 	[$ConsumableDescriptor]: t.array(ItemDescriptor),
 	[$EquipmentDescriptor]: t.array(ItemDescriptor),
 	[$PowerShardDescriptor]: t.array(ItemDescriptor),
+	[$ItemDescriptorPowerBoosterFuel]: t.array(ItemDescriptor),
 	[$ResourceDescriptor]: t.array(ResourceDescriptor),
 	[$Recipe]: t.array(Recipe),
 	[$BuildableManufacturer]: t.array(BuildableManufacturer),
@@ -587,6 +589,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		...data[$ConsumableDescriptor],
 		...data[$EquipmentDescriptor],
 		...data[$PowerShardDescriptor],
+		...data[$ItemDescriptorPowerBoosterFuel],
 	];
 	const allItems = [
 		...data[$ResourceDescriptor].map((x) => ({ ...x, isResource: true, isPiped: x.mForm !== "RF_SOLID" })),
