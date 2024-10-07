@@ -139,6 +139,7 @@ import Desc_Ficsonium_C from "url:./images/Desc_Ficsonium_C.png";
 import Desc_SingularityCell_C from "url:./images/Desc_SingularityCell_C.png";
 import Desc_SpaceElevatorPart_11_C from "url:./images/Desc_SpaceElevatorPart_11_C.png";
 import Desc_FicsoniumFuelRod_C from "url:./images/Desc_FicsoniumFuelRod_C.png";
+import Desc_CrystalShard_C from "url:./images/Desc_CrystalShard_C.png";
 
 export const Items: Item[] = [
 	{
@@ -1519,7 +1520,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(56),
-		SortOrder: 134,
+		SortOrder: 137,
 	},
 	{
 		ClassName: "Desc_SAM_C",
@@ -1543,7 +1544,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(5246),
-		SortOrder: 136,
+		SortOrder: 129,
 	},
 	{
 		ClassName: "Desc_PackagedRocketFuel_C",
@@ -1591,7 +1592,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#ffc75b",
 		SinkPoints: BigRat.fromInteger(2398),
-		SortOrder: 135,
+		SortOrder: 128,
 	},
 	{
 		ClassName: "Desc_FicsiteMesh_C",
@@ -1675,7 +1676,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(37292),
-		SortOrder: 127,
+		SortOrder: 130,
 	},
 	{
 		ClassName: "Desc_TemporalProcessor_C",
@@ -1687,7 +1688,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(248034),
-		SortOrder: 128,
+		SortOrder: 131,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_12_C",
@@ -1699,7 +1700,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(597652),
-		SortOrder: 129,
+		SortOrder: 132,
 	},
 	{
 		ClassName: "Desc_SAMFluctuator_C",
@@ -1747,7 +1748,7 @@ export const Items: Item[] = [
 		IsPiped: true,
 		Color: "#e2beee",
 		SinkPoints: BigRat.fromInteger(0),
-		SortOrder: 137,
+		SortOrder: 138,
 	},
 	{
 		ClassName: "Desc_Ficsonium_C",
@@ -1759,7 +1760,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
-		SortOrder: 132,
+		SortOrder: 135,
 	},
 	{
 		ClassName: "Desc_SingularityCell_C",
@@ -1771,7 +1772,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(114675),
-		SortOrder: 130,
+		SortOrder: 133,
 	},
 	{
 		ClassName: "Desc_SpaceElevatorPart_11_C",
@@ -1783,7 +1784,7 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(2895334),
-		SortOrder: 131,
+		SortOrder: 134,
 	},
 	{
 		ClassName: "Desc_FicsoniumFuelRod_C",
@@ -1795,6 +1796,18 @@ export const Items: Item[] = [
 		IsPiped: false,
 		Color: "#fff",
 		SinkPoints: BigRat.fromInteger(0),
-		SortOrder: 133,
+		SortOrder: 136,
+	},
+	{
+		ClassName: "Desc_CrystalShard_C",
+		DisplayName: "Power Shard",
+		SerializeId: 140,
+		Description: "Power Slug mucus compressed into a solid crystal-like shard. \nIt radiates a strange power.",
+		IsResource: false,
+		Icon: Desc_CrystalShard_C,
+		IsPiped: false,
+		Color: "#fff",
+		SinkPoints: BigRat.fromInteger(0),
+		SortOrder: 127,
 	},
 ];
