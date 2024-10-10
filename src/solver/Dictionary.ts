@@ -516,7 +516,7 @@ export function* solveStandardFormMutateCoop(dict: Dictionary) {
 		}
 		yield;
 		for (let loop = 0; ; loop++) {
-			if (loop === 200) {
+			if (loop === 2000) {
 				console.error("Possible cycle detected");
 				return null;
 			}
@@ -533,7 +533,7 @@ export function* solveStandardFormMutateCoop(dict: Dictionary) {
 		yield;
 	}
 	for (let loop = 0; ; loop++) {
-		if (loop === 200) {
+		if (loop === 2000) {
 			console.error("Possible cycle detected");
 			return null;
 		}
