@@ -33,8 +33,8 @@ const FOOTPRINT_BY_BUILDING = [
 	10 * (26 + 2), // Build_GeneratorCoal_C
 	20 * (20 + 2), // Build_GeneratorFuel_C
 	36 * (43 + 2), // Build_GeneratorNuclear_C
-	20 * (20 + 4), // Build_QuantumEncoder_C // ???
-	20 * (20 + 4), // Build_Converter_C // ???
+	22 * (48 + 4), // Build_QuantumEncoder_C
+	16 * (16 + 4), // Build_Converter_C
 	8 * (8 + 2), // Build_GeneratorBiomass_Automated_C
 ];
 
@@ -43,6 +43,15 @@ function imageForRecipe(recipe: Recipe) {
 		return FakePower.Icon;
 	}
 	return recipe.Outputs[0].Item.Icon;
+}
+
+function productRateCell(recipe: Recipe, rate: BigRat) {
+	if (recipe.Building.PowerConsumption.sign() < 0) {
+		const mw = recipe.Building.PowerConsumption.mul(rate).neg();
+		return <th data-tooltip={mw.toRatioString() + " MW"}>{mw.toFixed(2)} MW</th>;
+	}
+	const productRate = recipe.Outputs[0].Rate.mul(rate);
+	return <th data-tooltip={productRate.toRatioString() + "/min"}>{productRate.toFixed(2)}/min</th>;
 }
 
 function* solveAndRender(state: State) {
@@ -75,6 +84,7 @@ function* solveAndRender(state: State) {
 				recipeNodes.push(
 					<tr>
 						<th data-tooltip={rate.toRatioString()}>{rate.toFixed(2)}x</th>
+						{productRateCell(recipe, rate)}
 						<td>
 							<img class="icon" src={imageForRecipe(recipe)} />
 						</td>
