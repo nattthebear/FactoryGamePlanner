@@ -2,7 +2,7 @@ import { Item } from "../../../data/types";
 import { Draft } from "../../immer";
 import { BigRat } from "../../math/BigRat";
 import { Problem, Solution } from "../../solver/Solver";
-import { Flow } from "../../util";
+import { BUILDING_MAX, BUILDING_MIN, Flow } from "../../util";
 import { NodeId } from "./Common";
 import { Connector } from "./Connectors";
 import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
@@ -10,6 +10,16 @@ import { State } from "./Store";
 
 const ARRANGE_X_DELTA = 800;
 const ARRANGE_Y_DELTA = 300;
+
+function scaleBetween(positionCount: number, minValue: number, maxValue: number, maxDelta: number) {
+	const outputCenter = (minValue + maxValue) / 2;
+	const stepCount = positionCount - 1;
+	let delta = maxDelta;
+	if (delta * stepCount > maxValue - minValue) {
+		delta = Math.floor((maxValue - minValue) / stepCount);
+	}
+	return (position: number) => (stepCount / 2 - position) * delta + outputCenter;
+}
 
 function arrangePositions(producers: Map<NodeId, Producer>, connectors: Map<NodeId, Connector>) {
 	interface TreeNode {
@@ -103,8 +113,8 @@ function arrangePositions(producers: Map<NodeId, Producer>, connectors: Map<Node
 	}
 	countYDiv(roots);
 
-	const xpos = (d: number) => ARRANGE_X_DELTA * (xdiv / 2 - d);
-	const ypos = (h: number) => ARRANGE_Y_DELTA * (ydiv / 2 - h);
+	const xpos = scaleBetween(xdiv + 1, BUILDING_MIN.x, BUILDING_MAX.x, ARRANGE_X_DELTA);
+	const ypos = scaleBetween(ydiv + 1, BUILDING_MIN.y, BUILDING_MAX.y, ARRANGE_Y_DELTA);
 
 	let h = 0;
 	function setCoords(nodes: Iterable<TreeNode>) {
