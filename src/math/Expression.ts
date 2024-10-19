@@ -113,3 +113,8 @@ export function evaluate(s: string): EvalResult {
 		throw e;
 	}
 }
+
+export function unevaluate(val: BigRat): string {
+	const { p, q } = val.terms();
+	return `${p}/${q}`;
+}

@@ -1,13 +1,13 @@
 import { TPC, scheduleUpdate } from "vdomk";
 import { produce } from "../immer";
 import { BigRat } from "../math/BigRat";
-import { evaluate } from "../math/Expression";
+import { evaluate, unevaluate } from "../math/Expression";
 import { ProductionBuilding, Sink, Source } from "../editor/store/Producers";
 import { prompt } from "./Prompt";
 import { Flow } from "../util";
 import { Item } from "../../data/types";
 import { FakePower } from "../../data/power";
-import { autoFocus } from "../hook/autoFocus";
+import { autoFocus, autoFocusAndSelect } from "../hook/autoFocus";
 
 import "./RateChooser.css";
 
@@ -40,11 +40,14 @@ function evaluateAndVerify(text: string) {
 	return { value: res.value, error: false, message: null, offset: null };
 }
 
-const ExpressionInput: TPC<{ onChange: (value: BigRat) => void }> = (_, instance) => {
-	let text = "";
-	let evalRes = evaluateAndVerify("");
+const ExpressionInput: TPC<{ onChange: (value: BigRat) => void; onSubmit: () => void; initialText: string }> = (
+	{ initialText },
+	instance,
+) => {
+	let text = initialText;
+	let evalRes = evaluateAndVerify(text);
 
-	return ({ onChange }) => {
+	return ({ onChange, onSubmit }) => {
 		const underlay = evalRes.offset != null && (
 			<span class="underlay">
 				{" ".repeat(evalRes.offset)}
@@ -59,11 +62,19 @@ const ExpressionInput: TPC<{ onChange: (value: BigRat) => void }> = (_, instance
 		);
 
 		return (
-			<div class="expression-input">
+			<form
+				class="expression-input"
+				onSubmit={(ev) => {
+					ev.preventDefault();
+					if (evalRes.value) {
+						onSubmit();
+					}
+				}}
+			>
 				{underlay}
 				<input
 					type="text"
-					ref={autoFocus}
+					ref={autoFocusAndSelect}
 					value={text}
 					onInput={(ev) => {
 						text = ev.currentTarget.value;
@@ -75,7 +86,7 @@ const ExpressionInput: TPC<{ onChange: (value: BigRat) => void }> = (_, instance
 					}}
 				/>
 				{lowertext}
-			</div>
+			</form>
 		);
 	};
 };
@@ -106,14 +117,11 @@ const BuildingRateChooser: TPC<{
 
 		return (
 			<div class="building-rate-chooser">
-				<form
-					onSubmit={(ev) => {
-						ev.preventDefault();
-						onConfirm(value);
-					}}
-				>
-					<ExpressionInput onChange={changeValue} />
-				</form>
+				<ExpressionInput
+					onChange={changeValue}
+					onSubmit={() => onConfirm(value)}
+					initialText={unevaluate(value)}
+				/>
 				<div class="display">
 					<div class="flows">{newProducer.inputFlows().map(renderFlow)}</div>
 					<div class="rate">
@@ -152,14 +160,11 @@ const SourceSinkRateChooser: TPC<{
 
 		return (
 			<div class="source-sink-rate-chooser">
-				<form
-					onSubmit={(ev) => {
-						ev.preventDefault();
-						onConfirm(value);
-					}}
-				>
-					<ExpressionInput onChange={changeValue} />
-				</form>
+				<ExpressionInput
+					onChange={changeValue}
+					onSubmit={() => onConfirm(value)}
+					initialText={unevaluate(value)}
+				/>
 				<div class="display">
 					{renderFlows(newProducer.inputFlows())}
 					<div class="rate">
@@ -214,14 +219,11 @@ const ConstraintRateChooser: TPC<{
 
 		return (
 			<div class="source-sink-rate-chooser">
-				<form
-					onSubmit={(ev) => {
-						ev.preventDefault();
-						onConfirm(value);
-					}}
-				>
-					<ExpressionInput onChange={changeValue} />
-				</form>
+				<ExpressionInput
+					onChange={changeValue}
+					onSubmit={() => onConfirm(value)}
+					initialText={value === "unlimited" ? "" : unevaluate(value)}
+				/>
 				<div class="display">
 					{!isOutput && <img src={item.Icon} />}
 					<div class="rate">
