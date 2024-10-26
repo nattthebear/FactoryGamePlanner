@@ -12,6 +12,25 @@ interface Props {
 
 export const KeyButton: TPC<Props> = (props, instance) => {
 	const listener = (ev: KeyboardEvent) => {
+		if (ev.key !== props.keyName) {
+			return;
+		}
+		if (props.disabled) {
+			console.log(`Fail on ${props.keyName} because disabled`);
+			return;
+		}
+		if (isAnyPromptActive()) {
+			console.log(`Fail on ${props.keyName} because prompt active`);
+			return;
+		}
+		if (ev.target !== ev.currentTarget) {
+			console.log(`Fail on ${props.keyName} because target mismatch`, {
+				tar: ev.target,
+				curtar: ev.currentTarget,
+			});
+			return;
+		}
+
 		if (!props.disabled && !isAnyPromptActive() && ev.key === props.keyName && ev.target === ev.currentTarget) {
 			props.onAct(false);
 		}
