@@ -1,11 +1,4 @@
 .expression-input {
-	font-family:
-		Menlo,
-		Consolas,
-		Monaco,
-		Liberation Mono,
-		Lucida Console,
-		monospace;
 	display: flex;
 	flex-direction: column;
 	position: relative;

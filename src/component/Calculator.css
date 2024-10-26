@@ -1,0 +1,21 @@
+.calculator {
+	.history {
+		.history-item {
+			display: flex;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+			.entry {
+			}
+			.result {
+				font-weight: bold;
+			}
+		}
+	}
+	.results {
+		.num {
+			font-weight: bold;
+		}
+		.ratio {
+		}
+	}
+}

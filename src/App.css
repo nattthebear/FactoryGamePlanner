@@ -35,3 +35,13 @@ a {
 		text-decoration: underline;
 	}
 }
+
+.monospace {
+	font-family:
+		Menlo,
+		Consolas,
+		Monaco,
+		Liberation Mono,
+		Lucida Console,
+		monospace;
+}
