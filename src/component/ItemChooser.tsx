@@ -83,18 +83,15 @@ const RecipeChooser: TPC<{ type: "input" | "output"; onConfirm: (value: Recipe |
 			<>
 				<Chooser items={displayItems} value={displayItem} changeValue={onChangeItemValue} />
 				{recipes && (
-					<>
-						<div class="recipe-chooser-divider" />
-						<Chooser
-							items={recipes}
-							value={null}
-							changeValue={(dr) => onConfirm(dr?.recipe ?? null)}
-							onTentative={(dr) => {
-								tentativeRecipe = dr?.recipe ?? null;
-								scheduleUpdate(instance);
-							}}
-						/>
-					</>
+					<Chooser
+						items={recipes}
+						value={null}
+						changeValue={(dr) => onConfirm(dr?.recipe ?? null)}
+						onTentative={(dr) => {
+							tentativeRecipe = dr?.recipe ?? null;
+							scheduleUpdate(instance);
+						}}
+					/>
 				)}
 				<div class="dialog-buttons">
 					<button onClick={() => onConfirm(null)}>Cancel</button>

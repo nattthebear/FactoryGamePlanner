@@ -52,21 +52,23 @@ const BuildingRateChooser: TPC<{
 		);
 
 		return (
-			<div class="building-rate-chooser">
-				<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
-				<div class="display">
-					<div class="flows">{newProducer.inputFlows().map(renderFlow)}</div>
-					<div class="rate">
-						<span class="num">{rate.toFixed(2)}x</span>
-						<span class="ratio">{rate.toRatioString()}</span>
+			<>
+				<div class="building-rate-chooser">
+					<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
+					<div class="display">
+						<div class="flows">{newProducer.inputFlows().map(renderFlow)}</div>
+						<div class="rate">
+							<span class="num">{rate.toFixed(2)}x</span>
+							<span class="ratio">{rate.toRatioString()}</span>
+						</div>
+						<div class="flows">{newProducer.outputFlows().map(renderFlow)}</div>
 					</div>
-					<div class="flows">{newProducer.outputFlows().map(renderFlow)}</div>
 				</div>
 				<div class="dialog-buttons">
 					<button onClick={() => onConfirm(null)}>Cancel</button>
 					<button onClick={() => onConfirm(rate)}>Ok</button>
 				</div>
-			</div>
+			</>
 		);
 	};
 };
@@ -95,21 +97,23 @@ const SourceSinkRateChooser: TPC<{
 		const renderFlows = (flows: Flow[]) => flows.length > 0 && <img src={flows[0].item.Icon} />;
 
 		return (
-			<div class="source-sink-rate-chooser">
-				<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
-				<div class="display">
-					{renderFlows(newProducer.inputFlows())}
-					<div class="rate">
-						<div class="num">{rate.toFixed(2)}/min</div>
-						<div class="ratio">{rate.toRatioString()}</div>
+			<>
+				<div class="source-sink-rate-chooser">
+					<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
+					<div class="display">
+						{renderFlows(newProducer.inputFlows())}
+						<div class="rate">
+							<div class="num">{rate.toFixed(2)}/min</div>
+							<div class="ratio">{rate.toRatioString()}</div>
+						</div>
+						{renderFlows(newProducer.outputFlows())}
 					</div>
-					{renderFlows(newProducer.outputFlows())}
 				</div>
 				<div class="dialog-buttons">
 					<button onClick={() => onConfirm(null)}>Cancel</button>
 					<button onClick={() => onConfirm(rate)}>Ok</button>
 				</div>
-			</div>
+			</>
 		);
 	};
 };
@@ -154,22 +158,24 @@ const ConstraintRateChooser: TPC<{
 		({ item, onConfirm, isOutput } = nextProps);
 
 		return (
-			<div class="source-sink-rate-chooser">
-				<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
-				<div class="display">
-					{!isOutput && <img src={item.Icon} />}
-					<div class="rate">
-						<div class="num">{renderValue()}</div>
-						<div class="ratio">{rate === "unlimited" ? "" : rate.toRatioString()}</div>
+			<>
+				<div class="source-sink-rate-chooser">
+					<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
+					<div class="display">
+						{!isOutput && <img src={item.Icon} />}
+						<div class="rate">
+							<div class="num">{renderValue()}</div>
+							<div class="ratio">{rate === "unlimited" ? "" : rate.toRatioString()}</div>
+						</div>
+						{isOutput && <img src={item.Icon} />}
 					</div>
-					{isOutput && <img src={item.Icon} />}
 				</div>
 				<div class="dialog-buttons">
 					<button onClick={() => onConfirm("unlimited")}>{isOutput ? "Maximize" : "Unlimited"}</button>
 					<button onClick={() => onConfirm(null)}>Cancel</button>
 					<button onClick={() => onConfirm(rate)}>Ok</button>
 				</div>
-			</div>
+			</>
 		);
 	};
 };

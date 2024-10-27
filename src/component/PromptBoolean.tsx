@@ -4,7 +4,7 @@ import { autoFocus } from "../hook/autoFocus";
 
 function PromptBoolean({ message, onConfirm }: { message: VNode; onConfirm: (value: boolean) => void }) {
 	return (
-		<div>
+		<>
 			<div>{message}</div>
 			<div class="dialog-buttons">
 				<button onClick={() => onConfirm(false)}>Cancel</button>
@@ -12,7 +12,7 @@ function PromptBoolean({ message, onConfirm }: { message: VNode; onConfirm: (val
 					Ok
 				</button>
 			</div>
-		</div>
+		</>
 	);
 }
 
