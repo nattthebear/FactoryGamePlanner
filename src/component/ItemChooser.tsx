@@ -54,13 +54,24 @@ const DisplayItems = ItemsWithFakePower.map((item) => ({
 	)?.map(formatRecipe),
 }));
 type DisplayItem = (typeof DisplayItems)[number];
+type DisplayRecipe = NonNullable<DisplayItem["producingRecipes"]>[number];
 
 const RecipeChooser: TPC<{ type: "input" | "output"; onConfirm: (value: Recipe | null) => void }> = (
 	{ type, onConfirm },
 	instance,
 ) => {
 	let displayItem: DisplayItem | null = null;
-	let tentativeRecipe: Recipe | null = null;
+
+	function renderButtons(submitValue: DisplayRecipe | null) {
+		return (
+			<div class="dialog-buttons">
+				<button onClick={() => onConfirm(null)}>Cancel</button>
+				<button disabled={!submitValue} onClick={() => onConfirm(submitValue!.recipe)}>
+					Ok
+				</button>
+			</div>
+		);
+	}
 
 	return () => {
 		const displayItems = DisplayItems.filter((di) =>
@@ -69,7 +80,7 @@ const RecipeChooser: TPC<{ type: "input" | "output"; onConfirm: (value: Recipe |
 
 		const recipes = displayItem?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
 
-		function onChangeItemValue(newValue: DisplayItem | null) {
+		function onChangeItemValue(newValue: DisplayItem) {
 			const newRecipes = newValue?.[type === "input" ? "consumingRecipes" : "producingRecipes"];
 			if (newRecipes?.length === 1) {
 				onConfirm(newRecipes[0].recipe);
@@ -81,24 +92,17 @@ const RecipeChooser: TPC<{ type: "input" | "output"; onConfirm: (value: Recipe |
 
 		return (
 			<>
-				<Chooser items={displayItems} value={displayItem} changeValue={onChangeItemValue} />
-				{recipes && (
+				<Chooser items={displayItems} selected={displayItem} onSelect={onChangeItemValue} />
+				{recipes ? (
 					<Chooser
 						items={recipes}
-						value={null}
-						changeValue={(dr) => onConfirm(dr?.recipe ?? null)}
-						onTentative={(dr) => {
-							tentativeRecipe = dr?.recipe ?? null;
-							scheduleUpdate(instance);
-						}}
+						selected={null}
+						onSelect={(dr) => onConfirm(dr.recipe)}
+						renderButtons={renderButtons}
 					/>
+				) : (
+					renderButtons(null)
 				)}
-				<div class="dialog-buttons">
-					<button onClick={() => onConfirm(null)}>Cancel</button>
-					<button disabled={!recipes || !tentativeRecipe} onClick={() => onConfirm(tentativeRecipe)}>
-						Ok
-					</button>
-				</div>
 			</>
 		);
 	};
@@ -113,12 +117,33 @@ export const chooseItem = async (title: string, options?: Item[]) => {
 		name: item.DisplayName,
 		item,
 	}));
+	type ChooserItem = (typeof chooserItems)[number];
+
+	const ItemChooser: TPC<{ onConfirm: (value: Item | null) => void }> = ({ onConfirm }) => {
+		function renderButtons(submitValue: ChooserItem | null) {
+			return (
+				<div class="dialog-buttons">
+					<button onClick={() => onConfirm(null)}>Cancel</button>
+					<button disabled={!submitValue} onClick={() => onConfirm(submitValue!.item)}>
+						Ok
+					</button>
+				</div>
+			);
+		}
+
+		return () => (
+			<Chooser
+				items={chooserItems}
+				selected={null}
+				onSelect={(di) => onConfirm(di.item)}
+				renderButtons={renderButtons}
+			/>
+		);
+	};
 
 	return prompt<Item | null>({
 		title,
-		render: (onConfirm) => (
-			<Chooser items={chooserItems} value={null} changeValue={(di) => onConfirm(di?.item ?? null)} />
-		),
+		render: (onConfirm) => <ItemChooser onConfirm={onConfirm} />,
 	});
 };
 
@@ -144,7 +169,21 @@ const chooseRecipeHelper = async (recipes: Recipe[] | undefined) => {
 	const drs = recipes.map(formatRecipe);
 	return prompt<Recipe | null>({
 		title: "Choose recipe:",
-		render: (onConfirm) => <Chooser items={drs} value={null} changeValue={(dr) => onConfirm(dr?.recipe ?? null)} />,
+		render: (onConfirm) => (
+			<Chooser
+				items={drs}
+				selected={null}
+				onSelect={(dr) => onConfirm(dr.recipe)}
+				renderButtons={(submitValue) => (
+					<div class="dialog-buttons">
+						<button onClick={() => onConfirm(null)}>Cancel</button>
+						<button disabled={!submitValue} onClick={() => onConfirm(submitValue!.recipe)}>
+							Ok
+						</button>
+					</div>
+				)}
+			/>
+		),
 	});
 };
 
