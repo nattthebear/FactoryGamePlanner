@@ -1,0 +1,26 @@
+.expression-input {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+
+	input {
+		z-index: 1;
+		background: none;
+	}
+	.underlay {
+		pointer-events: none;
+		position: absolute;
+		white-space: pre;
+		width: 100%;
+
+		padding: 3px;
+
+		background-color: #fee;
+
+		.error {
+			background-color: #f99;
+		}
+	}
+	.lower-text {
+	}
+}

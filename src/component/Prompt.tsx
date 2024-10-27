@@ -42,7 +42,7 @@ export const PromptRoot: TPC<{}> = (_, instance) => {
 			>
 				<div class="prompt">
 					<div class="title">{activePrompt.item.title}</div>
-					<div class="form">{activePrompt.item.render(onConfirm)}</div>
+					{activePrompt.item.render(onConfirm)}
 				</div>
 			</div>
 		);

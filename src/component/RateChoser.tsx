@@ -1,103 +1,39 @@
 import { TPC, scheduleUpdate } from "vdomk";
 import { produce } from "../immer";
 import { BigRat } from "../math/BigRat";
-import { evaluate, unevaluate } from "../math/Expression";
 import { ProductionBuilding, Sink, Source } from "../editor/store/Producers";
 import { prompt } from "./Prompt";
 import { Flow } from "../util";
 import { Item } from "../../data/types";
 import { FakePower } from "../../data/power";
-import { autoFocus, autoFocusAndSelect } from "../hook/autoFocus";
+import { evaluateToInputValue, ExpressionInput, ExpressionInputValue, unevaluateToInputValue } from "./ExpressionInput";
 
 import "./RateChooser.css";
 
-function evaluateAndVerify(text: string) {
-	if (!text) {
+function forcePositive(inputValue: ExpressionInputValue): ExpressionInputValue {
+	if (inputValue.value?.lte(BigRat.ZERO)) {
 		return {
+			text: inputValue.text,
 			value: null,
-			error: false,
-			message: "Enter a number or expression.",
+			error: true,
+			message: `${inputValue.value.toFixed(1)} is not positive.`,
 			offset: null,
 		};
 	}
-	const res = evaluate(text);
-	if (!res.ok) {
-		return {
-			value: null,
-			error: true,
-			message: res.message,
-			offset: res.offset,
-		};
-	}
-	if (res.value.lte(BigRat.ZERO)) {
-		return {
-			value: null,
-			error: true,
-			message: `${res.value.toFixed(1)} is not positive.`,
-			offset: null,
-		};
-	}
-	return { value: res.value, error: false, message: null, offset: null };
+	return inputValue;
 }
-
-const ExpressionInput: TPC<{ onChange: (value: BigRat) => void; onSubmit: () => void; initialText: string }> = (
-	{ initialText },
-	instance,
-) => {
-	let text = initialText;
-	let evalRes = evaluateAndVerify(text);
-
-	return ({ onChange, onSubmit }) => {
-		const underlay = evalRes.offset != null && (
-			<span class="underlay">
-				{" ".repeat(evalRes.offset)}
-				<span class="error"> </span>
-			</span>
-		);
-
-		const lowertext = (
-			<span class="lower-text">
-				<span class={evalRes.error ? "error" : undefined}>{evalRes.message || "\u00a0"}</span>
-			</span>
-		);
-
-		return (
-			<form
-				class="expression-input"
-				onSubmit={(ev) => {
-					ev.preventDefault();
-					if (evalRes.value) {
-						onSubmit();
-					}
-				}}
-			>
-				{underlay}
-				<input
-					type="text"
-					ref={autoFocusAndSelect}
-					value={text}
-					onInput={(ev) => {
-						text = ev.currentTarget.value;
-						evalRes = evaluateAndVerify(text);
-						scheduleUpdate(instance);
-						if (evalRes.value) {
-							onChange(evalRes.value);
-						}
-					}}
-				/>
-				{lowertext}
-			</form>
-		);
-	};
-};
 
 const BuildingRateChooser: TPC<{
 	producer: ProductionBuilding;
 	onConfirm: (newValue: BigRat | null) => void;
 }> = ({ producer, onConfirm }, instance) => {
-	let value = producer.rate;
-	function changeValue(newValue: BigRat) {
-		value = newValue;
+	let { rate } = producer;
+	let inputValue = unevaluateToInputValue(rate);
+	function changeValue(newValue: ExpressionInputValue) {
+		inputValue = forcePositive(newValue);
+		if (!inputValue.error) {
+			rate = inputValue.value;
+		}
 		scheduleUpdate(instance);
 	}
 
@@ -105,7 +41,7 @@ const BuildingRateChooser: TPC<{
 		({ producer, onConfirm } = nextProps);
 
 		const newProducer = produce(producer, (draft) => {
-			draft.rate = value;
+			draft.rate = rate;
 		});
 
 		const renderFlow = (flow: Flow) => (
@@ -116,25 +52,23 @@ const BuildingRateChooser: TPC<{
 		);
 
 		return (
-			<div class="building-rate-chooser">
-				<ExpressionInput
-					onChange={changeValue}
-					onSubmit={() => onConfirm(value)}
-					initialText={unevaluate(value)}
-				/>
-				<div class="display">
-					<div class="flows">{newProducer.inputFlows().map(renderFlow)}</div>
-					<div class="rate">
-						<span class="num">{value.toFixed(2)}x</span>
-						<span class="ratio">{value.toRatioString()}</span>
+			<>
+				<div class="building-rate-chooser">
+					<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
+					<div class="display">
+						<div class="flows">{newProducer.inputFlows().map(renderFlow)}</div>
+						<div class="rate">
+							<span class="num">{rate.toFixed(2)}x</span>
+							<span class="ratio">{rate.toRatioString()}</span>
+						</div>
+						<div class="flows">{newProducer.outputFlows().map(renderFlow)}</div>
 					</div>
-					<div class="flows">{newProducer.outputFlows().map(renderFlow)}</div>
 				</div>
 				<div class="dialog-buttons">
 					<button onClick={() => onConfirm(null)}>Cancel</button>
-					<button onClick={() => onConfirm(value)}>Ok</button>
+					<button onClick={() => onConfirm(rate)}>Ok</button>
 				</div>
-			</div>
+			</>
 		);
 	};
 };
@@ -143,9 +77,13 @@ const SourceSinkRateChooser: TPC<{
 	producer: Sink | Source;
 	onConfirm: (newValue: BigRat | null) => void;
 }> = ({ producer, onConfirm }, instance) => {
-	let value = producer.rate;
-	function changeValue(newValue: BigRat) {
-		value = newValue;
+	let { rate } = producer;
+	let inputValue = unevaluateToInputValue(rate);
+	function changeValue(newValue: ExpressionInputValue) {
+		inputValue = forcePositive(newValue);
+		if (!inputValue.error) {
+			rate = inputValue.value;
+		}
 		scheduleUpdate(instance);
 	}
 
@@ -153,31 +91,29 @@ const SourceSinkRateChooser: TPC<{
 		({ producer, onConfirm } = nextProps);
 
 		const newProducer = produce(producer, (draft) => {
-			draft.rate = value;
+			draft.rate = rate;
 		});
 
 		const renderFlows = (flows: Flow[]) => flows.length > 0 && <img src={flows[0].item.Icon} />;
 
 		return (
-			<div class="source-sink-rate-chooser">
-				<ExpressionInput
-					onChange={changeValue}
-					onSubmit={() => onConfirm(value)}
-					initialText={unevaluate(value)}
-				/>
-				<div class="display">
-					{renderFlows(newProducer.inputFlows())}
-					<div class="rate">
-						<div class="num">{value.toFixed(2)}/min</div>
-						<div class="ratio">{value.toRatioString()}</div>
+			<>
+				<div class="source-sink-rate-chooser">
+					<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
+					<div class="display">
+						{renderFlows(newProducer.inputFlows())}
+						<div class="rate">
+							<div class="num">{rate.toFixed(2)}/min</div>
+							<div class="ratio">{rate.toRatioString()}</div>
+						</div>
+						{renderFlows(newProducer.outputFlows())}
 					</div>
-					{renderFlows(newProducer.outputFlows())}
 				</div>
 				<div class="dialog-buttons">
 					<button onClick={() => onConfirm(null)}>Cancel</button>
-					<button onClick={() => onConfirm(value)}>Ok</button>
+					<button onClick={() => onConfirm(rate)}>Ok</button>
 				</div>
-			</div>
+			</>
 		);
 	};
 };
@@ -195,49 +131,51 @@ export const chooseSourceSinkRate = (producer: Source | Sink) =>
 	});
 
 const ConstraintRateChooser: TPC<{
-	rate: BigRat | "unlimited";
+	initialRate: BigRat | "unlimited";
 	item: Item;
 	onConfirm: (newValue: BigRat | "unlimited" | null) => void;
 	isOutput: boolean;
-}> = ({ rate, item, onConfirm, isOutput }, instance) => {
-	let value = rate;
-	function changeValue(newValue: BigRat) {
-		value = newValue;
+}> = ({ initialRate, item, onConfirm, isOutput }, instance) => {
+	let rate = initialRate;
+	let inputValue = rate === "unlimited" ? evaluateToInputValue("") : unevaluateToInputValue(rate);
+	function changeValue(newValue: ExpressionInputValue) {
+		inputValue = forcePositive(newValue);
+		if (!inputValue.error) {
+			rate = inputValue.value;
+		}
 		scheduleUpdate(instance);
 	}
 
 	function renderValue() {
-		if (value === "unlimited") {
+		if (rate === "unlimited") {
 			return isOutput ? "Maximize" : "Unlimited";
 		}
 		const suffix = item === FakePower ? " MW" : "/min";
-		return value.toFixed(2) + suffix;
+		return rate.toFixed(2) + suffix;
 	}
 
 	return (nextProps) => {
-		({ rate, item, onConfirm, isOutput } = nextProps);
+		({ item, onConfirm, isOutput } = nextProps);
 
 		return (
-			<div class="source-sink-rate-chooser">
-				<ExpressionInput
-					onChange={changeValue}
-					onSubmit={() => onConfirm(value)}
-					initialText={value === "unlimited" ? "" : unevaluate(value)}
-				/>
-				<div class="display">
-					{!isOutput && <img src={item.Icon} />}
-					<div class="rate">
-						<div class="num">{renderValue()}</div>
-						<div class="ratio">{value === "unlimited" ? "" : value.toRatioString()}</div>
+			<>
+				<div class="source-sink-rate-chooser">
+					<ExpressionInput inputValue={inputValue} onChange={changeValue} onSubmit={() => onConfirm(rate)} />
+					<div class="display">
+						{!isOutput && <img src={item.Icon} />}
+						<div class="rate">
+							<div class="num">{renderValue()}</div>
+							<div class="ratio">{rate === "unlimited" ? "" : rate.toRatioString()}</div>
+						</div>
+						{isOutput && <img src={item.Icon} />}
 					</div>
-					{isOutput && <img src={item.Icon} />}
 				</div>
 				<div class="dialog-buttons">
 					<button onClick={() => onConfirm("unlimited")}>{isOutput ? "Maximize" : "Unlimited"}</button>
 					<button onClick={() => onConfirm(null)}>Cancel</button>
-					<button onClick={() => onConfirm(value)}>Ok</button>
+					<button onClick={() => onConfirm(rate)}>Ok</button>
 				</div>
-			</div>
+			</>
 		);
 	};
 };
@@ -246,6 +184,6 @@ export const chooseConstraintRate = (existingRate: BigRat | "unlimited", item: I
 	prompt<BigRat | "unlimited" | null>({
 		title: "Choose new rate.",
 		render: (onConfirm) => (
-			<ConstraintRateChooser rate={existingRate} item={item} onConfirm={onConfirm} isOutput={isOutput} />
+			<ConstraintRateChooser initialRate={existingRate} item={item} onConfirm={onConfirm} isOutput={isOutput} />
 		),
 	});
