@@ -17,11 +17,7 @@ interface State {
 const emptyValue = evaluateToInputValue("");
 
 const defaultState: State = {
-	// history: [],
-	history: Array.from({ length: 200 }).map((_, i) => ({
-		text: i.toString(),
-		value: evaluateToInputValue(i.toString()).value!,
-	})),
+	history: [],
 	currentValue: emptyValue,
 };
 
@@ -30,11 +26,11 @@ const { useSelector, update, replace } = makeStore<State>(defaultState, "_Calcul
 const Calculator: TPC<{ close: () => void }> = (_, instance) => {
 	const getState = useSelector(instance, (v) => v);
 
-	let historyScroll: HTMLElement | null;
+	let historyEl: HTMLElement | null;
 	function acceptHistoryScroll(value: HTMLElement | null) {
-		historyScroll = value;
+		historyEl = value;
 	}
-	let shouldScroll = false;
+	let shouldScroll = true;
 
 	function onChange(newValue: ExpressionInputValue) {
 		update((draft) => {
@@ -57,9 +53,9 @@ const Calculator: TPC<{ close: () => void }> = (_, instance) => {
 	return ({ close }) => {
 		const { history, currentValue } = getState();
 		effect(instance, () => {
-			if (historyScroll && shouldScroll) {
+			if (historyEl && shouldScroll) {
 				shouldScroll = false;
-				historyScroll.scrollTop = historyScroll.scrollHeight;
+				historyEl.scrollTop = historyEl.scrollHeight;
 			}
 		});
 
