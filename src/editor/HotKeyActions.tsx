@@ -369,8 +369,17 @@ export const HotKeyActions: TPC<{}> = (_, instance) => {
 					<KeyButton
 						keyName="x"
 						onAct={() => {
-							const { connector } = o;
-							update(removeConnector(connector.id));
+							const { connector, bus } = o;
+							update((draft) => {
+								if (bus) {
+									const { terminals } = draft.buses.get(bus.id)!;
+									terminals.splice(
+										terminals.findIndex((t) => t.id === connector.id),
+										1,
+									);
+								}
+								removeConnector(connector.id)(draft);
+							});
 						}}
 					>
 						Remove Connection
