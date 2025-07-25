@@ -29,15 +29,28 @@ export const addProducer = (value: Producer) => (draft: Draft<State>) => {
 
 export const removeProducer = (producerId: NodeId) => (draft: Draft<State>) => {
 	const producer = draft.producers.get(producerId)!;
+	const toRemove: NodeId[] = [];
 	for (const ids of producer.inputs) {
-		for (const id of ids.slice()) {
-			removeConnector(id)(draft);
+		for (const id of ids) {
+			toRemove.push(id);
 		}
 	}
 	for (const ids of producer.outputs) {
-		for (const id of ids.slice()) {
-			removeConnector(id)(draft);
+		for (const id of ids) {
+			toRemove.push(id);
 		}
+	}
+	const toRemoveSet = new Set(toRemove);
+	for (const { terminals } of draft.buses.values()) {
+		for (let i = 0; i < terminals.length; i += 1) {
+			if (toRemoveSet.has(terminals[i].id)) {
+				terminals.splice(i, 1);
+				i -= 1;
+			}
+		}
+	}
+	for (const id of toRemove) {
+		removeConnector(id)(draft);
 	}
 	draft.producers.delete(producerId);
 };
