@@ -15,6 +15,14 @@ function maybeSpliceValue<T>(array: T[], value: T) {
 		array.splice(index, 1);
 	}
 }
+function spliceFilter<T>(array: T[], predicate: (value: T) => boolean) {
+	for (let i = 0; i < array.length; i += 1) {
+		if (!predicate(array[i])) {
+			array.splice(i, 1);
+			i -= 1;
+		}
+	}
+}
 
 const sumConnections = (draft: Draft<State>, connections: NodeId[]) =>
 	connections.reduce((acc, val) => acc.add(draft.connectors.get(val)!.rate), BigRat.ZERO);
@@ -436,6 +444,7 @@ export const mergeProducers = (pid1: NodeId, pid2: NodeId) => (draft: Draft<Stat
 	const producer = draft.producers.get(pid1)!;
 	const toDelete = draft.producers.get(pid2)!;
 	producer.rate = producer.rate.add(toDelete.rate);
+	const deletedConnectors = new Set<NodeId>();
 
 	for (let inputIndex = 0; inputIndex < producer.inputs.length; inputIndex++) {
 		for (const connectorId of toDelete.inputs[inputIndex]) {
@@ -448,6 +457,7 @@ export const mergeProducers = (pid1: NodeId, pid2: NodeId) => (draft: Draft<Stat
 				otherConnector.rate = otherConnector.rate.add(connector.rate);
 				draft.connectors.delete(connectorId);
 				maybeSpliceValue(draft.producers.get(connector.input)!.outputs[connector.inputIndex], connectorId);
+				deletedConnectors.add(connectorId);
 			} else {
 				producer.inputs[inputIndex].push(connectorId);
 				draft.connectors.get(connectorId)!.output = pid1;
@@ -465,6 +475,7 @@ export const mergeProducers = (pid1: NodeId, pid2: NodeId) => (draft: Draft<Stat
 				otherConnector.rate = otherConnector.rate.add(connector.rate);
 				draft.connectors.delete(connectorId);
 				maybeSpliceValue(draft.producers.get(connector.output)!.inputs[connector.outputIndex], connectorId);
+				deletedConnectors.add(connectorId);
 			} else {
 				producer.outputs[outputIndex].push(connectorId);
 				draft.connectors.get(connectorId)!.input = pid1;
@@ -473,6 +484,9 @@ export const mergeProducers = (pid1: NodeId, pid2: NodeId) => (draft: Draft<Stat
 	}
 
 	draft.producers.delete(pid2);
+	for (const bus of draft.buses.values()) {
+		spliceFilter(bus.terminals, (t) => !deletedConnectors.has(t.id));
+	}
 	reflowConnectors(draft, producer.inputsAndOutputs());
 };
 
