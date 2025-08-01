@@ -308,7 +308,45 @@ export const splitOffConnectorInput = (id: NodeId, p: Point) => (draft: Draft<St
 	outputs.splice(outputs.indexOf(id), 1);
 	connector.input = newProducer.id;
 	newProducer.outputs[connector.inputIndex].push(id);
-	reflowConnectors(draft, [id, ...producer.inputsAndOutputs()]);
+
+	// Duplicate all other connectors
+	for (let index = 0; index < producer.inputs.length; index += 1) {
+		newProducer.inputs[index] = producer.inputs[index].map((cid) => {
+			const original = draft.connectors.get(cid)!;
+			const clone = new Connector(
+				BigRat.ZERO,
+				original.item,
+				original.input,
+				newProducer.id,
+				original.inputIndex,
+				index,
+			);
+			draft.connectors.set(clone.id, clone);
+			draft.producers.get(original.input)!.outputs[original.inputIndex].push(clone.id);
+			return clone.id;
+		});
+	}
+	for (let index = 0; index < producer.outputs.length; index += 1) {
+		if (index === connector.inputIndex) {
+			continue;
+		}
+		newProducer.outputs[index] = producer.outputs[index].map((cid) => {
+			const original = draft.connectors.get(cid)!;
+			const clone = new Connector(
+				BigRat.ZERO,
+				original.item,
+				newProducer.id,
+				original.output,
+				index,
+				original.outputIndex,
+			);
+			draft.connectors.set(clone.id, clone);
+			draft.producers.get(original.output)!.inputs[original.outputIndex].push(clone.id);
+			return clone.id;
+		});
+	}
+
+	reflowConnectors(draft, [...producer.inputsAndOutputs(), ...newProducer.inputsAndOutputs()]);
 };
 
 /** Split off a producer at a connector's output side */
@@ -332,7 +370,45 @@ export const splitOffConnectorOutput = (id: NodeId, p: Point) => (draft: Draft<S
 	inputs.splice(inputs.indexOf(id), 1);
 	connector.output = newProducer.id;
 	newProducer.inputs[connector.outputIndex].push(id);
-	reflowConnectors(draft, [id, ...producer.inputsAndOutputs()]);
+
+	// Duplicate all other connectors
+	for (let index = 0; index < producer.inputs.length; index += 1) {
+		if (index === connector.outputIndex) {
+			continue;
+		}
+		newProducer.inputs[index] = producer.inputs[index].map((cid) => {
+			const original = draft.connectors.get(cid)!;
+			const clone = new Connector(
+				BigRat.ZERO,
+				original.item,
+				original.input,
+				newProducer.id,
+				original.inputIndex,
+				index,
+			);
+			draft.connectors.set(clone.id, clone);
+			draft.producers.get(original.input)!.outputs[original.inputIndex].push(clone.id);
+			return clone.id;
+		});
+	}
+	for (let index = 0; index < producer.outputs.length; index += 1) {
+		newProducer.outputs[index] = producer.outputs[index].map((cid) => {
+			const original = draft.connectors.get(cid)!;
+			const clone = new Connector(
+				BigRat.ZERO,
+				original.item,
+				newProducer.id,
+				original.output,
+				index,
+				original.outputIndex,
+			);
+			draft.connectors.set(clone.id, clone);
+			draft.producers.get(original.output)!.inputs[original.outputIndex].push(clone.id);
+			return clone.id;
+		});
+	}
+
+	reflowConnectors(draft, [...producer.inputsAndOutputs(), ...newProducer.inputsAndOutputs()]);
 };
 
 /** Either `splitOffConnectorInput` or `splitOffConnectorOutput` based on distance */
