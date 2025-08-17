@@ -141,7 +141,7 @@ export const FactoryEditor: TPC<{}> = (_, instance) => {
 		const transform = `transform: translate(-50%, -50%) scale(${viewport.zoom}) ${toTranslation(viewport.center)}`;
 
 		return (
-			<div class="viewport" tabIndex={-1} onWheelCapture={onWheel}>
+			<div class="viewport" onWheelCapture={onWheel}>
 				<svg viewBox={viewBox} style={transform}>
 					<g
 						class="backgrid"
