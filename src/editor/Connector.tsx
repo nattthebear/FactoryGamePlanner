@@ -89,7 +89,7 @@ export const Connector: TPC<{ id: NodeId }> = ({ id }, instance) => {
 			return (
 				<>
 					<path
-						class="connector"
+						class={connector.item.IsPiped ? "connector piped" : "connector"}
 						d={`M ${ip.x} ${ip.y} c ${dxc} 0 ${dx - dxc} ${dy} ${dx} ${dy}`}
 						onMouseEnter={() =>
 							update((draft) => {

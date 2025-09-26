@@ -2,6 +2,10 @@
 	stroke: #33f;
 	stroke-width: 10px;
 	fill: none;
+
+	&.piped {
+		stroke: #773;
+	}
 }
 
 .connector-text {
