@@ -2313,7 +2313,7 @@ const RawRecipes: RawRecipe[] = [
 		RawOutputs: [{ Item: Items[127 /* Desc_QuantumOscillator_C */], Qty: BigRat.fromInteger(1) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Qty: BigRat.fromInteger(25) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_TemporalProcessor_C",
@@ -2324,7 +2324,7 @@ const RawRecipes: RawRecipe[] = [
 		RawOutputs: [{ Item: Items[128 /* Desc_TemporalProcessor_C */], Qty: BigRat.fromInteger(1) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Qty: BigRat.fromInteger(25) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_12_C",
@@ -2335,7 +2335,7 @@ const RawRecipes: RawRecipe[] = [
 		RawOutputs: [{ Item: Items[129 /* Desc_SpaceElevatorPart_12_C */], Qty: BigRat.fromInteger(1) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Qty: BigRat.fromInteger(25) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_PackagedIonizedFuel_C",
@@ -2918,7 +2918,7 @@ const RawRecipes: RawRecipe[] = [
 		RawOutputs: [{ Item: Items[137 /* Desc_FicsoniumFuelRod_C */], Qty: BigRat.fromInteger(1) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Qty: BigRat.fromInteger(20) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_SingularityCell_C",
@@ -3028,7 +3028,7 @@ const RawRecipes: RawRecipe[] = [
 		RawOutputs: [{ Item: Items[138 /* Desc_CrystalShard_C */], Qty: BigRat.fromInteger(1) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Qty: BigRat.fromInteger(12) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_AlienPowerFuel_C",
@@ -3039,7 +3039,7 @@ const RawRecipes: RawRecipe[] = [
 		RawOutputs: [{ Item: Items[139 /* Desc_AlienPowerFuel_C */], Qty: BigRat.fromInteger(1) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Qty: BigRat.fromInteger(24) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 ];
 
