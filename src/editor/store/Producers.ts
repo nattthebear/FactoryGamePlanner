@@ -4,6 +4,7 @@ import { BigRat } from "../../math/BigRat";
 import { generateId, NodeId, SIXTY } from "./Common";
 import { BuildingMap, ProducerDrawing, Sink as SinkGfx, Source as SourceGfx } from "../ProducerArt";
 import { Flow, Point } from "../../util";
+import { getCurrentGameModeRaw } from "../../gamemode/Store";
 
 export abstract class Producer implements Point {
 	[immerable] = true;
@@ -53,7 +54,7 @@ export class ProductionBuilding extends Producer {
 	constructor(x: number, y: number, rate: BigRat, recipe: Recipe) {
 		super(x, y, rate);
 		this.recipe = recipe;
-		this.inputs = recipe.Inputs.map(() => []);
+		this.inputs = recipe.RawInputs.map(() => []);
 		this.outputs = recipe.Outputs.map(() => []);
 
 		const drawing = this.getDrawing();
@@ -61,7 +62,7 @@ export class ProductionBuilding extends Producer {
 		{
 			let s = 0;
 			let l = 0;
-			for (const input of this.recipe.Inputs) {
+			for (const input of this.recipe.RawInputs) {
 				this.inputAttachPoints.push(
 					input.Item.IsPiped ? drawing.attach.input.liquid[l++] : drawing.attach.input.solid[s++],
 				);
@@ -84,7 +85,11 @@ export class ProductionBuilding extends Producer {
 	}
 
 	inputFlows(): Flow[] {
-		return this.recipe.Inputs.map((f) => this.toFlow(f));
+		// Most places that use this don't need it to be reactive.
+		// The few that do, are currently saved by the fact that game mode editing is on a separate tab.
+		const gameMode = getCurrentGameModeRaw();
+
+		return this.recipe.Inputs(gameMode).map((f) => this.toFlow(f));
 	}
 	outputFlows(): Flow[] {
 		return this.recipe.Outputs.map((f) => this.toFlow(f));
