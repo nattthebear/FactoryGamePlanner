@@ -34,19 +34,8 @@ export class RecipeImpl implements Recipe {
 	ClassName: string;
 	DisplayName: string;
 	SerializeId: number;
-	private __duration: BigRat;
 	RawInputs: RawRecipeFlow[];
-	private __inputs: RecipeFlow[][];
-	Inputs(mode: GameMode): RecipeFlow[] {
-		const { __inputs } = this;
-		const index = getRPCMIndex(mode);
-		let ret = __inputs[index];
-		if (!ret) {
-			ret = mapFlows(this.RawInputs, this.__duration, mode, this.Building);
-			__inputs[index] = ret;
-		}
-		return ret;
-	}
+	Inputs: (mode: GameMode) => RecipeFlow[];
 	Outputs: RecipeFlow[];
 	Building: Building;
 	Alternate: boolean;
@@ -56,9 +45,20 @@ export class RecipeImpl implements Recipe {
 		this.ClassName = raw.ClassName;
 		this.DisplayName = raw.DisplayName;
 		this.SerializeId = raw.SerializeId;
-		this.__duration = raw.Duration;
 		this.RawInputs = raw.RawInputs;
-		this.__inputs = [];
+
+		const __inputs: RecipeFlow[][] = [];
+		const __duration = raw.Duration;
+		this.Inputs = (mode) => {
+			const index = getRPCMIndex(mode);
+			let ret = __inputs[index];
+			if (!ret) {
+				ret = mapFlows(this.RawInputs, __duration, mode, this.Building);
+				__inputs[index] = ret;
+			}
+			return ret;
+		};
+
 		this.Outputs = mapFlows(raw.RawOutputs, raw.Duration, DefaultGameMode, raw.Building);
 		this.Building = raw.Building;
 		this.Alternate = raw.Alternate;

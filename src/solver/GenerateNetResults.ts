@@ -28,7 +28,7 @@ export function generateNetResults(problem: Problem, solution: Solution): NetRes
 			continue;
 		}
 
-		for (const { Item, Rate } of recipe.Inputs) {
+		for (const { Item, Rate } of recipe.Inputs(problem.gameMode)) {
 			const itemsPerMinute = Rate.mul(buildingRate);
 			let existingRate = items.get(Item) ?? BigRat.ZERO;
 			existingRate = existingRate.sub(itemsPerMinute);
