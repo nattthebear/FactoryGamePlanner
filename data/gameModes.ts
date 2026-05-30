@@ -10,17 +10,19 @@ export type GameMode = { [BrandSymbol]: null };
 
 export const DefaultGameMode = 27 as any as GameMode;
 
+export const GAMEMODE_BITS = 6;
+
 export function parseGameMode(v: number): GameMode | null {
 	const truncated = v >>> 0;
 	if (truncated !== v) {
 		return null;
 	}
 	const rpcm = v & 7;
-	const pcm = v >> 3;
+	const pcm = (v >> 3) & 7;
 	if (pcm > 5) {
 		return null;
 	}
-	return v as any as GameMode;
+	return (v & 63) as any as GameMode;
 }
 
 export function serializeGameMode(v: GameMode): number {

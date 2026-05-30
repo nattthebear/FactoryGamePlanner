@@ -23,6 +23,7 @@ function getStateOrDefault<S>(stateDef: SerializableState<S>, hashPart: string |
 export const ROUTER_APP_STORE = 0;
 export const ROUTER_PLANNER_STORE = 1;
 export const ROUTER_EDITOR_STORE = 2;
+export const ROUTER_GAMEMODE_STORE = 3;
 
 const stores: (
 	| {
