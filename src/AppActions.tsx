@@ -1,21 +1,19 @@
 import "./AppActions.css";
+import { AppTab } from "./AppStore";
 import { runCalculator } from "./component/Calculator";
 import { KeyButton } from "./editor/KeyButton";
 
-export function AppActions({
-	inPlanner,
-	changeInPlanner,
-}: {
-	inPlanner: boolean;
-	changeInPlanner: (newValue: boolean) => void;
-}) {
+export function AppActions({ tab, changeTab }: { tab: AppTab; changeTab: (newValue: AppTab) => void }) {
 	return (
 		<div class="app-actions key-actions">
-			<KeyButton keyName="q" disabled={inPlanner} onAct={() => changeInPlanner(true)}>
+			<KeyButton keyName="q" disabled={tab === "planner"} onAct={() => changeTab("planner")}>
 				Planner
 			</KeyButton>
-			<KeyButton keyName="w" disabled={!inPlanner} onAct={() => changeInPlanner(false)}>
+			<KeyButton keyName="w" disabled={tab === "editor"} onAct={() => changeTab("editor")}>
 				Editor
+			</KeyButton>
+			<KeyButton keyName="y" disabled={tab === "gamemode"} onAct={() => changeTab("gamemode")}>
+				Game Mode
 			</KeyButton>
 			<KeyButton keyName="e" onAct={runCalculator}>
 				Calculator

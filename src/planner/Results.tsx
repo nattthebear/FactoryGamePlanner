@@ -9,7 +9,7 @@ import { FakePower } from "../../data/power";
 import { makeAbortablePromise, useAbortableAsynchronousMemo } from "../hook/usePromise";
 import { Spinner } from "../component/Spinner";
 import { promptBoolean } from "../component/PromptBoolean";
-import { changeInPlanner } from "../AppStore";
+import { changeAppTab } from "../AppStore";
 
 import "./Results.css";
 import { BigRat } from "../math/BigRat";
@@ -262,7 +262,7 @@ function* solveAndRender(state: State, gameMode: GameMode) {
 									updateEditor((draft) => {
 										Object.assign(draft, connectSolution(problem, solution));
 									});
-									changeInPlanner(false);
+									changeAppTab("editor");
 								}
 							}}
 						>

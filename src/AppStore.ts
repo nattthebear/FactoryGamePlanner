@@ -1,16 +1,19 @@
 import { ROUTER_APP_STORE, makeStoreWithHashRouter } from "./MakeHashRouterStore";
 
+export type AppTab = "planner" | "editor" | "gamemode";
+
 interface AppState {
-	inPlanner: boolean;
+	inTab: AppTab;
 }
 
-const defaultState: AppState = { inPlanner: true };
+const defaultState: AppState = { inTab: "planner" };
 function serialize(state: AppState) {
-	return state.inPlanner ? "p" : "e";
+	return state.inTab.slice(0);
 }
 function deserialize(serialized: string): AppState {
+	const c = serialized[0];
 	return {
-		inPlanner: serialized[0] === "p",
+		inTab: c === "p" ? "planner" : c === "e" ? "editor" : c === "g" ? "gamemode" : "planner",
 	};
 }
 
@@ -27,8 +30,8 @@ const appStore = makeStoreWithHashRouter(
 );
 
 export const { useSelector, update } = appStore;
-export function changeInPlanner(newValue: boolean) {
+export function changeAppTab(newValue: AppTab) {
 	update((draft) => {
-		draft.inPlanner = newValue;
+		draft.inTab = newValue;
 	});
 }

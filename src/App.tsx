@@ -4,20 +4,22 @@ import { PromptRoot } from "./component/Prompt";
 import { AppActions } from "./AppActions";
 import { Planner } from "./planner";
 import { installTooltip } from "./component/Tooltip";
-import { changeInPlanner, useSelector } from "./AppStore";
+import { changeAppTab, useSelector } from "./AppStore";
 
 import "./App.css";
 
 const App: TPC<{}> = (_, instance) => {
-	const getInPlanner = useSelector(instance, (s) => s.inPlanner);
+	const getTab = useSelector(instance, (s) => s.inTab);
 
 	return () => {
-		const inPlanner = getInPlanner();
+		const tab = getTab();
 
 		return (
 			<>
-				{inPlanner ? <Planner /> : <Editor />}
-				<AppActions inPlanner={inPlanner} changeInPlanner={changeInPlanner} />
+				{tab === "planner" && <Planner />}
+				{tab === "editor" && <Editor />}
+				{tab === "gamemode" && "gamemodeTODO"}
+				<AppActions tab={tab} changeTab={changeAppTab} />
 				<PromptRoot />
 			</>
 		);
