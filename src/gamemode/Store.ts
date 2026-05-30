@@ -1,3 +1,4 @@
+import { LayerInstance } from "vdomk";
 import { DefaultGameMode, GameMode, GAMEMODE_BITS, parseGameMode, serializeGameMode } from "../../data/gameModes";
 import { RStream, WStream } from "../base64";
 import { makeStoreWithHashRouter, ROUTER_GAMEMODE_STORE } from "../MakeHashRouterStore";
@@ -51,3 +52,4 @@ export const { useSelector, update, getStateRaw } = makeStoreWithHashRouter(
 export function getCurrentGameModeRaw() {
 	return getStateRaw().gameMode;
 }
+export const useGetGameMode = (instance: LayerInstance) => useSelector(instance, (s) => s.gameMode);

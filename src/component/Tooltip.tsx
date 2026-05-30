@@ -6,6 +6,7 @@ import { FakePower } from "../../data/power";
 import { toId } from "../editor/store/Common";
 import { ProducerTooltip } from "../editor/ProducerTooltip";
 import { RecipesByClassName } from "../../data/lookups";
+import { getCurrentGameModeRaw } from "../gamemode/Store";
 
 const tooltip = document.createElement("div");
 tooltip.className = "tooltip";
@@ -13,11 +14,14 @@ tooltip.style.display = "none";
 let anchor: Element | null = null;
 
 function RecipeTooltip({ recipe }: { recipe: Recipe }) {
+	// This probably doesn't need to be reactive...
+	const gameMode = getCurrentGameModeRaw();
+
 	return (
 		<div class="recipe-tooltip">
 			<em class="building-name">{recipe.Building.DisplayName}</em>
 			<div class="io">
-				{recipe.Inputs.map(({ Item }) => (
+				{recipe.Inputs(gameMode).map(({ Item }) => (
 					<img src={Item.Icon} />
 				))}
 				<div class="arrow">▶&#xfe0e;</div>

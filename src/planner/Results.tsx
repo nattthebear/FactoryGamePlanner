@@ -15,6 +15,8 @@ import "./Results.css";
 import { BigRat } from "../math/BigRat";
 import { Buildings } from "../../data/generated/buildings";
 import { Recipes } from "../../data/generated/recipes";
+import { GameMode } from "../../data/gameModes";
+import { useGetGameMode } from "../gamemode/Store";
 
 const MAX_OC = BigRat.fromIntegers(5, 2);
 
@@ -54,8 +56,8 @@ function productRateCell(recipe: Recipe, rate: BigRat) {
 	return <th data-tooltip={productRate.toRatioString() + "/min"}>{productRate.toFixed(2)}/min</th>;
 }
 
-function* solveAndRender(state: State) {
-	const problem = makeProblem(state);
+function* solveAndRender(state: State, gameMode: GameMode) {
+	const problem = makeProblem(state, gameMode);
 	yield;
 	const solution = yield* solveCoop(problem);
 	if (!solution) {
@@ -278,15 +280,16 @@ function* solveAndRender(state: State) {
 	);
 }
 
-const solvePromisify = (state: State) => makeAbortablePromise(solveAndRender(state), 100);
+const solvePromisify = (state: State, gameMode: GameMode) => makeAbortablePromise(solveAndRender(state, gameMode), 100);
 
 export const Results: TPC<{}> = (_, instance) => {
 	const getState = useSelector(instance, (s) => s);
+	const getGameMode = useGetGameMode(instance);
 
 	const solveAndRender = useAbortableAsynchronousMemo(instance, solvePromisify);
 
 	return () => {
-		const { value: content, stale } = solveAndRender([getState()]);
+		const { value: content, stale } = solveAndRender([getState(), getGameMode()]);
 
 		return (
 			<div class="results">
