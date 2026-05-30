@@ -780,7 +780,7 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 		.find((m) => m.mDisplayName === "Particle Enrichment")!
 		.Unlocks.push("$GENERATED_POWER$Build_GeneratorNuclear_C$Desc_PlutoniumFuelRod_C");
 
-	const mapIngredients = (input: { ItemClass: string; Amount: number | BigRat }[], duration: BigRat) =>
+	const mapIngredients = (input: { ItemClass: string; Amount: number | BigRat }[]) =>
 		input.map((x) => {
 			const index = itemsLookup.get(x.ItemClass);
 			if (index == null) {
@@ -791,11 +791,9 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 			if (item.mForm !== "RF_SOLID") {
 				amount = amount.div(ONE_THOUSAND);
 			}
-			const amountPerSecond = amount.div(duration);
-			const amountPerMinute = amountPerSecond.mul(SIXTY);
 			return {
 				Item: itemsLookup.get(x.ItemClass),
-				RateExpr: amountPerMinute.uneval(),
+				QtyExpr: amount.uneval(),
 				Clazz: x.ItemClass,
 			};
 		});
@@ -812,8 +810,9 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 
 			return {
 				...x,
-				Inputs: mapIngredients(x.mIngredients, duration),
-				Outputs: mapIngredients(x.mProduct, duration),
+				DurationExpr: duration.uneval(),
+				Inputs: mapIngredients(x.mIngredients),
+				Outputs: mapIngredients(x.mProduct),
 				Building: (() => {
 					const results = (x.mProducedIn as string[])
 						.map((clazz) => buildingClazzes.get(clazz))

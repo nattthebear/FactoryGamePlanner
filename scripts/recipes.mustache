@@ -1,19 +1,23 @@
-import type { Recipe } from "../types";
+import type { Recipe, RawRecipe } from "../types";
 import { Items } from "./items";
 import { Buildings } from "./buildings";
 import { BigRat } from "../../src/math/BigRat";
+import { RecipeImpl } from "../recipe";
 
-export const Recipes: Recipe[] = [
+const RawRecipes: RawRecipe[] = [
 	{{#.}}
 	{
 		ClassName: {{ClassName}},
 		DisplayName: {{DisplayName}},
 		SerializeId: {{SerializeId}},
-		Inputs: [{{#Inputs}}{ Item: Items[{{Item}} /* {{{Clazz}}} */], Rate: {{{RateExpr}}} }, {{/Inputs}}],
-		Outputs: [{{#Outputs}}{ Item: Items[{{Item}} /* {{{Clazz}}} */], Rate: {{{RateExpr}}} }, {{/Outputs}}],
+		Duration: {{{DurationExpr}}},
+		RawInputs: [{{#Inputs}}{ Item: Items[{{Item}} /* {{{Clazz}}} */], Qty: {{{QtyExpr}}} }, {{/Inputs}}],
+		RawOutputs: [{{#Outputs}}{ Item: Items[{{Item}} /* {{{Clazz}}} */], Qty: {{{QtyExpr}}} }, {{/Outputs}}],
 		Building: Buildings[{{Building}}],
 		Alternate: {{Alternate}},
 		PowerConsumption: {{{PowerConsumptionExpr}}},
 	},
 	{{/.}}
 ];
+
+export const Recipes: Recipe[] = RawRecipes.map(raw => new RecipeImpl(raw));

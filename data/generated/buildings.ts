@@ -26,7 +26,7 @@ export const Buildings: Building[] = [
 	{
 		ClassName: "Build_OilRefinery_C",
 		DisplayName: "Refinery",
-		Description: "Refines fluid and/or solid parts into other parts.\nHead Lift: 10 m\n(Allows fluids to be transported 10 meters upwards.)\n\nContains both Conveyor Belt and Pipeline input and output ports so that a wide range of recipes can be automated.",
+		Description: "Refines fluid and/or solid parts into other parts.\nHead Lift: 10 m\n(Allows fluids to be transported 10 meters upwards.)\n\nHas both Conveyor Belt and Pipeline input and output ports so that a wide range of recipes can be automated.",
 		PowerConsumption: BigRat.fromInteger(30),
 		OverclockPowerFactor: BigRat.fromIntegers(1321929, 1000000),
 	},
@@ -40,7 +40,7 @@ export const Buildings: Building[] = [
 	{
 		ClassName: "Build_Packager_C",
 		DisplayName: "Packager",
-		Description: "Packages and unpackages fluids.\nHead Lift: 10 m\n(Allows fluids to be transported 10 meters upwards.)\n\nContains both Conveyor Belt and Pipeline input and output ports so that a wide range of recipes can be automated.",
+		Description: "Packages and unpackages fluids.\nHead Lift: 10 m\n(Allows fluids to be transported 10 meters upwards.)\n\nHas both Conveyor Belt and Pipeline input and output ports so that a wide range of recipes can be automated.",
 		PowerConsumption: BigRat.fromInteger(10),
 		OverclockPowerFactor: BigRat.fromIntegers(1321929, 1000000),
 	},
