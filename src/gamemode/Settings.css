@@ -1,0 +1,26 @@
+.settings {
+	position: fixed;
+	inset: 0;
+	background-color: #77a;
+
+	.content {
+		position: fixed;
+		inset: 4px;
+		background-color: #fff;
+		padding: 2px;
+	}
+
+	.title {
+		font-weight: normal;
+		padding: 5px 0;
+		margin: 0;
+
+		&h2 {
+			font-size: 24px;
+		}
+
+		&h3 {
+			font-size: 20px;
+		}
+	}
+}

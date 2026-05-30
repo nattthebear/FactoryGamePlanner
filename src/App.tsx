@@ -5,6 +5,7 @@ import { AppActions } from "./AppActions";
 import { Planner } from "./planner";
 import { installTooltip } from "./component/Tooltip";
 import { changeAppTab, useSelector } from "./AppStore";
+import { GameMode } from "./gamemode";
 
 import "./App.css";
 
@@ -18,7 +19,7 @@ const App: TPC<{}> = (_, instance) => {
 			<>
 				{tab === "planner" && <Planner />}
 				{tab === "editor" && <Editor />}
-				{tab === "gamemode" && "gamemodeTODO"}
+				{tab === "gamemode" && <GameMode />}
 				<AppActions tab={tab} changeTab={changeAppTab} />
 				<PromptRoot />
 			</>

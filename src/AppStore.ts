@@ -8,7 +8,7 @@ interface AppState {
 
 const defaultState: AppState = { inTab: "planner" };
 function serialize(state: AppState) {
-	return state.inTab.slice(0);
+	return state.inTab[0];
 }
 function deserialize(serialized: string): AppState {
 	const c = serialized[0];

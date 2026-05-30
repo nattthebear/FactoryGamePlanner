@@ -13,7 +13,7 @@ export function AppActions({ tab, changeTab }: { tab: AppTab; changeTab: (newVal
 				Editor
 			</KeyButton>
 			<KeyButton keyName="y" disabled={tab === "gamemode"} onAct={() => changeTab("gamemode")}>
-				Game Mode
+				Settings
 			</KeyButton>
 			<KeyButton keyName="e" onAct={runCalculator}>
 				Calculator
