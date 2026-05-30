@@ -56,7 +56,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Screw_C",
-		DisplayName: "Screw",
+		DisplayName: "Screws",
 		SerializeId: 5,
 		Inputs: [{ Item: Items[19 /* Desc_IronRod_C */], Rate: BigRat.fromInteger(10) }, ],
 		Outputs: [{ Item: Items[20 /* Desc_IronScrew_C */], Rate: BigRat.fromInteger(40) }, ],
@@ -1626,7 +1626,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Screw_C",
-		DisplayName: "Cast Screw",
+		DisplayName: "Cast Screws",
 		SerializeId: 164,
 		Inputs: [{ Item: Items[50 /* Desc_IronIngot_C */], Rate: BigRat.fromIntegers(25, 2) }, ],
 		Outputs: [{ Item: Items[20 /* Desc_IronScrew_C */], Rate: BigRat.fromInteger(50) }, ],
@@ -1636,7 +1636,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_Screw_2_C",
-		DisplayName: "Steel Screw",
+		DisplayName: "Steel Screws",
 		SerializeId: 165,
 		Inputs: [{ Item: Items[25 /* Desc_SteelPlate_C */], Rate: BigRat.fromInteger(5) }, ],
 		Outputs: [{ Item: Items[20 /* Desc_IronScrew_C */], Rate: BigRat.fromInteger(260) }, ],
@@ -2102,7 +2102,7 @@ export const Recipes: Recipe[] = [
 		Outputs: [{ Item: Items[127 /* Desc_QuantumOscillator_C */], Rate: BigRat.fromInteger(5) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Rate: BigRat.fromInteger(125) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_TemporalProcessor_C",
@@ -2112,7 +2112,7 @@ export const Recipes: Recipe[] = [
 		Outputs: [{ Item: Items[128 /* Desc_TemporalProcessor_C */], Rate: BigRat.fromInteger(3) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Rate: BigRat.fromInteger(75) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_SpaceElevatorPart_12_C",
@@ -2122,7 +2122,7 @@ export const Recipes: Recipe[] = [
 		Outputs: [{ Item: Items[129 /* Desc_SpaceElevatorPart_12_C */], Rate: BigRat.fromInteger(4) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Rate: BigRat.fromInteger(100) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_PackagedIonizedFuel_C",
@@ -2576,7 +2576,7 @@ export const Recipes: Recipe[] = [
 	},
 	{
 		ClassName: "Recipe_Alternate_IronIngot_Leached_C",
-		DisplayName: "Leached Iron ingot",
+		DisplayName: "Leached Iron Ingot",
 		SerializeId: 260,
 		Inputs: [{ Item: Items[3 /* Desc_OreIron_C */], Rate: BigRat.fromInteger(50) }, { Item: Items[68 /* Desc_SulfuricAcid_C */], Rate: BigRat.fromInteger(10) }, ],
 		Outputs: [{ Item: Items[50 /* Desc_IronIngot_C */], Rate: BigRat.fromInteger(100) }, ],
@@ -2652,7 +2652,7 @@ export const Recipes: Recipe[] = [
 		Outputs: [{ Item: Items[137 /* Desc_FicsoniumFuelRod_C */], Rate: BigRat.fromIntegers(5, 2) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Rate: BigRat.fromInteger(50) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_SingularityCell_C",
@@ -2752,7 +2752,7 @@ export const Recipes: Recipe[] = [
 		Outputs: [{ Item: Items[138 /* Desc_CrystalShard_C */], Rate: BigRat.fromInteger(5) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Rate: BigRat.fromInteger(60) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 	{
 		ClassName: "Recipe_AlienPowerFuel_C",
@@ -2762,6 +2762,6 @@ export const Recipes: Recipe[] = [
 		Outputs: [{ Item: Items[139 /* Desc_AlienPowerFuel_C */], Rate: BigRat.fromIntegers(5, 2) }, { Item: Items[123 /* Desc_DarkEnergy_C */], Rate: BigRat.fromInteger(60) }, ],
 		Building: Buildings[12],
 		Alternate: false,
-		PowerConsumption: null,
+		PowerConsumption: BigRat.fromInteger(1000),
 	},
 ];

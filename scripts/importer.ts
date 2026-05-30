@@ -825,11 +825,12 @@ const formatColor = (c: t.TypeOf<typeof Color>) =>
 					return results[0];
 				})(),
 				Alternate,
-				PowerConsumptionExpr: x.mVariablePowerConsumptionConstant
-					? `BigRat.fromInteger(${
-							x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2
-					  })`
-					: "null",
+				PowerConsumptionExpr:
+					x.mVariablePowerConsumptionConstant !== 0 || x.mVariablePowerConsumptionFactor > 1
+						? `BigRat.fromInteger(${
+								x.mVariablePowerConsumptionConstant + x.mVariablePowerConsumptionFactor / 2
+						  })`
+						: "null",
 				DisplayName: x.mDisplayName.split("Alternate: ")[1] ?? x.mDisplayName,
 			};
 		});
