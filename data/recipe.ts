@@ -35,14 +35,14 @@ export class RecipeImpl implements Recipe {
 	DisplayName: string;
 	SerializeId: number;
 	private __duration: BigRat;
-	private __rawInputs: RawRecipeFlow[];
+	RawInputs: RawRecipeFlow[];
 	private __inputs: RecipeFlow[][];
 	Inputs(mode: GameMode): RecipeFlow[] {
 		const { __inputs } = this;
 		const index = getRPCMIndex(mode);
 		let ret = __inputs[index];
 		if (!ret) {
-			ret = mapFlows(this.__rawInputs, this.__duration, mode, this.Building);
+			ret = mapFlows(this.RawInputs, this.__duration, mode, this.Building);
 			__inputs[index] = ret;
 		}
 		return ret;
@@ -57,7 +57,7 @@ export class RecipeImpl implements Recipe {
 		this.DisplayName = raw.DisplayName;
 		this.SerializeId = raw.SerializeId;
 		this.__duration = raw.Duration;
-		this.__rawInputs = raw.RawInputs;
+		this.RawInputs = raw.RawInputs;
 		this.__inputs = [];
 		this.Outputs = mapFlows(raw.RawOutputs, raw.Duration, DefaultGameMode, raw.Building);
 		this.Building = raw.Building;
