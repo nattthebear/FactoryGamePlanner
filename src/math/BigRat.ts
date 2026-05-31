@@ -606,6 +606,14 @@ export class BigRat {
 			return 0;
 		}
 	}
+	trunc() {
+		let { pb, qb } = this;
+		if (pb == null) {
+			pb = BigInt(this.ps!);
+			qb = BigInt(this.qs!);
+		}
+		return pb / qb!;
+	}
 	ceil() {
 		let { pb, qb } = this;
 		if (pb == null) {
@@ -613,10 +621,25 @@ export class BigRat {
 			qb = BigInt(this.qs!);
 		}
 		let result = pb / qb!;
-		if (pb > 0 && result * qb! !== pb) {
+		if (pb > 0n && result * qb! !== pb) {
 			result += 1n;
 		}
 		return result;
+	}
+	floor() {
+		let { pb, qb } = this;
+		if (pb == null) {
+			pb = BigInt(this.ps!);
+			qb = BigInt(this.qs!);
+		}
+		let result = pb / qb!;
+		if (pb < 0n && result * qb! !== pb) {
+			result -= 1n;
+		}
+		return result;
+	}
+	round() {
+		return this.add(BigRat.ONE_HALF).floor();
 	}
 
 	debug() {
@@ -636,6 +659,7 @@ export class BigRat {
 	static ZERO = BigRat.fromInteger(0);
 	static ONE = BigRat.fromInteger(1);
 	static MINUS_ONE = BigRat.fromInteger(-1);
+	private static ONE_HALF = BigRat.fromIntegers(1, 2);
 
 	static eq(x: BigRat, y: BigRat) {
 		return x.eq(y);

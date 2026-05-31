@@ -9,12 +9,14 @@ import { FakePower } from "../../data/power";
 import { makeAbortablePromise, useAbortableAsynchronousMemo } from "../hook/usePromise";
 import { Spinner } from "../component/Spinner";
 import { promptBoolean } from "../component/PromptBoolean";
-import { changeInPlanner } from "../AppStore";
+import { changeAppTab } from "../AppStore";
 
 import "./Results.css";
 import { BigRat } from "../math/BigRat";
 import { Buildings } from "../../data/generated/buildings";
 import { Recipes } from "../../data/generated/recipes";
+import { GameMode } from "../../data/gameModes";
+import { useGetGameMode } from "../gamemode/Store";
 
 const MAX_OC = BigRat.fromIntegers(5, 2);
 
@@ -39,23 +41,23 @@ const FOOTPRINT_BY_BUILDING = [
 ];
 
 function imageForRecipe(recipe: Recipe) {
-	if (recipe.Building.PowerConsumption.sign() < 0) {
+	if (recipe.IsPowerProducer) {
 		return FakePower.Icon;
 	}
 	return recipe.Outputs[0].Item.Icon;
 }
 
 function productRateCell(recipe: Recipe, rate: BigRat) {
-	if (recipe.Building.PowerConsumption.sign() < 0) {
-		const mw = recipe.Building.PowerConsumption.mul(rate).neg();
+	if (recipe.IsPowerProducer) {
+		const mw = recipe.RawPowerConsumption.mul(rate).neg();
 		return <th data-tooltip={mw.toRatioString() + " MW"}>{mw.toFixed(2)} MW</th>;
 	}
 	const productRate = recipe.Outputs[0].Rate.mul(rate);
 	return <th data-tooltip={productRate.toRatioString() + "/min"}>{productRate.toFixed(2)}/min</th>;
 }
 
-function* solveAndRender(state: State) {
-	const problem = makeProblem(state);
+function* solveAndRender(state: State, gameMode: GameMode) {
+	const problem = makeProblem(state, gameMode);
 	yield;
 	const solution = yield* solveCoop(problem);
 	if (!solution) {
@@ -260,7 +262,7 @@ function* solveAndRender(state: State) {
 									updateEditor((draft) => {
 										Object.assign(draft, connectSolution(problem, solution));
 									});
-									changeInPlanner(false);
+									changeAppTab("editor");
 								}
 							}}
 						>
@@ -278,15 +280,16 @@ function* solveAndRender(state: State) {
 	);
 }
 
-const solvePromisify = (state: State) => makeAbortablePromise(solveAndRender(state), 100);
+const solvePromisify = (state: State, gameMode: GameMode) => makeAbortablePromise(solveAndRender(state, gameMode), 100);
 
 export const Results: TPC<{}> = (_, instance) => {
 	const getState = useSelector(instance, (s) => s);
+	const getGameMode = useGetGameMode(instance);
 
 	const solveAndRender = useAbortableAsynchronousMemo(instance, solvePromisify);
 
 	return () => {
-		const { value: content, stale } = solveAndRender([getState()]);
+		const { value: content, stale } = solveAndRender([getState(), getGameMode()]);
 
 		return (
 			<div class="results">

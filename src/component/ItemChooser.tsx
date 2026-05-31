@@ -20,7 +20,7 @@ function fillMultiMap<K, V>(map: Map<K, V[]>, key: K, value: V) {
 const recipeToOutputs = new Map<Item, Recipe[]>();
 const recipeToInputs = new Map<Item, Recipe[]>();
 for (const recipe of Recipes) {
-	for (const flow of recipe.Inputs) {
+	for (const flow of recipe.RawInputs) {
 		fillMultiMap(recipeToInputs, flow.Item, recipe);
 	}
 	for (const flow of recipe.Outputs) {
@@ -33,10 +33,10 @@ const itemImage = (item: Item) => <img class="item-chooser-image" src={item.Icon
 const formatRecipe = (recipe: Recipe) => ({
 	adornment: (
 		<div class="recipe-chooser-image">
-			{recipe.Inputs.map((flow) => itemImage(flow.Item))}
+			{recipe.RawInputs.map((flow) => itemImage(flow.Item))}
 			<span class="arrow">▶&#xfe0e;</span>
 			{recipe.Outputs.map((flow) => itemImage(flow.Item))}
-			{(recipe.PowerConsumption ?? recipe.Building.PowerConsumption).lt(BigRat.ZERO) && itemImage(FakePower)}
+			{recipe.IsPowerProducer && itemImage(FakePower)}
 		</div>
 	),
 	name: recipe.DisplayName,
@@ -48,10 +48,9 @@ const DisplayItems = ItemsWithFakePower.map((item) => ({
 	name: item.DisplayName,
 	item,
 	consumingRecipes: recipeToInputs.get(item)?.map(formatRecipe),
-	producingRecipes: (item === FakePower
-		? Recipes.filter((r) => r.Building.PowerConsumption.sign() < 0)
-		: recipeToOutputs.get(item)
-	)?.map(formatRecipe),
+	producingRecipes: (item === FakePower ? Recipes.filter((r) => r.IsPowerProducer) : recipeToOutputs.get(item))?.map(
+		formatRecipe,
+	),
 }));
 type DisplayItem = (typeof DisplayItems)[number];
 type DisplayRecipe = NonNullable<DisplayItem["producingRecipes"]>[number];

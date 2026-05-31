@@ -1,4 +1,5 @@
 import { defaultResourceData } from "../../../data/defaultResources";
+import { GameMode } from "../../../data/gameModes";
 import { Items } from "../../../data/generated/items";
 import { Recipes } from "../../../data/generated/recipes";
 import { ItemsByClassName } from "../../../data/lookups";
@@ -71,12 +72,13 @@ export const { useSelector, update, getStateRaw } = makeStoreWithHashRouter(
 	"_PlannerStore",
 );
 
-export function makeProblem(state: State): Problem {
+export function makeProblem(state: State, gameMode: GameMode): Problem {
 	const res: Problem = {
 		constraints: new Map(),
 		power: null,
 		clockFactor: BigRat.ONE,
 		availableRecipes: new Set(state.recipes),
+		gameMode,
 	};
 
 	for (const { rate, item } of state.inputs) {

@@ -1,3 +1,4 @@
+import { DefaultGameMode, GameMode } from "../../data/gameModes";
 import { ItemsByClassName, RecipesByClassName } from "../../data/lookups";
 import { Item, Recipe } from "../../data/types";
 import { BigRat } from "../math/BigRat";
@@ -54,6 +55,7 @@ export interface Problem {
 	clockFactor: BigRat;
 	/** What recipes are allowed. */
 	availableRecipes: Set<Recipe>;
+	gameMode: GameMode;
 }
 
 export interface Solution {
@@ -102,6 +104,8 @@ export function unstringifyProblem(s: string): Problem {
 		})(),
 		clockFactor: BigRat.fromRatioString(clockFactorData),
 		availableRecipes: new Set(availableRecipeData.split(";").map((clazz) => RecipesByClassName.get(clazz)!)),
+		// TODO:  Change this if tests ever need to test game mode
+		gameMode: DefaultGameMode,
 	};
 }
 
@@ -124,7 +128,7 @@ function makeRangeArray(n: number, first: number) {
 	return ret;
 }
 
-export function setupDictionary({ constraints, power, clockFactor, availableRecipes }: Problem) {
+export function setupDictionary({ constraints, power, clockFactor, availableRecipes, gameMode }: Problem) {
 	const itemsToConstraintRows = new Map<Item, number>();
 	const maxiObjectives = new Set<Item>();
 	const plentiful = new Set<Item>();
@@ -155,7 +159,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 			}
 		}
 		for (const { Inputs, Outputs } of availableRecipes) {
-			for (const { Item } of Inputs) {
+			for (const { Item } of Inputs(gameMode)) {
 				if (!itemsToConstraintRows.has(Item) && !plentiful.has(Item)) {
 					itemsToConstraintRows.set(Item, a++);
 				}
@@ -239,7 +243,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 		for (const recipe of availableRecipes) {
 			let zPrim = BigRat.ZERO;
 			let zSec = BigRat.ZERO;
-			for (const { Item, Rate } of recipe.Inputs) {
+			for (const { Item, Rate } of recipe.Inputs(gameMode)) {
 				const itemsPerMinute = Rate;
 				const row = itemsToConstraintRows.get(Item);
 				if (row != null) {
@@ -273,7 +277,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 			}
 			{
 				// TODO: overclockFactor
-				const recipePower = recipe.PowerConsumption ?? recipe.Building.PowerConsumption;
+				const recipePower = recipe.PowerConsumption(gameMode);
 				const ocMod = calculateOverclockedPowerRatio(recipe.Building, clockFactor);
 				const recipePowerMod = recipePower.mul(ocMod);
 

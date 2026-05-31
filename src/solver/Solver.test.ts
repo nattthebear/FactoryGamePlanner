@@ -7,6 +7,7 @@ import { BigRat } from "../math/BigRat";
 import { Constraint, Problem, setupDictionary, Solution, solve, unstringifyProblem } from "./Solver";
 import { Dictionary } from "./Dictionary";
 import { ItemsByClassName, RecipesByClassName } from "../../data/lookups";
+import { DefaultGameMode } from "../../data/gameModes";
 
 const defaultMapResources: Record<string, number> = {
 	Desc_OreIron_C: 70380,
@@ -32,6 +33,7 @@ describe("setupDictionary", () => {
 			power: { constraint: "available", rate: null },
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set([RecipesByClassName.get("Recipe_IngotIron_C")!]),
+			gameMode: DefaultGameMode,
 		};
 
 		const dictionary = setupDictionary(problem);
@@ -62,6 +64,7 @@ describe("setupDictionary", () => {
 				RecipesByClassName.get("Recipe_IronPlateReinforced_C")!,
 				RecipesByClassName.get("Recipe_ModularFrame_C")!,
 			]),
+			gameMode: DefaultGameMode,
 		};
 
 		const dictionary = setupDictionary(problem);
@@ -86,6 +89,7 @@ describe("setupDictionary", () => {
 			power,
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set([RecipesByClassName.get("Recipe_IngotIron_C")!]),
+			gameMode: DefaultGameMode,
 		});
 
 		it("no power available", () => {
@@ -129,6 +133,7 @@ describe("setupDictionary", () => {
 					RecipesByClassName.get("Recipe_IngotIron_C")!,
 					RecipesByClassName.get("Recipe_IronPlate_C")!,
 				]),
+				gameMode: DefaultGameMode,
 			};
 			const dictionary = setupDictionary(problem);
 			assert(!dictionary.isDualObjective);
@@ -205,6 +210,7 @@ describe("solve", () => {
 				RecipesByClassName.get("Recipe_IronPlateReinforced_C")!,
 				RecipesByClassName.get("Recipe_ModularFrame_C")!,
 			]),
+			gameMode: DefaultGameMode,
 		};
 		const solution = solve(problem);
 		assert(solution);
@@ -230,6 +236,7 @@ describe("solve", () => {
 			power: { constraint: "available", rate: null },
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set(Recipes),
+			gameMode: DefaultGameMode,
 		};
 		const solution = solve(problem);
 		assert(solution);
@@ -255,6 +262,7 @@ describe("solve", () => {
 			power: { constraint: "available", rate: null },
 			clockFactor: BigRat.ONE,
 			availableRecipes: new Set(Recipes),
+			gameMode: DefaultGameMode,
 		};
 		const solution = solve(problem);
 		assert(solution);
@@ -286,6 +294,7 @@ describe("solve", () => {
 				RecipesByClassName.get("Recipe_Alternate_RecycledRubber_C")!,
 				RecipesByClassName.get("Recipe_Alternate_Plastic_1_C")!,
 			]),
+			gameMode: DefaultGameMode,
 		};
 		const solution = solve(problem);
 		assert(solution);
@@ -316,6 +325,7 @@ describe("solve", () => {
 				Recipes.find((r) => r.DisplayName === "Alumina Solution")!,
 				Recipes.find((r) => r.DisplayName === "Aluminum Ingot")!,
 			]),
+			gameMode: DefaultGameMode,
 		};
 		const solution = solve(problem);
 		assert(solution);

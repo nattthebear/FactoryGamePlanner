@@ -8,6 +8,7 @@ import { Producer, ProductionBuilding, Sink, Source } from "./Producers";
 import { State, selectConnectorInputLocation, selectConnectorOutputLocation } from "./Store";
 import { reflowConnectors } from "./ReflowConnector";
 import { Bus, findTerminalIndex } from "./Bus";
+import { getCurrentGameModeRaw } from "../../gamemode/Store";
 
 function maybeSpliceValue<T>(array: T[], value: T) {
 	const index = array.indexOf(value);
@@ -136,6 +137,8 @@ export const emptyToSink = (producerId: NodeId, outputIndex: number) => (draft: 
 
 /** Fix up by adding a new recipe that consumes this */
 export const emptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: Recipe) => (draft: Draft<State>) => {
+	const gameMode = getCurrentGameModeRaw();
+
 	const producer = draft.producers.get(producerId)!;
 	const flow = producer.outputFlows()[outputIndex];
 
@@ -144,8 +147,8 @@ export const emptyToRecipe = (producerId: NodeId, outputIndex: number, recipe: R
 		return;
 	}
 
-	const inputIndex = recipe.Inputs.findIndex((i) => i.Item.ClassName === flow.item.ClassName);
-	const baseItemsPerMinute = recipe.Inputs[inputIndex].Rate;
+	const inputIndex = recipe.RawInputs.findIndex((i) => i.Item.ClassName === flow.item.ClassName);
+	const baseItemsPerMinute = recipe.Inputs(gameMode)[inputIndex].Rate;
 	const desiredRate = excess.div(baseItemsPerMinute);
 
 	const referencePoint = pointAdd(producer, producer.outputAttachPoints[outputIndex]);
