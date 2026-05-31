@@ -42,7 +42,7 @@ export function generateNetResults(problem: Problem, solution: Solution): NetRes
 		}
 
 		const buildingPower = calculateOverclockedPowerRatio(recipe.Building, problem.clockFactor)
-			.mul(recipe.PowerConsumption ?? recipe.Building.PowerConsumption)
+			.mul(recipe.PowerConsumption(problem.gameMode))
 			.mul(buildingRate);
 		power = power.sub(buildingPower);
 	}

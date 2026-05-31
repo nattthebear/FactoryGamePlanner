@@ -36,7 +36,7 @@ const formatRecipe = (recipe: Recipe) => ({
 			{recipe.RawInputs.map((flow) => itemImage(flow.Item))}
 			<span class="arrow">▶&#xfe0e;</span>
 			{recipe.Outputs.map((flow) => itemImage(flow.Item))}
-			{(recipe.PowerConsumption ?? recipe.Building.PowerConsumption).lt(BigRat.ZERO) && itemImage(FakePower)}
+			{recipe.IsPowerProducer && itemImage(FakePower)}
 		</div>
 	),
 	name: recipe.DisplayName,
@@ -48,10 +48,9 @@ const DisplayItems = ItemsWithFakePower.map((item) => ({
 	name: item.DisplayName,
 	item,
 	consumingRecipes: recipeToInputs.get(item)?.map(formatRecipe),
-	producingRecipes: (item === FakePower
-		? Recipes.filter((r) => r.Building.PowerConsumption.sign() < 0)
-		: recipeToOutputs.get(item)
-	)?.map(formatRecipe),
+	producingRecipes: (item === FakePower ? Recipes.filter((r) => r.IsPowerProducer) : recipeToOutputs.get(item))?.map(
+		formatRecipe,
+	),
 }));
 type DisplayItem = (typeof DisplayItems)[number];
 type DisplayRecipe = NonNullable<DisplayItem["producingRecipes"]>[number];

@@ -41,15 +41,15 @@ const FOOTPRINT_BY_BUILDING = [
 ];
 
 function imageForRecipe(recipe: Recipe) {
-	if (recipe.Building.PowerConsumption.sign() < 0) {
+	if (recipe.IsPowerProducer) {
 		return FakePower.Icon;
 	}
 	return recipe.Outputs[0].Item.Icon;
 }
 
 function productRateCell(recipe: Recipe, rate: BigRat) {
-	if (recipe.Building.PowerConsumption.sign() < 0) {
-		const mw = recipe.Building.PowerConsumption.mul(rate).neg();
+	if (recipe.IsPowerProducer) {
+		const mw = recipe.RawPowerConsumption.mul(rate).neg();
 		return <th data-tooltip={mw.toRatioString() + " MW"}>{mw.toFixed(2)} MW</th>;
 	}
 	const productRate = recipe.Outputs[0].Rate.mul(rate);

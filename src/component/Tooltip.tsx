@@ -28,7 +28,7 @@ function RecipeTooltip({ recipe }: { recipe: Recipe }) {
 				{recipe.Outputs.map(({ Item }) => (
 					<img src={Item.Icon} />
 				))}
-				{recipe.Building.PowerConsumption.sign() < 0 && <img src={FakePower.Icon} />}
+				{recipe.IsPowerProducer && <img src={FakePower.Icon} />}
 			</div>
 		</div>
 	);

@@ -7,7 +7,7 @@ import { FakePower } from "../../data/power";
 import "./RecipeFilter.css";
 
 function imageForRecipe(recipe: Recipe) {
-	if (recipe.Building.PowerConsumption.sign() < 0) {
+	if (recipe.IsPowerProducer) {
 		return FakePower.Icon;
 	}
 	return recipe.Outputs[0].Item.Icon;

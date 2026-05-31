@@ -1,5 +1,12 @@
 import { BigRat } from "../src/math/BigRat";
-import { DefaultGameMode, GameMode, getRPCMIndex, RecipePartsCostMultipliers } from "./gameModes";
+import {
+	DefaultGameMode,
+	GameMode,
+	getPCMIndex,
+	getRPCMIndex,
+	PowerCostMultipliers,
+	RecipePartsCostMultipliers,
+} from "./gameModes";
 import { Building, RawRecipe, RawRecipeFlow, Recipe, RecipeFlow } from "./types";
 
 const SIXTY = BigRat.fromInteger(60);
@@ -39,7 +46,9 @@ export class RecipeImpl implements Recipe {
 	Outputs: RecipeFlow[];
 	Building: Building;
 	Alternate: boolean;
-	PowerConsumption: BigRat | null;
+	RawPowerConsumption: BigRat;
+	PowerConsumption: (mode: GameMode) => BigRat;
+	IsPowerProducer: boolean;
 
 	constructor(raw: RawRecipe) {
 		this.ClassName = raw.ClassName;
@@ -62,6 +71,19 @@ export class RecipeImpl implements Recipe {
 		this.Outputs = mapFlows(raw.RawOutputs, raw.Duration, DefaultGameMode, raw.Building);
 		this.Building = raw.Building;
 		this.Alternate = raw.Alternate;
-		this.PowerConsumption = raw.PowerConsumption;
+
+		const RawPowerConsumption = raw.PowerConsumption ?? raw.Building.PowerConsumption;
+		const IsPowerProducer = RawPowerConsumption.sign() < 0;
+		this.RawPowerConsumption = RawPowerConsumption;
+		this.PowerConsumption = (mode) => {
+			if (IsPowerProducer) {
+				return RawPowerConsumption;
+			}
+			const index = getPCMIndex(mode);
+			const rate = PowerCostMultipliers[index];
+			return RawPowerConsumption.mul(rate);
+		};
+		this.RawPowerConsumption = RawPowerConsumption;
+		this.IsPowerProducer = IsPowerProducer;
 	}
 }

@@ -38,7 +38,7 @@ export interface RawRecipe {
 	RawOutputs: RawRecipeFlow[];
 	Building: Building;
 	Alternate: boolean;
-	/** If set, overrides the building power consumption */
+	/** If set, overrides the building power consumption.  If negative, this recipe produces power. */
 	PowerConsumption: BigRat | null;
 }
 
@@ -52,8 +52,10 @@ export interface Recipe {
 	Outputs: RecipeFlow[];
 	Building: Building;
 	Alternate: boolean;
-	/** If set, overrides the building power consumption */
-	PowerConsumption: BigRat | null;
+	/** If negative, this recipe produces power. */
+	RawPowerConsumption: BigRat;
+	PowerConsumption(mode: GameMode): BigRat;
+	IsPowerProducer: boolean;
 }
 
 export interface Building {

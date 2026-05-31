@@ -277,7 +277,7 @@ export function setupDictionary({ constraints, power, clockFactor, availableReci
 			}
 			{
 				// TODO: overclockFactor
-				const recipePower = recipe.PowerConsumption ?? recipe.Building.PowerConsumption;
+				const recipePower = recipe.PowerConsumption(gameMode);
 				const ocMod = calculateOverclockedPowerRatio(recipe.Building, clockFactor);
 				const recipePowerMod = recipePower.mul(ocMod);
 
